@@ -1,0 +1,49 @@
+Partlist
+
+Exported from ADE7953_WattMeter_breakout_v1.00.sch at 13.11.2016 07:56
+
+EAGLE Version 7.7.0 Copyright (c) 1988-2016 CadSoft
+
+Assembly variant: 
+
+Part     Value               Device            Package    Library   Sheet
+
+C1       .1uF                C-EUC0805K        C0805K@1   resistor  1
+C2       4.7uF               CPOL-EUA/3216-18R A/3216-18R resistor  1
+C3       .1uF                C-EUC0805K        C0805K@1   resistor  1
+C4       4.7uF               CPOL-EUA/3216-18R A/3216-18R resistor  1
+C5       10uF                CPOL-EUA/3216-18R A/3216-18R resistor  1
+C6       .1uF                C-EUC0805K        C0805K@1   resistor  1
+C7       18pF                C-EUC0805K        C0805K@1   resistor  1
+C8       18pF                C-EUC0805K        C0805K@1   resistor  1
+C9       .1uF                C-EUC0805K        C0805K@1   resistor  1
+C10      4.7uF               CPOL-EUA/3216-18R A/3216-18R resistor  1
+C11      1µF                 C-EUC0805K        C0805K@1   resistor  1
+C12      33nF                C-EUC0805K        C0805K@1   resistor  1
+C13      33nF                C-EUC0805K        C0805K@1   resistor  1
+C14      33nF                C-EUC0805K        C0805K@1   resistor  1
+C15      33nF                C-EUC0805K        C0805K@1   resistor  1
+C16      33nF                C-EUC0805K        C0805K@1   resistor  1
+C17      33nF                C-EUC0805K        C0805K@1   resistor  1
+IC1      ADE7953ACPZLONGPADS ADE7953ACPZ5.0    VQFN-28-D  ade7953-2 1
+JP1                          PINHD-1X14        1X14       pinhead   1
+JP2                          PINHD-1X14        1X14       pinhead   1
+JP3                          PINHD-1X2         1X02       pinhead   1
+L1       445-2187-1-ND       L-EUL2012C        L2012C     resistor  1
+Q1       535-10200-1-ND      CRYSTALSM49       SM49       crystal   1
+R1       10k                 R-US_R0805        R0805@1    resistor  1
+R2       300R                R-US_R0805        R0805@1    resistor  1
+R3       300R                R-US_R0805        R0805@1    resistor  1
+R4       10k                 R-US_R0805        R0805@1    resistor  1
+R5       10k                 R-US_R0805        R0805@1    resistor  1
+R6       1k                  R-US_R0805        R0805@1    resistor  1
+R7       1k                  R-US_R0805        R0805@1    resistor  1
+R8       1k                  R-US_R0805        R0805@1    resistor  1
+R9       1k                  R-US_R0805        R0805@1    resistor  1
+R10      1k                  R-US_R0805        R0805@1    resistor  1
+R11      1k                  R-US_R0805        R0805@1    resistor  1
+R12      10k                 R-US_R0805        R0805@1    resistor  1
+R13      10k                 R-US_R0805        R0805@1    resistor  1
+R14      10k                 R-US_R0805        R0805@1    resistor  1
+R15      10k                 R-US_R0805        R0805@1    resistor  1
+R16      10k                 R-US_R0805        R0805@1    resistor  1
