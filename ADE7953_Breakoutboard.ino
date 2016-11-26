@@ -37,12 +37,17 @@ void setup() {
   Serial.println("StartSketch");Serial.println("");
   
   //I²C
-  Wire.begin(I2C_SDA, I2C_SCL);   //begin(sda, scl)
+  Wire.begin(I2C_SDA, I2C_SCL);  
 
+  //ADE7953 
+  ADE.init();
+  ADE.write(0x107, 3);
+  //ADE.pREG(PGA_IA);
+  //ADE.pREG(PGA_IB);
+  //ADE.pREG(PGA_V);
+  //ADE.Test();
 
-  ADE.Test();
-
-  
+    
 } 
 
 //===============================================================================
@@ -50,6 +55,12 @@ void setup() {
 //===============================================================================
  
 void loop(){
+  Serial.print("IA RMS: "); Serial.println(ADE.getIRMSA());
+  Serial.print("IB RMS: "); Serial.println(ADE.getIRMSB());
+  Serial.print("V  RMS: "); Serial.println(ADE.getVRMS());
+  Serial.println("");
+  
+  delay(500);
 }
 
 

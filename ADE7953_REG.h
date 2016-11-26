@@ -13,35 +13,21 @@
   Revison :                                                *****
 
 ********************************************************************************/
-#pragma once
-//ESP8266
-  #include <ESP8266WiFi.h>          //https://github.com/esp8266/Arduino  
-//Tools
-  #include <Wire.h>                 //I²C
-//ADE7953  
-  #include "ADE7953_REG.h"          //ADE7953 Registers
 
-  #define I2Caddr 0x38
-  #define ADE7953_RESET 2           //GPIO RESET ADE7953
-  #define ADE7953_IRQ 13            //GPIO RESET ADE7953
-    
-class ADE7953{
+#define unlock              0xFE
+#define Reserved            0x120
+//IA
+  #define IRMSA               0x21A
+  #define AIGAIN              0x210
+  #define PGA_IA              0x008
+//IB
+  #define IRMSB               0x21B
+  #define BIGAIN              0x28C
+  #define PGA_IB              0x009
+//V
+  #define VRMS                0x21C
+  #define AVGAIN              0x281
+  #define PGA_V               0x007
 
-public:
-  ADE7953();
-  bool init();
-  void write(uint16_t reg, uint32_t val);
-  uint32_t read(uint16_t reg);
-  void pREG(uint16_t reg);
 
-  double getIRMSA();
-  double getIRMSB();
-  double getVRMS();
-  
-  void Test();
-
-private:
-  String strBIN(uint32_t val);
-
-};
 
