@@ -1,68 +1,35 @@
-//===============================================================================
-//  Librarys
-//===============================================================================
-//ESP8266
-  #include <ESP8266WiFi.h>
-//Tools
-  #include <Wire.h>             //I²C
-  #include "ADE7953.h"
-   
-//===============================================================================
-//  GLOBAL declarations
-//===============================================================================
-//===> HEADER <------------------------------------------------------------
-  
-//===> GPIO <--------------------------------------------------------------
-//Tools
+/******************************************************************************
 
-//I2C
-  #define I2C_SDA 4
-  #define I2C_SCL 5
+  ProjectName: ADE7953-Test Sketch                ***** *****
+  SubTitle   : ADE7953-WattMeter                 *     *     ************
+                                                *   **   **   *           *
+  Copyright by Pf@nne                          *   *   *   *   *   ****    *
+                                               *   *       *   *   *   *   *
+  Last modification by:                        *   *       *   *   ****    *
+  - Pf@nne (pf@nne-mail.de)                     *   *     *****           *
+                                                 *   *        *   *******
+  Date    : 03.12.2016                            *****      *   *
+  Version : alpha 0.200                                     *   *
+  Revison :                                                *****
 
-//===> constants <---------------------------------------------------------
+********************************************************************************/
 
-//===> variables <---------------------------------------------------------
-  ADE7953 ADE;
+#include "ESP8266_Basic.h"
+ESP8266_Basic espClient;
 
-//===============================================================================
-//  SETUP
-//===============================================================================
-void setup() {
 
-//Hardware Setup
-  //RS232
-  Serial.begin(115200);
-  delay(10);
-  Serial.println("");Serial.println("");
-  Serial.println("StartSketch");Serial.println("");
-  
-  //I²C
-  Wire.begin(I2C_SDA, I2C_SCL);  
-
-  //ADE7953 
-  ADE.init();
-  ADE.write(0x107, 3);
-  //ADE.pREG(PGA_IA);
-  //ADE.pREG(PGA_IB);
-  //ADE.pREG(PGA_V);
-  //ADE.Test();
-
-    
-} 
-
-//===============================================================================
-//  Main Loop
-//===============================================================================
- 
-void loop(){
-  Serial.print("IA RMS: "); Serial.println(ADE.getIRMSA());
-  Serial.print("IB RMS: "); Serial.println(ADE.getIRMSB());
-  Serial.print("V  RMS: "); Serial.println(ADE.getVRMS());
+void setup() {  
+  Serial.begin(115200); 
   Serial.println("");
   
-  delay(500);
-}
+  espClient.start_WiFi_connections();
+  espClient.ADE.init();
+}  
 
+void loop() {
+  espClient.handle_connections(); 
+  espClient.handle_Measurement();
+}
 
 
 

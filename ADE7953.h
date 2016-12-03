@@ -1,15 +1,15 @@
 /******************************************************************************
 
   ProjectName: ADE7953-WattMeter                  ***** *****
-  SubTitle   : ADE7953-WattMeter                 *     *     ************
+  SubTitle   : Library Header                    *     *     ************
                                                 *   **   **   *           *
   Copyright by Pf@nne                          *   *   *   *   *   ****    *
                                                *   *       *   *   *   *   *
   Last modification by:                        *   *       *   *   ****    *
   - Pf@nne (pf@nne-mail.de)                     *   *     *****           *
                                                  *   *        *   *******
-  Date    : 24.11.2016                            *****      *   *
-  Version : alpha 0.100                                     *   *
+  Date    : 03.12.2016                            *****      *   *
+  Version : alpha 0.200                                     *   *
   Revison :                                                *****
 
 ********************************************************************************/
@@ -23,7 +23,7 @@
 
   #define I2Caddr 0x38
   #define ADE7953_RESET 2           //GPIO RESET ADE7953
-  #define ADE7953_IRQ 13            //GPIO RESET ADE7953
+  #define ADE7953_IRQ 13            //GPIO IRQ ADE7953
     
 class ADE7953{
 
@@ -31,12 +31,20 @@ public:
   ADE7953();
   bool init();
   void write(uint16_t reg, uint32_t val);
+  void write(String strRegVal);
   uint32_t read(uint16_t reg);
+  uint32_t read(String strReg);
   void pREG(uint16_t reg);
-
+  long int StrToInt(String str);
+  //void setBit(int nr, int val);
+  //void setBit(int first, int last, String strRegVal);
+  //void toggleBit(int nr);
+  //MQTT inst
+  
   double getIRMSA();
   double getIRMSB();
   double getVRMS();
+  double getV();
   
   void Test();
 

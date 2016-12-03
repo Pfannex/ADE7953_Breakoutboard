@@ -1,15 +1,15 @@
 /******************************************************************************
 
   ProjectName: ADE7953-WattMeter                  ***** *****
-  SubTitle   : ADE7953-WattMeter                 *     *     ************
+  SubTitle   : Library Routines                  *     *     ************
                                                 *   **   **   *           *
   Copyright by Pf@nne                          *   *   *   *   *   ****    *
                                                *   *       *   *   *   *   *
   Last modification by:                        *   *       *   *   ****    *
   - Pf@nne (pf@nne-mail.de)                     *   *     *****           *
                                                  *   *        *   *******
-  Date    : 24.11.2016                            *****      *   *
-  Version : alpha 0.100                                     *   *
+  Date    : 03.12.2016                            *****      *   *
+  Version : alpha 0.200                                     *   *
   Revison :                                                *****
 
 ********************************************************************************/
@@ -23,19 +23,34 @@ ADE7953::ADE7953(){
 //===============================================================================
 double ADE7953::getIRMSA(){
   double dblIRMSA = double(read(IRMSA));
-  dblIRMSA = dblIRMSA * 500 / 13000000;
+  dblIRMSA = dblIRMSA  / 26000;
   return dblIRMSA;
 }
 double ADE7953::getIRMSB(){
   double dblIRMSB = double(read(IRMSB));
-  dblIRMSB = dblIRMSB * 500 / 0xFFFFFF;
+  dblIRMSB = dblIRMSB / 26000;
   return dblIRMSB;
 }
 double ADE7953::getVRMS(){
   double dblVRMS = double(read(VRMS));
-  dblVRMS = dblVRMS * 500 / 0xFFFFFF;
+  dblVRMS = dblVRMS / 26000;
   return dblVRMS;
 }
+//===============================================================================
+//  read instantaneous values 
+//===============================================================================
+double ADE7953::getV(){
+  int int_dblV = read(V);
+
+  int Bitdepth = 0xFFFFFF;
+
+  if (int_dblV >= Bitdepth/2){
+    int_dblV = (Bitdepth - int_dblV +1) * -1;
+  } 
+  double dblV = int_dblV / 13000;
+  return dblV;
+}
+
 //===============================================================================
 //  ADE7953 Setup 
 //===============================================================================
@@ -65,13 +80,13 @@ bool ADE7953::init(){
   Serial.println("");
   Serial.println("ADE7953.init OK");
 
-//REQUIRED REGISTER SETTING  
   Serial.println("start Register settings");
+//REQUIRED REGISTER SETTING  
   write(unlock, 0xAD);
-  write(Reserved, 0x30);
-  pREG(unlock);pREG(Reserved);
+  write(Reserved1, 0x30);
+  //pREG(unlock);pREG(Reserved);
 
-//REGISTER SETTING  
+//optional REGISTER SETTING  
   
   
   return true;
@@ -103,6 +118,23 @@ String ADE7953::strBIN(uint32_t val){
   }
   return strVal;
 }
+long int ADE7953::StrToInt(String str){
+  char chr[15];
+  long int val;
+  
+  if (str.indexOf("0b") == 0){
+    str = str.substring(2);
+    strcpy(chr, str.c_str());
+    val = strtol(chr, 0, 2);  
+  }else if (str.indexOf("0x") == 0){
+    str = str.substring(2);
+    strcpy(chr, str.c_str());
+    val = strtol(chr, 0, 16);   
+  }else{
+    val = str.toInt();
+  }
+  return val;
+}
 
 //===============================================================================
 //  ADE7953 read/write Register 
@@ -122,6 +154,25 @@ void ADE7953::write(uint16_t reg, uint32_t val){
     Wire.write(val >> (count-1-i)*8);               //write MSB first
   } 
   Wire.endTransmission(); 
+}
+void ADE7953::write(String strRegVal){
+  int pos = strRegVal.indexOf(",");
+  String strReg = strRegVal.substring(0, pos);
+  String strVal = strRegVal.substring(pos+1);
+
+  //Serial.println(strRegVal);
+  //Serial.println("REG / VAL");
+  //Serial.println(strReg);
+  //Serial.println(strVal);
+  
+  uint16_t reg = StrToInt(strReg);
+  uint32_t val = StrToInt(strVal);
+  
+  //Serial.println("REG / VAL");
+  //Serial.println(reg);
+  //Serial.println(val);
+
+  write(reg, val);
 }
 
 uint32_t ADE7953::read(uint16_t reg){
@@ -146,6 +197,12 @@ uint32_t ADE7953::read(uint16_t reg){
   }
   Wire.endTransmission(); 
   return val;
+}
+uint32_t ADE7953::read(String strReg){
+  uint32_t readReg = 0;
+  uint16_t reg = StrToInt(strReg);
+  readReg = read(reg);
+  return readReg;
 }
 
 
