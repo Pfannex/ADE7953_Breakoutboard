@@ -88,6 +88,7 @@ public:
   
   //AktSen
   void handle_Measurement();
+  void run_I2C();
   //TDS18B20_Sensors DS18B20_Sensors;
   //THTU21_Sensors HTU21_Sensors;
   //TBMP180_Sensors BMP180_Sensors;
@@ -104,7 +105,6 @@ private:
   long lastMeasure_time;
   long updateMeasure_time = 5000;
   //void run_oneWire();
-  void run_I2C();
   //void scanI2C();
   //void mux(byte channel);  
   //bool HTU21_begin();

@@ -17,7 +17,106 @@
 
 ADE7953::ADE7953(){
 }
+//===============================================================================
+//  FileSystem
+//===============================================================================
 
+//ADE7953 config-File-Control
+//===> read from ADE7953_json <-------------------------------------------------
+bool ADE7953::read_ADE7953_json(){
+  bool readOK = false;
+  
+  File ADE7953;
+  //clean FS, for testing
+  //SPIFFS.format();
+
+  //read configuration from FS json
+  Serial.println("");
+  Serial.println("mounting FS...for ADE7953");
+
+  if (SPIFFS.begin()) {
+    Serial.println("mounted file system");
+    if (SPIFFS.exists("/ADE7953.json")) {
+      //file exists, reading and loading
+      Serial.println("reading ADE7953");
+      ADE7953 = SPIFFS.open("/ADE7953.json", "r");
+      if (ADE7953) {
+        Serial.println("opened ADE7953");
+        size_t size = ADE7953.size();
+        // Allocate a buffer to store contents of the file.
+        std::unique_ptr<char[]> buf(new char[size]);
+
+        ADE7953.readBytes(buf.get(), size);
+        DynamicJsonBuffer jsonBuffer;
+        JsonObject& json = jsonBuffer.parseObject(buf.get());
+        //json.printTo(Serial);
+        if (json.success()) {
+          Serial.println("json read ADE7953");
+          
+          //Get Data from File
+          ADE7953_json.AIGAINjson = json["AIGAIN"];
+          ADE7953_json.BIGAINjson = json["BIGAIN"];
+          ADE7953_json.AVGAINjson = json["AVGAIN"];
+          ADE7953_json.CF1DENjson = json["CF1DEN"];
+          ADE7953_json.CF2DENjson = json["CF2DEN"];
+          //strcpy(ADE7953.Field_01, json["Field_01"]);
+      
+          Serial.print("AIGAIN = ");Serial.println(ADE7953_json.AIGAINjson);
+          Serial.print("BIGAIN = ");Serial.println(ADE7953_json.BIGAINjson);
+          Serial.print("AVGAIN = ");Serial.println(ADE7953_json.AVGAINjson);
+          Serial.print("CF1DEN = ");Serial.println(ADE7953_json.CF1DENjson);
+          Serial.print("CF2DEN = ");Serial.println(ADE7953_json.CF2DENjson);
+          readOK = true;
+
+        }else{
+          Serial.println("failed to load json ADE7953");
+        }
+      }
+    }else{
+    Serial.println("ADE7953 does not exist");
+  }
+  } else {
+    Serial.println("failed to mount FS");
+  }
+  ADE7953.close();
+  //end read  
+  return readOK;
+};
+
+//===> write to ADE7953_json <--------------------------------------------------
+void ADE7953::write_ADE7953_json(){
+
+  SPIFFS.begin();
+  //save the custom parameters to FS
+  Serial.println("saving ADE7953.json");
+  DynamicJsonBuffer jsonBuffer;
+  JsonObject& json = jsonBuffer.createObject();
+  
+  //Serial.println("bevor write_cfgFile ");
+  //json.printTo(Serial);
+
+  json["AIGAIN"] = ADE7953_json.AIGAINjson;
+  json["BIGAIN"] = ADE7953_json.BIGAINjson;
+  json["AVGAIN"] = ADE7953_json.AVGAINjson;
+  json["CF1DEN"] = ADE7953_json.CF1DENjson;
+  json["CF2DEN"] = ADE7953_json.CF2DENjson;
+  //json["Field_02"] = myFile.Field_02;
+
+  File ADE7953 = SPIFFS.open("/ADE7953.json", "w");
+  if (!ADE7953) {
+    Serial.println("failed to open ADE7953 for writing");
+    //Serial.print("format file System.. ");
+    //SPIFFS.format();
+    //Serial.println("done");
+    //write_cfgFile();
+ }
+
+  //json.printTo(Serial);
+  json.printTo(ADE7953);
+  ADE7953.close();
+  //end save
+
+}
 //===============================================================================
 //  read RMS values 
 //===============================================================================
@@ -79,15 +178,26 @@ bool ADE7953::init(){
   }
   Serial.println("");
   Serial.println("ADE7953.init OK");
-
+  
+  read_ADE7953_json();
+  write_ADE7953_json();
+  
   Serial.println("start Register settings");
 //REQUIRED REGISTER SETTING  
   write(unlock, 0xAD);
   write(Reserved1, 0x30);
-  //pREG(unlock);pREG(Reserved);
+  //pREG(unlock);pREG(Reserved1);
 
 //optional REGISTER SETTING  
-  
+  write(0x107,0b01110011);    //set CF1->IRMSA & CF2->IRMSB 
+
+  write(AIGAIN,4145000);      //Gain IA
+  write(BIGAIN,4208900);      //Gain IB
+  write(AVGAIN,4202000);      //Gain V
+
+  write(CF1DEN,69);           //CF1 IA 
+  write(CF2DEN,69);           //CF2 IB 
+
   
   return true;
 }
@@ -155,22 +265,14 @@ void ADE7953::write(uint16_t reg, uint32_t val){
   } 
   Wire.endTransmission(); 
 }
+
 void ADE7953::write(String strRegVal){
   int pos = strRegVal.indexOf(",");
   String strReg = strRegVal.substring(0, pos);
   String strVal = strRegVal.substring(pos+1);
-
-  //Serial.println(strRegVal);
-  //Serial.println("REG / VAL");
-  //Serial.println(strReg);
-  //Serial.println(strVal);
   
   uint16_t reg = StrToInt(strReg);
   uint32_t val = StrToInt(strVal);
-  
-  //Serial.println("REG / VAL");
-  //Serial.println(reg);
-  //Serial.println(val);
 
   write(reg, val);
 }
@@ -212,17 +314,8 @@ uint32_t ADE7953::read(String strReg){
 
 
 void ADE7953::Test(){
-  uint16_t reg = 0x0;
-  Serial.println("startTest");
-
-  reg = 0x004; pREG(reg);
-  reg = 0x102; pREG(reg);
-  reg = 0x203; pREG(reg);
-  reg = 0x303; pREG(reg);
-  reg = 0x28C; pREG(reg);
-
-  reg = 0x28C; write(reg, 0xABCDEF); pREG(reg);  
-  reg = 0x004; write(reg, 0xAB); pREG(reg);  
+  pREG(CFMODE);
+ 
 }
 
 

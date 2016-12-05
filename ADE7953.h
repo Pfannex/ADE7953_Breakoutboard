@@ -14,6 +14,9 @@
 
 ********************************************************************************/
 #pragma once
+//FileSystem
+  #include <FS.h>                   //this needs to be first, or it all crashes and burns...
+  #include <ArduinoJson.h>          //https://github.com/bblanchon/ArduinoJson
 //ESP8266
   #include <ESP8266WiFi.h>          //https://github.com/esp8266/Arduino  
 //Tools
@@ -24,9 +27,18 @@
   #define I2Caddr 0x38
   #define ADE7953_RESET 2           //GPIO RESET ADE7953
   #define ADE7953_IRQ 13            //GPIO IRQ ADE7953
+
+// ADE7953 config-File struct
+  typedef struct TADE7953_json{
+    //char Field_01[15];
+    uint32_t AIGAINjson;
+    uint32_t BIGAINjson;
+    uint32_t AVGAINjson;
+    uint32_t CF1DENjson;
+    uint32_t CF2DENjson;
+  };
     
 class ADE7953{
-
 public:
   ADE7953();
   bool init();
@@ -50,6 +62,13 @@ public:
 
 private:
   String strBIN(uint32_t val);
+  
+  //ADE7953 config-File-Control
+  TADE7953_json ADE7953_json;
+  bool read_ADE7953_json();
+  void write_ADE7953_json();
 
 };
+
+
 

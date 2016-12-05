@@ -46,13 +46,14 @@ private:
   ESP8266HTTPUpdateServer httpUpdater;
   CallbackFunction saveConfig_Callback;
   CFG *cfg;
+  //ADE7953CFG *ADE7953cfg;
   TDS18B20_Sensors *DS18B20_Sensors; 
   THTU21_Sensors *HTU21_Sensors; 
   TBMP180_Sensors *BMP180_Sensors; 
   
   //Page controls----------------
   void rootPageHandler();
-  void sensorPageHandler();
+  void ADE7953PageHandler();
 
   void wlanPageHandler();
   void gpioPageHandler();

@@ -25,15 +25,10 @@
 
 //CLASS ESP8266_Basic################################################################
 ESP8266_Basic::ESP8266_Basic() : webServer(), 
-                                 mqtt_client(wifi_client)
-
-
-								 {
+                                 mqtt_client(wifi_client){
   //Callbacks								 
   webServer.set_saveConfig_Callback(std::bind(&ESP8266_Basic::cfgChange_Callback, this));
   mqtt_client.setCallback(std::bind(&ESP8266_Basic::mqttBroker_Callback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-
-
 }
 
 
@@ -328,6 +323,11 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
 
   if (dissectResult.found){
     if (dissectResult.itemPath == "2/0"){         //ADE7953.read
+      String strReg = "0x";
+      strReg += String(ADE.StrToInt(value), HEX);
+      strcpy(chr, strReg.c_str());
+      pub(2,0, chr);
+
       uint32_t reg = ADE.read(String(value));
       String str = "0x";
       str += String(reg, HEX);
@@ -343,8 +343,10 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
     if (dissectResult.itemPath == "2/1"){         //ADE7953.write
       ADE.write(String(value));
       
+      String strReg = "0x";
       int pos = String(value).indexOf(",");
-      String strReg = String(value).substring(0, pos);
+      strReg += String(ADE.StrToInt(String(value).substring(0, pos)), HEX);
+      
       strcpy(chr, strReg.c_str());
       pub(2,0, chr);
       

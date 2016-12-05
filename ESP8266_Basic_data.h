@@ -91,17 +91,17 @@ private:
     char mqttServer[20];
     char mqttPort[6];
     char mqttDeviceName[20];
-	char mqttStatus[20];
-	char updateServer[20];
-	char filePath[40];
+	  char mqttStatus[20];
+	  char updateServer[20];
+	  char filePath[40];
   };
   
   typedef struct TdissectResult{
     bool found = false;
     String topic = "";
-	String value = "";
-	String itemPath = "";
-	int treeDepth = 0;
+	  String value = "";
+	  String itemPath = "";
+	  int treeDepth = 0;
     int E1 = NULL;
     int E2 = NULL;
     int E3 = NULL;

@@ -20,7 +20,7 @@ ESP8266_Basic_webServer::ESP8266_Basic_webServer() : webServer(80){
   httpUpdater.setup(&webServer); 
  
   webServer.on("/", std::bind(&ESP8266_Basic_webServer::rootPageHandler, this));
-  webServer.on("/sensoren", std::bind(&ESP8266_Basic_webServer::sensorPageHandler, this));
+  webServer.on("/ADE7953", std::bind(&ESP8266_Basic_webServer::ADE7953PageHandler, this));
   
   webServer.on("/wlan_config", std::bind(&ESP8266_Basic_webServer::wlanPageHandler, this));
   webServer.on("/gpio", std::bind(&ESP8266_Basic_webServer::gpioPageHandler, this));
@@ -79,52 +79,34 @@ void ESP8266_Basic_webServer::updateFirmware(){
 //===============================================================================
 
 //===> Sensor Page <-------------------------------------------------------
-void ESP8266_Basic_webServer::sensorPageHandler(){
+void ESP8266_Basic_webServer::ADE7953PageHandler(){
  String rm = ""
   
   "<!doctype html> <html>"
   "<head> <meta charset='utf-8'>"
-  "<meta http-equiv='refresh' content='5; URL=http://" + String(IPtoString(WiFi.localIP()))  + "/sensoren'>"
+  "<meta http-equiv='refresh' content='5; URL=http://" + String(IPtoString(WiFi.localIP()))  + "/ADE7953'>"
   "<title>ESP8266 Sensoren</title>"
   "</head>"
 
   "<body><body bgcolor='#F0F0F0'><font face='VERDANA,ARIAL,HELVETICA'> <form> <font face='VERDANA,ARIAL,HELVETICA'>"
-  "<b><h1>ESP8266 Sensoren</h1></b>"
-  "<b><h3>1Wire</h3></b>";
+  "<b><h1>ADE7953 measurement</h1></b>"
   
-  for (int i = 0; i < DS18B20_Sensors->count; i++) {	
+  "<b><h3>Voltage / Current</h3></b>";
+  
 	  rm += "<font face='Courier New'>";
 	
-	  char str[15];
-	  sprintf(str, "%03d - ", i+1);
-	  rm += "<tab indent=20>";
-	  rm += String(str) + String(DS18B20_Sensors->item[i].serial) + " - " + 
-	                      String(DS18B20_Sensors->item[i].temperature) + " &deg;C<br>";
-  }
+	  //rm += "<tab indent=20>";
+    rm += "Voltage : </b>";
+    rm += "Current A : </b>";
+    rm += "Current B : </b>";
+    //DS18B20_Sensors->item[i].serial
 
   rm += "</font></p>"
-  "<font face='VERDANA,ARIAL,HELVETICA'> <b><h3>I2C</h3></b> </font>";
+  "<font face='VERDANA,ARIAL,HELVETICA'> <b><h3>Power</h3></b> </font>";
   
-  for (int i=0; i<HTU21_Sensors->count; i++){  
-    rm += "<font face='Courier New'>";
-  
-    //char str[15];
-    //sprintf(str, "Ch %01d - ", String(HTU21_Sensors->item[i].channel).c_str());
-    //rm += "Ch " + String(HTU21_Sensors->item[i].channel);
-    rm += "Ch " + String(HTU21_Sensors->item[i].channel) + " - ";
-    rm += String(HTU21_Sensors->item[i].temperature) + " &deg;C" + " / " + 
-          String(HTU21_Sensors->item[i].humidity) + " %<br>";
-  }
-  for (int i=0; i<BMP180_Sensors->count; i++){  
-    rm += "<font face='Courier New'>";
-  
-    //char str[15];
-    //sprintf(str, "Ch %01d - ", String(BMP180_Sensors->item[i].channel).c_str());
-    //rm += "Ch " + String(BMP180_Sensors->item[i].channel);
-    rm += "Ch " + String(BMP180_Sensors->item[i].channel) + " - ";
-    rm += String(BMP180_Sensors->item[i].temperature) + " &deg;C" + " / " + 
-          String(BMP180_Sensors->item[i].pressure) + " hPa<br>";
-  }
+    rm += "Power : </b>";
+    rm += "Q : </b>";
+    rm += "S : </b>";
 
 
   rm += "</font></p>"

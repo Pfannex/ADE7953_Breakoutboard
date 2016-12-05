@@ -23,6 +23,7 @@ void setup() {
   Serial.println("");
   
   espClient.start_WiFi_connections();
+  espClient.run_I2C();
   espClient.ADE.init();
 }  
 
