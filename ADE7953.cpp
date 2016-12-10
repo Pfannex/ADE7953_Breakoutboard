@@ -54,18 +54,26 @@ bool ADE7953::read_ADE7953_json(){
           Serial.println("json read ADE7953");
           
           //Get Data from File
-          ADE7953_json.AIGAINjson = json["AIGAIN"];
-          ADE7953_json.BIGAINjson = json["BIGAIN"];
-          ADE7953_json.AVGAINjson = json["AVGAIN"];
-          ADE7953_json.CF1DENjson = json["CF1DEN"];
-          ADE7953_json.CF2DENjson = json["CF2DEN"];
+          ADE7953_json.AIGAINjson  = json["AIGAIN"];
+          ADE7953_json.BIGAINjson  = json["BIGAIN"];
+          ADE7953_json.AVGAINjson  = json["AVGAIN"];
+          ADE7953_json.CFMODEjson  = json["CFMODE"];
+          ADE7953_json.CF1DENjson  = json["CF1DEN"];
+          ADE7953_json.CF2DENjson  = json["CF2DEN"];
+          ADE7953_json.AIRMSOSjson = json["AIRMSOS"];
+          ADE7953_json.BIRMSOSjson = json["BIRMSOS"];
+          ADE7953_json.VRMSOSjson  = json["VRMSOS"];
           //strcpy(ADE7953.Field_01, json["Field_01"]);
       
-          Serial.print("AIGAIN = ");Serial.println(ADE7953_json.AIGAINjson);
-          Serial.print("BIGAIN = ");Serial.println(ADE7953_json.BIGAINjson);
-          Serial.print("AVGAIN = ");Serial.println(ADE7953_json.AVGAINjson);
-          Serial.print("CF1DEN = ");Serial.println(ADE7953_json.CF1DENjson);
-          Serial.print("CF2DEN = ");Serial.println(ADE7953_json.CF2DENjson);
+          Serial.print("AIGAIN  = ");Serial.println(ADE7953_json.AIGAINjson);
+          Serial.print("BIGAIN  = ");Serial.println(ADE7953_json.BIGAINjson);
+          Serial.print("AVGAIN  = ");Serial.println(ADE7953_json.AVGAINjson);
+          Serial.print("CFMODE  = 0b");Serial.println(ADE7953_json.CFMODEjson, BIN);
+          Serial.print("CF1DEN  = ");Serial.println(ADE7953_json.CF1DENjson);
+          Serial.print("CF2DEN  = ");Serial.println(ADE7953_json.CF2DENjson);
+          Serial.print("AIRMSOS = ");Serial.println(ADE7953_json.AIRMSOSjson);
+          Serial.print("BIRMSOS = ");Serial.println(ADE7953_json.BIRMSOSjson);
+          Serial.print("VRMSOS  = ");Serial.println(ADE7953_json.VRMSOSjson);
           readOK = true;
 
         }else{
@@ -95,11 +103,15 @@ void ADE7953::write_ADE7953_json(){
   //Serial.println("bevor write_cfgFile ");
   //json.printTo(Serial);
 
-  json["AIGAIN"] = ADE7953_json.AIGAINjson;
-  json["BIGAIN"] = ADE7953_json.BIGAINjson;
-  json["AVGAIN"] = ADE7953_json.AVGAINjson;
-  json["CF1DEN"] = ADE7953_json.CF1DENjson;
-  json["CF2DEN"] = ADE7953_json.CF2DENjson;
+  json["AIGAIN"]  = ADE7953_json.AIGAINjson;
+  json["BIGAIN"]  = ADE7953_json.BIGAINjson;
+  json["AVGAIN"]  = ADE7953_json.AVGAINjson;
+  json["CFMODE"]  = ADE7953_json.CFMODEjson;
+  json["CF1DEN"]  = ADE7953_json.CF1DENjson;
+  json["CF2DEN"]  = ADE7953_json.CF2DENjson;
+  json["AIRMSOS"] = ADE7953_json.AIRMSOSjson;
+  json["BIRMSOS"] = ADE7953_json.BIRMSOSjson;
+  json["VRMSOS"]  = ADE7953_json.VRMSOSjson;
   //json["Field_02"] = myFile.Field_02;
 
   File ADE7953 = SPIFFS.open("/ADE7953.json", "w");
@@ -121,19 +133,13 @@ void ADE7953::write_ADE7953_json(){
 //  read RMS values 
 //===============================================================================
 double ADE7953::getIRMSA(){
-  double dblIRMSA = double(read(IRMSA));
-  dblIRMSA = dblIRMSA  / 26000;
-  return dblIRMSA;
+  return double(read(IRMSA)) / 26000;
 }
 double ADE7953::getIRMSB(){
-  double dblIRMSB = double(read(IRMSB));
-  dblIRMSB = dblIRMSB / 26000;
-  return dblIRMSB;
+  return double(read(IRMSB)) / 26000;
 }
 double ADE7953::getVRMS(){
-  double dblVRMS = double(read(VRMS));
-  dblVRMS = dblVRMS / 26000;
-  return dblVRMS;
+  return double(read(VRMS)) / 26000;
 }
 //===============================================================================
 //  read instantaneous values 
@@ -180,7 +186,6 @@ bool ADE7953::init(){
   Serial.println("ADE7953.init OK");
   
   read_ADE7953_json();
-  write_ADE7953_json();
   
   Serial.println("start Register settings");
 //REQUIRED REGISTER SETTING  
@@ -189,16 +194,17 @@ bool ADE7953::init(){
   //pREG(unlock);pREG(Reserved1);
 
 //optional REGISTER SETTING  
-  write(0x107,0b01110011);    //set CF1->IRMSA & CF2->IRMSB 
+  write(AIGAIN, ADE7953_json.AIGAINjson);      //Gain IA
+  write(BIGAIN, ADE7953_json.BIGAINjson);      //Gain IB
+  write(AVGAIN, ADE7953_json.AVGAINjson);      //Gain V
+  write(AIRMSOS,ADE7953_json.AIRMSOSjson);     //Offset IA
+  write(BIRMSOS,ADE7953_json.BIRMSOSjson);     //Offset IB
+  write(VRMSOS, ADE7953_json.VRMSOSjson);      //Offset V
 
-  write(AIGAIN,4145000);      //Gain IA
-  write(BIGAIN,4208900);      //Gain IB
-  write(AVGAIN,4202000);      //Gain V
-
-  write(CF1DEN,69);           //CF1 IA 
-  write(CF2DEN,69);           //CF2 IB 
-
-  
+  write(CFMODE,ADE7953_json.CFMODEjson);       //set CF1->IRMSA & CF2->IRMSB 
+  write(CF1DEN,ADE7953_json.CF1DENjson);       //CF1 IA 
+  write(CF2DEN,ADE7953_json.CF2DENjson);       //CF2 IB 
+ 
   return true;
 }
 
@@ -229,13 +235,13 @@ String ADE7953::strBIN(uint32_t val){
   return strVal;
 }
 long int ADE7953::StrToInt(String str){
-  char chr[15];
+  char chr[50];
   long int val;
   
   if (str.indexOf("0b") == 0){
     str = str.substring(2);
     strcpy(chr, str.c_str());
-    val = strtol(chr, 0, 2);  
+    val = strtol(chr, 0, 2); 
   }else if (str.indexOf("0x") == 0){
     str = str.substring(2);
     strcpy(chr, str.c_str());
@@ -247,8 +253,9 @@ long int ADE7953::StrToInt(String str){
 }
 
 //===============================================================================
-//  ADE7953 read/write Register 
+//  ADE7953 read/write Register / Bit
 //===============================================================================
+//write-------------------------------------------------------------
 void ADE7953::write(uint16_t reg, uint32_t val){
   int count = 0;
   
@@ -272,11 +279,33 @@ void ADE7953::write(String strRegVal){
   String strVal = strRegVal.substring(pos+1);
   
   uint16_t reg = StrToInt(strReg);
-  uint32_t val = StrToInt(strVal);
+  long int val = StrToInt(strVal);
 
   write(reg, val);
 }
 
+void ADE7953::writeBit(uint16_t reg, uint32_t pos, bool val){
+  uint32_t RegVal = read(reg);
+  
+  bitWrite(RegVal, pos, val);  
+  write(reg, RegVal);  
+}
+void ADE7953::writeBit(String strRegPosVal){
+  String tmp = "";
+  String strReg = "";
+  String strPos = "";
+  String strVal = "";
+  
+  int Kpos = strRegPosVal.indexOf(",");
+  strReg = strRegPosVal.substring(0, Kpos);
+  tmp = strRegPosVal.substring(Kpos+1);
+  Kpos = tmp.indexOf(",");
+  strPos = tmp.substring(0, Kpos);
+  strVal = tmp.substring(Kpos+1);
+
+  writeBit(StrToInt(strReg), StrToInt(strPos), StrToInt(strVal));
+}
+//read-------------------------------------------------------------
 uint32_t ADE7953::read(uint16_t reg){
   int count = 0;
   uint32_t val = 0x00;
@@ -305,6 +334,20 @@ uint32_t ADE7953::read(String strReg){
   uint16_t reg = StrToInt(strReg);
   readReg = read(reg);
   return readReg;
+}
+
+bool ADE7953::readBit(uint16_t reg, uint32_t pos){
+  return bitRead(read(reg), pos);
+}
+bool ADE7953::readBit(String strRegPos){
+  int Kpos = strRegPos.indexOf(",");
+  String strReg = strRegPos.substring(0, Kpos);
+  String strPos = strRegPos.substring(Kpos+1);
+  
+  uint16_t reg = StrToInt(strReg);
+  uint32_t pos = StrToInt(strPos);
+  
+  return bitRead(read(reg), pos);
 }
 
 
