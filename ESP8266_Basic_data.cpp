@@ -42,21 +42,16 @@ Topics::Topics(){
   sub.E3.item[0][4][0] = "Server";
   sub.E3.item[0][4][1] = "FilePath";
     
-  sub.E1.item[1] = "ESP8266";
-  sub.E2.item[1][0] = "Control";
+  sub.E1.item[1] = "Control";
+  sub.E2.item[1][0] = "ESP8266";
   sub.E3.item[1][0][0] = "Reboot";
 
   sub.E1.item[2] = "ADE7953";
-  sub.E2.item[2][0] = "Control";
-  sub.E3.item[2][0][1] = "read";
-  sub.E3.item[2][0][2] = "write";
-  sub.E3.item[2][0][3] = "readBit";
-  sub.E3.item[2][0][4] = "writeBit";
-  sub.E3.item[2][0][5] = "init";
-  sub.E3.item[2][0][6] = "updateTime";
-  sub.E3.item[2][0][7] = "saveConfig";
-  sub.E2.item[2][1] = "getValues";
-  sub.E3.item[2][1][0] = "V_INST";
+  sub.E2.item[2][0] = "read";
+  sub.E2.item[2][1] = "write";
+  sub.E2.item[2][2] = "init";
+  sub.E2.item[2][3] = "getValues";
+  sub.E3.item[2][3][0] = "V_INST";
 
   sub.E1.item[3] = "File";
   sub.E2.item[3][0] = "Read";
@@ -101,8 +96,6 @@ Topics::Topics(){
   pub.E3.item[2][0][0] = "HEX";
   pub.E3.item[2][0][1] = "BIN";
   pub.E3.item[2][0][2] = "DEC";
-  pub.E3.item[2][0][3] = "Bit";
-  pub.E3.item[2][0][4] = "value";
   pub.E2.item[2][1] = "values";
   pub.E3.item[2][1][0] = "V_RMS";
   pub.E3.item[2][1][1] = "IA_RMS";

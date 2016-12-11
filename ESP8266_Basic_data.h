@@ -46,7 +46,7 @@
 //subscribe struct
   const int sub_e1 = 5;			//define TreeDepht here!!!
   const int sub_e2 = 6;
-  const int sub_e3 = 10;
+  const int sub_e3 = 4;
   const int sub_e4 = 0;
   
   typedef struct Tsub_topicE1{

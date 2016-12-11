@@ -13,22 +13,6 @@
   Revison :                                                *****
 
 ********************************************************************************/
-// ADE7953 config-File struct
-  typedef struct TADE7953_json{
-    uint32_t IARATIOjson;
-    uint32_t IBRATIOjson;
-    uint32_t VRATIOjson;
-    
-    uint32_t AIGAINjson;
-    uint32_t BIGAINjson;
-    uint32_t AVGAINjson;
-    uint32_t CFMODEjson;
-    uint32_t CF1DENjson;
-    uint32_t CF2DENjson;
-    uint32_t AIRMSOSjson;
-    uint32_t BIRMSOSjson;
-    uint32_t VRMSOSjson;
-  };
 
 //8-Bit Registers
 //      Register Name	Address 			      R/W Def  Type 	Register Description
