@@ -344,7 +344,9 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
     }
     
 //202 ADE7953.write
-    if (dissectResult.itemPath == "2/0/2"){         
+    if (dissectResult.itemPath == "2/0/2"){   
+      Serial.println("Write to ADE");
+            
       ADE.write(String(value));
       
       String strReg = "0x";
@@ -365,7 +367,7 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
       str = String(reg);
       strcpy(chr, str.c_str());
       pub(2,0,2, chr);
-      }
+    }
 
 //203 ADE7953.readBit
     if (dissectResult.itemPath == "2/0/3"){               

@@ -1,58 +1,101 @@
-    //8-Bit Registers
-    uint8_t SAGCYCjson;        0x000             //R/W 0x00 Unsigned Sag line cycles
-    uint8_t DISNOLOADjson;     0x001             //R/W 0x00 Unsigned No-load detection disable (see Table 16)
-    uint8_t LCYCMODEjson;      0x004             //R/W 0x40 Unsigned Line cycle accumulation mode configuration (see Table 17)
-    uint8_t PGA_Vjson;         0x007             //R/W 0x00 Unsigned Voltage channel gain configuration (Bits[2:0])
-    uint8_t PGA_IAjson;        0x008             //R/W 0x00 Unsigned Current Channel A gain configuration (Bits[2:0])
-    uint8_t PGA_IBjson;        0x009             //R/W 0x00 Unsigned Current Channel B gain configuration (Bits[2:0])
-    uint8_t WRITE_PROTECTjson; 0x040             //R/W 0x00 Unsigned Write protection bits (Bits[2:0])
-    uint8_t EX_REFjson;        0x800             //R/W 0x00 Unsigned Reference input configuration: set to 0 for internal; set to 1 for external
-    uint8_t unlockjson;        0xFE              //R/W 0x00 Unsigned Unlocking Register Reserved1 0x120 by writing 0xAD to meet the performance specified in Table 1.
+ 
+  //8-Bit Registers
+  //   Name              Address         Def       Signed RW     Changed
+  { 8, "SAGCYC",         SAGCYC,         0x000000, false, true,  false},
+  { 8, "DISNOLOAD",      DISNOLOAD,      0x000000, false, true,  false},
+  { 8, "LCYCMODE",       LCYCMODE,       0x000000, false, true,  false},
+  { 8, "PGA_V",          PGA_V,          0x000000, false, true,  false},
+  { 8, "PGA_IA",         PGA_IA,         0x000000, false, true,  false},
+  { 8, "PGA_IB",         PGA_IB,         0x000000, false, true,  false},
+  { 8, "WRITE_PROTECT",  WRITE_PROTECT,  0x000000, false, true,  false},
+  { 8, "LAST_OP",        LAST_OP,        0x000000, false, false, false},
+  { 8, "LAST_RWDATA",    LAST_RWDATA,    0x000000, false, false, false},
+  { 8, "Version",        Version,        0x000000, false, false, false},
+  { 8, "EX_REF",         EX_REF,         0x000000, false, true,  false},
+  { 8, "unlock",         unlock,         0x000000, false, true,  false},
 
-//16-Bit Registers
-    uint16_t ZXTOUT        0x100             //R/W 0xFFFF Unsigned Zero-crossing timeout
-    uint16_t LINECYC       0x101             //R/W 0x0000 Unsigned Number of half line cycles for line cycle energy accumulation mode
-    uint16_t CONFIG        0x102             //R/W 0x8004 Unsigned Configuration register (see Table 18)
-    uint16_t CF1DEN        0x103             //R/W 0x003F Unsigned CF1 frequency divider denominator. When modifying this register, two sequential write operations must be performed to ensure that the write is successful.
-    uint16_t CF2DEN        0x104             //R/W 0x003F Unsigned CF2 frequency divider denominator. When modifying this register, two sequential write operations must be performed to ensure that the write is successful.
-    uint16_t CFMODE        0x107             //R/W 0x0300 Unsigned CF output selection (see Table 19)
-    uint16_t PHCALA        0x108             //R/W 0x0000 Signed   Phase calibration register (Current Channel A). This register is in sign magnitude format.
-    uint16_t PHCALB        0x109             //R/W 0x0000 Signed   Phase calibration register (Current Channel B). This register is in sign magnitude format.
-    uint16_t ALT_OUTPUT    0x110             //R/W 0x0000 Unsigned Alternative output functions (see Table 20)
-    uint16_t Reserved1     0x120             //R/W 0x0000 Unsigned This register should be set to 30h to meet the performance specified in Table 1. To modify this register, it must be unlocked by setting Register Address 0xFE to 0xAD immediately prior.
+  //16-Bit Registers
+  //   Name              Address         Def       Signed RW     Changed
+  {16, "ZXTOUT",         ZXTOUT,         0x000000, false, true,  false},
+  {16, "LINECYC",        LINECYC,        0x000000, false, true,  false},
+  {16, "CONFIG",         CONFIG,         0x000000, false, true,  false},
+  {16, "CF1DEN",         CF1DEN,         0x000000, false, true,  false},
+  {16, "CF2DEN",         CF2DEN,         0x000000, false, true,  false},
+  {16, "CFMODE",         CFMODE,         0x000000, false, true,  false},
+  {16, "PHCALA",         PHCALA,         0x000000, true,  true,  false},
+  {16, "PHCALB",         PHCALB,         0x000000, true,  true,  false},
+  {16, "PFA",            PFA,            0x000000, true,  true,  false},
+  {16, "PFB",            PFB,            0x000000, true,  true,  false},
+  {16, "ANGLE_A",        ANGLE_A,        0x000000, true,  true,  false},
+  {16, "ANGLE_B",        ANGLE_B,        0x000000, true,  true,  false},
+  {16, "Period",         Period,         0x000000, false, true,  false},
+  {16, "ALT_OUTPUT",     ALT_OUTPUT,     0x000000, false, true,  false},
+  {16, "LAST_ADD",       LAST_ADD,       0x000000, false, true,  false},
+  {16, "LAST_RWDATA",    LAST_RWDATA,    0x000000, false, true,  false},
+  {16, "Reserved1",      Reserved1,      0x000000, false, true,  false},
 
-//24(32)-Bit Registers
-    uint32_t SAGLVL        0x200     //0x300   R/W 0x000000 Unsigned Sag voltage level
-    uint32_t ACCMODE       0x201     //0x301   R/W 0x000000 Unsigned Accumulation mode (see Table 21)
-    uint32_t AP_NOLOAD     0x203     //0x303   R/W 0x00E419 Unsigned Active power no-load level
-    uint32_t VAR_NOLOAD    0x204     //0x304   R/W 0x00E419 Unsigned Reactive power no-load level
-    uint32_t VA_NOLOAD     0x205     //0x305   R/W 0x000000 Unsigned Apparent power no-load level
-    uint32_t OVLVL         0x224     //0x324   R/W 0xFFFFFF Unsigned Overvoltage level
-    uint32_t OILVL         0x225     //0x325   R/W 0xFFFFFF Unsigned Overcurrent level
-    uint32_t IRQENA        0x22C     //0x32C   R/W 0x100000 Unsigned Interrupt enable (Current Channel A, see Table 22)
-    uint32_t IRQENB        0x22F     //0x32F   R/W 0x000000 Unsigned Interrupt enable (Current Channel B, see Table 24)
-    uint32_t AIGAIN        0x280     //0x380   R/W 0x400000 Unsigned Current channel gain (Current Channel A)
-    uint32_t AVGAIN        0x281     //0x381   R/W 0x400000 Unsigned Voltage channel gain
-    uint32_t AWGAIN        0x282     //0x382   R/W 0x400000 Unsigned Active power gain (Current Channel A)
-    uint32_t AVARGAIN      0x283     //0x383   R/W 0x400000 Unsigned Reactive power gain (Current Channel A)
-    uint32_t AVAGAIN       0x284     //0x384   R/W 0x400000 Unsigned Apparent power gain (Current Channel A)
-    uint32_t Reserved2     0x285     //0x385   R/W 0x000000 Signed   This register should not be modified.
-    uint32_t AIRMSOS       0x286     //0x386   R/W 0x000000 Signed   IRMS offset (Current Channel A)
-    uint32_t Reserved3     0x287     //0x387   R/W 0x000000 Signed   This register should not be modified.
-    uint32_t VRMSOS        0x288     //0x388   R/W 0x000000 Signed   VRMS offset
-    uint32_t AWATTOS       0x289     //0x389   R/W 0x000000 Signed   Active power offset correction (Current Channel A)
-    uint32_t AVAROS        0x28A     //0x38A   R/W 0x000000 Signed   Reactive power offset correction (Current Channel A)
-    uint32_t AVAOS         0x28B     //0x38B   R/W 0x000000 Signed   Apparent power offset correction (Current Channel A)
-    uint32_t BIGAIN        0x28C     //0x38C   R/W 0x400000 Unsigned Current channel gain (Current Channel B)
-    uint32_t BVGAIN        0x28D     //0x38D   R/W 0x400000 Unsigned This register should not be modified.
-    uint32_t BWGAIN        0x28E     //0x38E   R/W 0x400000 Unsigned Active power gain (Current Channel B)
-    uint32_t BVARGAIN      0x28F     //0x38F   R/W 0x400000 Unsigned Reactive power gain (Current Channel B)
-    uint32_t BVAGAIN       0x290     //0x390   R/W 0x400000 Unsigned Apparent power gain (Current Channel B)
-    uint32_t Reserved4     0x291     //0x391   R/W 0x000000 Signed   This register should not be modified.
-    uint32_t BIRMSOS       0x292     //0x392   R/W 0x000000 Signed   IRMS offset (Current Channel B)
-    uint32_t Reserved5     0x293     //0x393   R/W 0x000000 Unsigned This register should not be modified.
-    uint32_t Reserved6     0x294     //0x394   R/W 0x000000 Unsigned This register should not be modified.
-    uint32_t BWATTOS       0x295     //0x395   R/W 0x000000 Signed   Active power offset correction (Current Channel B)
-    uint32_t BVAROS        0x296     //0x396   R/W 0x000000 Signed   Reactive power offset correction (Current Channel B)
-    uint32_t BVAOS         0x297     //0x397   R/W 0x000000 Signed   Apparent power offset correction (Current Channel B)
-
+  //24-Bit Registers
+  //   Name              Address         Def       Signed RW     Changed
+  {24, "SAGLVL",         SAGLVL,         0x000000, false, true,  false},
+  {24, "ACCMODE",        ACCMODE,        0x000000, false, true,  false},
+  {24, "AP_NOLOAD",      AP_NOLOAD,      0x000000, false, true,  false},
+  {24, "VAR_NOLOAD",     VAR_NOLOAD,     0x000000, false, true,  false},
+  {24, "VA_NOLOAD",      VA_NOLOAD,      0x000000, false, true,  false},
+  {24, "AVA",            AVA,            0x000000, true,  false, false},
+  {24, "BVA",            BVA,            0x000000, true,  false, false},
+  {24, "AWATT",          AWATT,          0x000000, true,  false, false},
+  {24, "BWATT",          BWATT,          0x000000, true,  false, false},
+  {24, "AVAR",           AVAR,           0x000000, true,  false, false},
+  {24, "BVAR",           BVAR,           0x000000, true,  false, false},
+  {24, "IA",             IA,             0x000000, true,  false, false},
+  {24, "IB",             IB,             0x000000, true,  false, false},
+  {24, "V",              V,              0x000000, true,  false, false},
+  {24, "IRMSA",          IRMSA,          0x000000, false, false, false},
+  {24, "IRMSB",          IRMSB,          0x000000, false, false, false},
+  {24, "VRMS",           VRMS,           0x000000, false, false, false},
+  {24, "AENERGYA",       AENERGYA,       0x000000, true,  false, false},
+  {24, "AENERGYB",       AENERGYB,       0x000000, true,  false, false},
+  {24, "RENERGYA",       RENERGYA,       0x000000, true,  false, false},
+  {24, "RENERGYB",       RENERGYB,       0x000000, true,  false, false},
+  {24, "APENERGYA",      APENERGYA,      0x000000, true,  false, false},
+  {24, "APENERGYB",      APENERGYB,      0x000000, true,  false, false},
+  {24, "OVLVL",          OVLVL,          0x000000, false, true,  false},
+  {24, "OILVL",          OILVL,          0x000000, false, true,  false},
+  {24, "VPEAK",          VPEAK,          0x000000, false, false, false},
+  {24, "RSTVPEAK",       RSTVPEAK,       0x000000, false, false, false},
+  {24, "IAPEAK",         IAPEAK,         0x000000, false, false, false},
+  {24, "RSTIAPEAK",      RSTIAPEAK,      0x000000, false, false, false},
+  {24, "IBPEAK",         IBPEAK,         0x000000, false, false, false},
+  {24, "RSTIBPEAK",      RSTIBPEAK,      0x000000, false, false, false},
+  {24, "IRQENA",         IRQENA,         0x000000, false, true,  false},
+  {24, "IRQSTATA",       IRQSTATA,       0x000000, false, false, false},
+  {24, "RSTIRQSTATA",    RSTIRQSTATA,    0x000000, false, false, false},
+  {24, "IRQENB",         IRQENB,         0x000000, false, true,  false},
+  {24, "IRQSTATB",       IRQSTATB,       0x000000, false, false, false},
+  {24, "RSTIRQSTATB",    RSTIRQSTATB,    0x000000, false, false, false},
+  {24, "CRC",            CRC,            0x000000, false, false, false},
+  {24, "AIGAIN",         AIGAIN,         0x000000, false, true,  false},
+  {24, "AVGAIN",         AVGAIN,         0x000000, false, true,  false},
+  {24, "AWGAIN",         AWGAIN,         0x000000, false, true,  false},
+  {24, "AVARGAIN",       AVARGAIN,       0x000000, false, true,  false},
+  {24, "AVAGAIN",        AVAGAIN,        0x000000, false, true,  false},
+  {24, "Reserved2",      Reserved2,      0x000000, false, true,  false},
+  {24, "AIRMSOS",        AIRMSOS,        0x000000, false, true,  false},
+  {24, "Reserved3",      Reserved3,      0x000000, false, true,  false},
+  {24, "VRMSOS",         VRMSOS,         0x000000, false, true,  false},
+  {24, "AWATTOS",        AWATTOS,        0x000000, false, true,  false},
+  {24, "AVAROS",         AVAROS,         0x000000, false, true,  false},
+  {24, "AVAOS",          AVAOS,          0x000000, false, true,  false},
+  {24, "BIGAIN",         BIGAIN,         0x000000, false, true,  false},
+  {24, "BVGAIN",         BVGAIN,         0x000000, false, true,  false},
+  {24, "BWGAIN",         BWGAIN,         0x000000, false, true,  false},
+  {24, "BVARGAIN",       BVARGAIN,       0x000000, false, true,  false},
+  {24, "BVAGAIN",        BVAGAIN,        0x000000, false, true,  false},
+  {24, "Reserved4",      Reserved4,      0x000000, false, true,  false},
+  {24, "BIRMSOS",        BIRMSOS,        0x000000, false, true,  false},
+  {24, "Reserved5",      Reserved5,      0x000000, false, true,  false},
+  {24, "Reserved6",      Reserved6,      0x000000, false, true,  false},
+  {24, "BWATTOS",        BWATTOS,        0x000000, false, true,  false},
+  {24, "BVAROS",         BVAROS,         0x000000, false, true,  false},
+  {24, "BVAOS",          BVAOS,          0x000000, false, true,  false},
+  {24, "LAST_RWDATA",    LAST_RWDATA,    0x000000, false, false, false}
