@@ -27,12 +27,11 @@
   #define I2Caddr 0x38
   #define ADE7953_RESET 2           //GPIO RESET ADE7953
   #define ADE7953_IRQ 13            //GPIO IRQ ADE7953
-
+    
 class ADE7953{
 public:
   ADE7953();
   bool init();
-  void write(uint16_t reg);
   void write(uint16_t reg, uint32_t val);
   void write(String strRegVal);
   void writeBit(uint16_t reg, uint32_t pos, bool val);
@@ -56,14 +55,11 @@ public:
   bool read_ADE7953_json();
   void write_ADE7953_json();
 
-
 private:
   String strBIN(uint32_t val);
   
 
 };
-
-
 
 
 
