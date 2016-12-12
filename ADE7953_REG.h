@@ -14,6 +14,19 @@
 
 ********************************************************************************/
 // ADE7953 config-File struct
+typedef struct Treg{
+  uint8_t BitSize;
+  String regName;
+  uint16_t regAdr;
+  uint32_t regVal;
+  bool Signed;
+  bool RW;
+  bool changed;
+};
+
+
+
+// ADE7953 config-File struct
   typedef struct TADE7953_json{
     uint32_t IARATIOjson;
     uint32_t IBRATIOjson;
@@ -29,7 +42,7 @@
     uint32_t BIRMSOSjson;
     uint32_t VRMSOSjson;
   };
-
+  
 //8-Bit Registers
 //      Register Name	Address 			      R/W Def  Type 	Register Description
 #define SAGCYC			  0x000  				    //R/W 0x00 Unsigned Sag line cycles
@@ -40,7 +53,7 @@
 #define PGA_IB			  0x009  				    //R/W 0x00 Unsigned Current Channel B gain configuration (Bits[2:0])
 #define WRITE_PROTECT	0x040  				    //R/W 0x00 Unsigned Write protection bits (Bits[2:0])
 #define LAST_OP			  0x0FD  				    //R	  0x00 Unsigned Contains the type (read or write) of the last successful communication (0x35 = read; 0xCA = write)
-#define LAST_RWDATA		0x0FF  				    //R   0x00 Unsigned Contains the data from the last successful 8-bit register communication
+#define LAST_RWDATA8	0x0FF  				    //R   0x00 Unsigned Contains the data from the last successful 8-bit register communication
 #define Version			  0x702  				    //R   N/A  Unsigned Contains the silicon version number
 #define EX_REF			  0x800  				    //R/W 0x00 Unsigned Reference input configuration: set to 0 for internal; set to 1 for external
 #define unlock        0xFE				      //R/W 0x00 Unsigned Unlocking Register Reserved1 0x120 by writing 0xAD to meet the performance specified in Table 1.
@@ -62,7 +75,7 @@
 #define Period			  0x10E  				    //R   0x0000 Unsigned Period register
 #define ALT_OUTPUT		0x110  				    //R/W 0x0000 Unsigned Alternative output functions (see Table 20)
 #define LAST_ADD		  0x1FE  				    //R   0x0000 Unsigned Contains the address of the last successful communication
-#define LAST_RWDATA		0x1FF  				    //R   0x0000 Unsigned Contains the data from the last successful 16-bit register communication
+#define LAST_RWDATA16	0x1FF  				    //R   0x0000 Unsigned Contains the data from the last successful 16-bit register communication
 #define Reserved1		  0x120  				    //R/W 0x0000 Unsigned This register should be set to 30h to meet the performance specified in Table 1. To modify this register, it must be unlocked by setting Register Address 0xFE to 0xAD immediately prior.
 
 //24(32)-Bit Registers
@@ -129,7 +142,7 @@
 #define BWATTOS			  0x295 		//0x395   R/W 0x000000 Signed   Active power offset correction (Current Channel B)
 #define BVAROS			  0x296 		//0x396   R/W 0x000000 Signed   Reactive power offset correction (Current Channel B)
 #define BVAOS			    0x297 		//0x397   R/W 0x000000 Signed   Apparent power offset correction (Current Channel B)
-#define LAST_RWDATA		0x2FF 		//0x3FF   R   0x000000 Unsigned Contains the data from the last successful 24-bit/32-bit register communication
+#define LAST_RWDATA24	0x2FF 		//0x3FF   R   0x000000 Unsigned Contains the data from the last successful 24-bit/32-bit register communication
 
 
 

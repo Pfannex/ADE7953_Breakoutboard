@@ -25,12 +25,21 @@ void setup() {
   espClient.start_WiFi_connections();
   espClient.run_I2C();
   espClient.ADE.init();
+  //espClient.ADE.Test();
 }  
 
 void loop() {
   espClient.handle_connections(); 
   espClient.handle_Measurement();
 }
+
+/*ToDo
+ * SAVE
+ * LastRW aus Register
+ * Topics aud json
+ * Reading int/uint
+ * element reading
+ */
 
 
 
