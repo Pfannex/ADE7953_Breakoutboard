@@ -34,6 +34,7 @@ void loop() {
 }
 
 /*ToDo
+ * write only changed json, at MQTT command 
  * SAVE
  * LastRW aus Register
  * Topics aud json

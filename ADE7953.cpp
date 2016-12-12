@@ -29,7 +29,7 @@ Treg reg[] ={
   { 8, "LAST_RWDATA8",   LAST_RWDATA8,   0x000000, false, false, false},
   { 8, "Version",        Version,        0x000000, false, false, false},
   { 8, "EX_REF",         EX_REF,         0x000000, false, true,  false},
-  { 8, "unlock",         unlock,         0x000000, false, true,  false},
+  { 8, "unlock",         unlock,         0x0000AD, false, false,  false},
 
   //16-Bit Registers
   //   Name              Address         Def       Signed RW     Changed
@@ -49,7 +49,7 @@ Treg reg[] ={
   {16, "ALT_OUTPUT",     ALT_OUTPUT,     0x000000, false, true,  false},
   {16, "LAST_ADD",       LAST_ADD,       0x000000, false, true,  false},
   {16, "LAST_RWDATA16",  LAST_RWDATA16,  0x000000, false, true,  false},
-  {16, "Reserved1",      Reserved1,      0x000000, false, true,  false},
+  {16, "Reserved1",      Reserved1,      0x000030, false, false,  false},
 
   //24-Bit Registers
   //   Name              Address         Def       Signed RW     Changed
@@ -126,6 +126,10 @@ ADE7953::ADE7953(){
 //ADE7953 config-File-Control
 //===> read from ADE7953_json <-------------------------------------------------
 bool ADE7953::read_ADE7953_json(){
+  Serial.println("###############################");
+  Serial.println("Read from json");
+  Serial.println("###############################");
+
   bool readOK = false;
   
   File ADE7953;
@@ -257,9 +261,14 @@ bool ADE7953::read_ADE7953_json(){
 //===> write to ADE7953_json <--------------------------------------------------
 void ADE7953::write_ADE7953_json(){
 
-  reg[5].regVal = 12;
-  reg[6].regVal = 13;
-  reg[7].regVal = 14;
+  //reg[5].regVal = 12;
+  //reg[6].regVal = 13;
+  //reg[7].regVal = 14;
+
+  Serial.println("###############################");
+  Serial.println("Write to json");
+  Serial.println("###############################");
+  
   
   SPIFFS.begin();
   //save the custom parameters to FS
@@ -289,6 +298,7 @@ void ADE7953::write_ADE7953_json(){
     //write_cfgFile();
   }
   json.printTo(Serial);
+  Serial.println("");
   json.printTo(ADE7953);
   ADE7953.close();
   //end save
@@ -396,15 +406,15 @@ bool ADE7953::init(){
 //REQUIRED REGISTER SETTING  
   write(unlock, 0xAD);
   write(Reserved1, 0x30);
-  pREG(unlock);pREG(Reserved1);
+  //pREG(unlock);pREG(Reserved1);
 
 //json REGISTER SETTING  
   for (auto element : reg){
     write(element.regAdr);
-    pREG(element.regAdr);
+    //pREG(element.regAdr);
   }
-
-/*  write(AIGAIN);      //Gain IA
+/*
+  write(AIGAIN);      //Gain IA
   write(BIGAIN);      //Gain IB
   write(AVGAIN);      //Gain V
   write(AIRMSOS);     //Offset IA
@@ -478,16 +488,16 @@ long int ADE7953::StrToInt(String str){
 //===============================================================================
 //write-------------------------------------------------------------
 void ADE7953::write(uint16_t reg, uint32_t val){
-  Serial.println("Write as uint16_t reg, uint32_t val");
-  Serial.println(reg, HEX);
-  Serial.println(val);
+  //Serial.println("Write as uint16_t reg, uint32_t val");
+  //Serial.println(reg, HEX);
+  //Serial.println(val);
   int count = 0;
   
   if (reg < 0x100 | reg > 0x3FF) {count = 1;}        //8Bit inkl. 0x702/0x800
   else if (reg < 0x200){count = 2;}                  //16Bit 
   else if (reg < 0x300){count = 3;}                  //24Bit
   else if (reg < 0x400){count = 4;}                  //32Bit
-  Serial.println(count);
+  //Serial.println(count);
   
   Wire.beginTransmission(I2Caddr); 
   Wire.write(reg >> 8); 
@@ -497,12 +507,12 @@ void ADE7953::write(uint16_t reg, uint32_t val){
   } 
   Wire.endTransmission(); 
 
-  pREG(reg);
+  //pREG(reg);
 
 }
 
 void ADE7953::write(String strRegVal){
-  Serial.println("Write as String strRegVal");
+  //Serial.println("Write as String strRegVal");
   int pos = strRegVal.indexOf(",");
   String strReg = strRegVal.substring(0, pos);
   String strVal = strRegVal.substring(pos+1);
@@ -519,11 +529,11 @@ void ADE7953::write(String strRegVal){
   }
   
   write_ADE7953_json();
-  Test();
+  //Test();
 }
 
 void ADE7953::write(uint16_t Reg){
-  Serial.println("Write as uint16_t Reg");
+  //Serial.println("Write as uint16_t Reg");
   for (auto element : reg){
     if (element.regAdr == Reg){
       write(Reg, element.regVal);
