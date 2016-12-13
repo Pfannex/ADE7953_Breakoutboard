@@ -322,7 +322,9 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
   dissectResult = dissectPayload(topic, value);
 
   if (dissectResult.found){
-    if (dissectResult.itemPath == "2/0"){         //ADE7953.read
+    
+//201 ADE7953.read
+    if (dissectResult.itemPath == "2/0/1"){
       String strReg = "0x";
       strReg += String(ADE.StrToInt(value), HEX);
       strcpy(chr, strReg.c_str());
@@ -340,7 +342,11 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
       strcpy(chr, str.c_str());
       pub(2,0,2, chr);
     }
-    if (dissectResult.itemPath == "2/1"){         //ADE7953.write
+    
+//202 ADE7953.write
+    if (dissectResult.itemPath == "2/0/2"){   
+      Serial.println("Write to ADE");
+            
       ADE.write(String(value));
       
       String strReg = "0x";
@@ -361,13 +367,79 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
       str = String(reg);
       strcpy(chr, str.c_str());
       pub(2,0,2, chr);
-      }
+    }
 
-    if (dissectResult.itemPath == "2/2"){         //ADE7953.init
+//203 ADE7953.readBit
+    if (dissectResult.itemPath == "2/0/3"){               
+      bool val = ADE.readBit(String(value));
+
+      String strReg = "0x";
+      int pos = String(value).indexOf(",");
+      strReg += String(ADE.StrToInt(String(value).substring(0, pos)), HEX);
+      strcpy(chr, strReg.c_str());
+      pub(2,0, chr);
+
+      strReg = String(value).substring(pos+1);
+      strcpy(chr, strReg.c_str());
+      pub(2,0,3, chr);
+      
+      strReg = String(val);
+      strcpy(chr, strReg.c_str());
+      pub(2,0,4, chr);
+
+      pub(2,0,0, "");
+      uint32_t reg = ADE.read(String(value));
+      String str = "0x";
+      str = String(reg, BIN);
+      strcpy(chr, str.c_str());
+      pub(2,0,1, chr);
+      pub(2,0,2, "");
+    }
+    
+//204 ADE7953.writeBit
+    if (dissectResult.itemPath == "2/0/4"){   
+      ADE.writeBit(String(value));
+
+      String strReg = "0x";
+      int pos = String(value).indexOf(",");
+      strReg += String(ADE.StrToInt(String(value).substring(0, pos)), HEX);
+      strcpy(chr, strReg.c_str());
+      pub(2,0, chr);
+
+      uint32_t reg = ADE.read(ADE.StrToInt(strReg));
+      String str = "0x";
+      str += String(reg, HEX);
+      strcpy(chr, str.c_str());
+      pub(2,0,0, chr);
+      str = String(reg, BIN);
+      strcpy(chr, str.c_str());
+      pub(2,0,1, chr);
+      str = String(reg);
+      strcpy(chr, str.c_str());
+      pub(2,0,2, chr);      
+    }
+    
+//205 ADE7953.init
+    if (dissectResult.itemPath == "2/0/5"){         
       ADE.init();
     }
     
-    if (dissectResult.itemPath == "2/3/0"){         //ADE7953.getV_INST
+//206 ADE7953.updateTime
+    if (dissectResult.itemPath == "2/0/6"){         
+      //Write Field_01
+      strcpy(myFile.Field_01, value);
+      write_MyFile();
+      updateMeasure_time = String(value).toInt();
+      Serial.print("UpdateMesure_time = "); Serial.println(value);
+    }
+
+//207 ADE7953.init
+    if (dissectResult.itemPath == "2/0/7"){         
+      ADE.write_ADE7953_json();
+    }
+
+//210 ADE7953.getV_INST
+    if (dissectResult.itemPath == "2/1/0"){         
       for (int i = 0; i<samples; i++){
         inst[i] = ADE.getV();
       }
@@ -382,13 +454,14 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
       }
     }
    
-    if (dissectResult.itemPath == "3/1/0"){
+//310 File/Read
+    /*if (dissectResult.itemPath == "3/1/0"){
       //Write Field_01
       strcpy(myFile.Field_01, value);
       write_MyFile();
       updateMeasure_time = String(value).toInt();
       Serial.print("UpdateMesure_time = "); Serial.println(value);
-    }
+    }*/
     
     /*if (dissectResult.itemPath == "1/0/0"){
 	    if (strcmp(value, "Reboot") == 0){
