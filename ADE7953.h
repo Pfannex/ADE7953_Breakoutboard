@@ -49,13 +49,13 @@ public:
 
   void pREG(uint16_t reg);
   long int StrToInt(String str); 
+  long int uint24Tolong32(uint32_t val); 
   void Test();
 
 //ADE7953 config-File-Control
-  TADE7953_json ADE7953_json;
   bool read_ADE7953_json();
   void write_ADE7953_json();
-
+  void setDefault();
 
 private:
   String strBIN(uint32_t val);

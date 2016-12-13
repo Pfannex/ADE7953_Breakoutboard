@@ -23,25 +23,6 @@ typedef struct Treg{
   bool RW;
   bool changed;
 };
-
-
-
-// ADE7953 config-File struct
-  typedef struct TADE7953_json{
-    uint32_t IARATIOjson;
-    uint32_t IBRATIOjson;
-    uint32_t VRATIOjson;
-    
-    uint32_t AIGAINjson;
-    uint32_t BIGAINjson;
-    uint32_t AVGAINjson;
-    uint32_t CFMODEjson;
-    uint32_t CF1DENjson;
-    uint32_t CF2DENjson;
-    uint32_t AIRMSOSjson;
-    uint32_t BIRMSOSjson;
-    uint32_t VRMSOSjson;
-  };
   
 //8-Bit Registers
 //      Register Name	Address 			      R/W Def  Type 	Register Description
@@ -143,6 +124,12 @@ typedef struct Treg{
 #define BVAROS			  0x296 		//0x396   R/W 0x000000 Signed   Reactive power offset correction (Current Channel B)
 #define BVAOS			    0x297 		//0x397   R/W 0x000000 Signed   Apparent power offset correction (Current Channel B)
 #define LAST_RWDATA24	0x2FF 		//0x3FF   R   0x000000 Unsigned Contains the data from the last successful 24-bit/32-bit register communication
+
+//24-Bit SOFT Registers
+//      Register Name Add24               R/W Def      Type     Register Description
+#define k_V           0x500             //R/W 0x000000 Unsigned k-Faktor for voltage multiplikation
+#define k_IA          0x501             //R/W 0x000000 Unsigned k-Faktor for current A multiplikation
+#define k_IB          0x502             //R/W 0x000000 Unsigned k-Faktor for current B multiplikation
 
 
 

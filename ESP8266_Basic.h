@@ -13,20 +13,6 @@
   Revison :                                                *****
 
 ********************************************************************************/
-/*
-ToDo
-FS Abfrage ob Feld vorhanden, sonst ggf. format
-Wenn cfg und WiFi.SSID() gleich dann ohne Vorgabe starten, soll schneller gehen 
-WEB config with password
-Erledigt: Reset nach nicht ge�nderter Config wird nicht durchgef�hrt
-WEB-Status Tabelle rechts
-TopicTree 
-Erledigt: OTA WEB
-OTA Arduino
-Erledigt: OTA onDemand
-*/  
-  
-
 #pragma once
 
 //FileSystem
@@ -51,17 +37,12 @@ Erledigt: OTA onDemand
   #include "ADE7953.h"
 
 //Bus
-  //1Wire direct
-  //#include "OneWire.h"
-  //#include <DallasTemperature.h> 
   //I2C
   #include <Wire.h>              
-  //#include <Adafruit_BMP085.h>   //Temperature / Pressure
-  //#include "Adafruit_HTU21DF.h"  //Temperature / Humidity
 
 //MySQL
-  #include <MySQL_Connection.h>
-  #include <MySQL_Cursor.h>
+  //#include <MySQL_Connection.h>
+  //#include <MySQL_Cursor.h>
 
 //===> GPIO <--------------------------------------------------------------
 //1Wire
@@ -89,9 +70,6 @@ public:
   //AktSen
   void handle_Measurement();
   void run_I2C();
-  //TDS18B20_Sensors DS18B20_Sensors;
-  //THTU21_Sensors HTU21_Sensors;
-  //TBMP180_Sensors BMP180_Sensors;
 
   ADE7953 ADE;
  
@@ -104,11 +82,6 @@ private:
   //AktSen
   long lastMeasure_time;
   long updateMeasure_time = 5000;
-  //void run_oneWire();
-  //void scanI2C();
-  //void mux(byte channel);  
-  //bool HTU21_begin();
-  //bool BMP180_begin();
   
   //WiFi-Manager-Control---------------
   void startConfigServer();
@@ -144,7 +117,7 @@ private:
   void pubConfig();
   
   //MySQL-Control---------------------
-  void start_MySQL();
+  //void start_MySQL();
   
   //helpers----------------------------
   void checkFlash();

@@ -34,13 +34,15 @@ void loop() {
 }
 
 /*ToDo
- * write only changed json, at MQTT command 
- * SAVE
+ * DONE -  write only changed json, at MQTT command 
+ * DONE - SAVE
  * LastRW aus Register
- * Topics aud json
- * Reading int/uint
- * element reading
+ * Topics auf json
+ * DONE Reading int/uint
+ * DONE element reading
+ * FS Abfrage ob Feld vorhanden, sonst ggf. format
+ * write register from MQTT by Name
+ * k-Faktor
  */
-
 
 

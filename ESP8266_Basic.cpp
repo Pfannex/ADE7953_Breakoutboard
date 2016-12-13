@@ -19,9 +19,6 @@
 
 //BMP180 Luftdruck
   //Adafruit_BMP085 bmp;
-//HTU21 Luftfeuchtigkeit  
-  //Adafruit_HTU21DF htu = Adafruit_HTU21DF();
-
 
 //CLASS ESP8266_Basic################################################################
 ESP8266_Basic::ESP8266_Basic() : webServer(), 
@@ -31,275 +28,9 @@ ESP8266_Basic::ESP8266_Basic() : webServer(),
   mqtt_client.setCallback(std::bind(&ESP8266_Basic::mqttBroker_Callback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
-
-
 //===============================================================================
-//  AktSen Control 
+//  incomming subscribe 
 //===============================================================================
-//===> updateMeasurement <-----------------------------------------------------
-void ESP8266_Basic::handle_Measurement(){
-  if (mqtt_client.connected()){
-    long now = millis();
-    if (now - lastMeasure_time > updateMeasure_time) {
-      lastMeasure_time = now;
-      //run_oneWire();
-      //run_I2C();
-
-      char chr[50];
-      String strVal = String(ADE.getVRMS());
-      strcpy(chr, strVal.c_str());
-      pub(2,1,0, chr);
-      strVal = String(ADE.getIRMSA());
-      strcpy(chr, strVal.c_str());
-      pub(2,1,1, chr);
-      strVal = String(ADE.getIRMSB());
-      strcpy(chr, strVal.c_str());
-      pub(2,1,2, chr);
-    }
-  }
-}
-//===> run I2C <-----------------------------------------------------
-void ESP8266_Basic::run_I2C(){
-  int nDevices = 0;
-  int mDevices = 0;
-  String str; char chr[15];
- 
-  Wire.begin(I2C_SDA, I2C_SCL);   
-  
-  /*for (int i=0; i<4; i++){
-    mux(i);
-    if (HTU21_begin()){
-      Serial.print("Found HTU21 on Channel "); 
-      Serial.println(i); 
-      
-      nDevices++;
-      HTU21_Sensors.count = nDevices;
-      HTU21_Sensors.item[nDevices-1].channel = i;
-      str = htu.readTemperature();
-      strcpy(chr, str.c_str());  
-      strcpy(HTU21_Sensors.item[nDevices-1].temperature, chr);
-  
-      str = htu.readHumidity();
-      strcpy(chr, str.c_str());  
-      strcpy(HTU21_Sensors.item[nDevices-1].humidity, chr);
-    }
-    if (BMP180_begin()){
-      bmp.begin();
-      Serial.print("Found BMP180 on Channel "); 
-      Serial.println(i); 
-      
-      mDevices++;
-      BMP180_Sensors.count = mDevices;
-      BMP180_Sensors.item[mDevices-1].channel = i;
-      str = bmp.readTemperature();
-      //Serial.println(str);
-      strcpy(chr, str.c_str());  
-      strcpy(BMP180_Sensors.item[mDevices-1].temperature, chr);
-
-      str = bmp.readPressure()/100;
-      strcpy(chr, str.c_str());  
-      strcpy(BMP180_Sensors.item[mDevices-1].pressure, chr);
-   }
-  }
-
-    for (int i=0; i<HTU21_Sensors.count; i++){
-      Serial.println(HTU21_Sensors.item[i].temperature);
-      Serial.println(HTU21_Sensors.item[i].humidity);
-      pub(3,1,i, HTU21_Sensors.item[i].temperature);
-      pub(3,2,i, HTU21_Sensors.item[i].humidity);
-    }
-    for (int i=0; i<BMP180_Sensors.count; i++){
-      Serial.println(BMP180_Sensors.item[i].temperature);
-      Serial.println(BMP180_Sensors.item[i].pressure);
-      pub(4,1,i, BMP180_Sensors.item[i].temperature);
-      pub(4,2,i, BMP180_Sensors.item[i].pressure);
-    }*/
-
-  
-}
-
-//===> search HTU21 <----------------------------------------------------------
-/*bool ESP8266_Basic::HTU21_begin(){
-  bool HTU21_found = false;
-  byte error;
-
-    Wire.beginTransmission(0x40);
-    error = Wire.endTransmission(); 
-    if (error == 0) HTU21_found = true;
-    
-    return HTU21_found;
-}
-//===> search BMP180 <----------------------------------------------------------
-bool ESP8266_Basic::BMP180_begin(){
-  bool BMP180_found = false;
-  byte error;
-
-    Wire.beginTransmission(0x77);
-    error = Wire.endTransmission(); 
-    if (error == 0) BMP180_found = true;
-    
-    return BMP180_found;
-}
-
-//===============================================================================
-//  MUX PCA9544
-//===============================================================================
-void ESP8266_Basic::mux(byte channel){
-  byte controlRegister = 0x04;  
-  controlRegister |= channel;
-  Wire.beginTransmission(MUX);
-  if (channel == 0xFF){Wire.write(0x00);} //deselect all channels
-  else {Wire.write(controlRegister);}     //set to selected channel
-  Wire.endTransmission();
-}
-//===============================================================================
-//  Scan I2C-Bus
-//===============================================================================
-
-void ESP8266_Basic::scanI2C(){
-  byte error, address;
-  int nDevices;
-
-  Serial.println("Scanning I2C-Bus......");
- 
-  nDevices = 0;
-  for(address = 1; address < 127; address++ )
-  {
-    // The i2c_scanner uses the return value of
-    // the Write.endTransmisstion to see if
-    // a device did acknowledge to the address.
-    Wire.beginTransmission(address);
-    error = Wire.endTransmission();
- 
-    if (error == 0)
-    {
-      Serial.print("0x");
-      if (address<16)
-        Serial.print("0");
-      Serial.print(address,HEX);
-
-      if (address == 0x77) {Serial.println(" BMP180");}
-      else if (address == 0x40) {Serial.println(" SI7021");}
-      else if (address >= 0x70 & address <= 0x77) {Serial.println(" PCA9544");}
-      else if (address >= 0x60 & address <= 0x67) {Serial.println(" MCP4725");}
-      else {Serial.println(" unknown");};
- 
-      nDevices++;
-    }
-    else if (error==4)
-    {
-      Serial.print("Unknow error at address 0x");
-      if (address<16)
-        Serial.print("0");
-      Serial.println(address,HEX);
-    }    
-  }
-  if (nDevices == 0)
-    Serial.println("No I2C devices found\n");
-  else
-    Serial.println("done\n");
- }
- 
-//===> run 1Wire <-----------------------------------------------------
-void ESP8266_Basic::run_oneWire(){
-  OneWire oneWire(oneW);                   //GPIO 2
-  DallasTemperature DS18B20(&oneWire);
-  DeviceAddress DS18B20device;
-  
-  DS18B20.begin();
-  delay(100);
-  DS18B20.setResolution(12);  //##
-  delay(100);
-
-  DS18B20_Sensors.count = DS18B20.getDeviceCount();
-  delay(100);
-  DS18B20.requestTemperatures(); 
-  delay(100);
-
-  Serial.print("#### DeviceCount = ");
-  Serial.println(DS18B20_Sensors.count);
-  
-  for (int i = 0; i < DS18B20_Sensors.count; i++) {
-    String str_temp = String(DS18B20.getTempCByIndex(i));
-    delay(100);
-	  char temp[7];
-    strcpy(temp, str_temp.c_str());  
-	  pub(2,1,i, temp);
-		
-	  DS18B20.getAddress(DS18B20device, i);
-    delay(100);
-    String strDeviceAddress = "";
-	  char str[5];
-	  for (int j = 0; j < 8; j++) {
-      sprintf(str, "%02X", DS18B20device[j]);
-	    strDeviceAddress += str;
-	    if (j < 7) strDeviceAddress += "-";
-	  }
-	  strcpy(DS18B20_Sensors.item[i].serial, strDeviceAddress.c_str());
-	  strcpy(DS18B20_Sensors.item[i].temperature, temp);
-
-	  //Serial.println(strDeviceAddress);
-  }
-}*/
-
-//===============================================================================
-//  MQTT Control 
-//===============================================================================
-//===> publish Topics <--------------------------------------------------------
-bool ESP8266_Basic::pub(int e1, char* Payload){
-  String strTopic = buildE1(e1);
-  mqtt_client.publish(strTopic.c_str(), Payload); 
-  mqtt_client.loop();
-}
-bool ESP8266_Basic::pub(int e1, int e2, char* Payload){
-  String strTopic = buildE2(e1, e2);
-  mqtt_client.publish(strTopic.c_str(), Payload); 
-  mqtt_client.loop();
-}
-bool ESP8266_Basic::pub(int e1, int e2, int e3, char* Payload){
-  String strTopic = buildE3(e1, e2, e3);
-  mqtt_client.publish(strTopic.c_str(), Payload); 
-  mqtt_client.loop();
-}
-/*
-bool ESP8266_Basic::pub(int e1, int e2, int e3, int e4, char* Payload){
-  String strTopic = buildE4(e1, e2, e3, e4);
-  mqtt_client.publish(strTopic.c_str(), Payload); 
-  mqtt_client.loop();
-}
-*/
-//===> build Topics <----------------------------------------------------------
-String ESP8266_Basic::buildE1(int e1){
-  String strTopic = cfg.mqttDeviceName;
-  strTopic += "/";
-  strTopic += topic.pub.E1.item[e1];
-  return strTopic;
-}
-String ESP8266_Basic::buildE2(int e1, int e2){
-  String strTopic = buildE1(e1);
-  strTopic += "/";
-  strTopic += topic.pub.E2.item[e1][e2];
-  return strTopic;
-}
-String ESP8266_Basic::buildE3(int e1, int e2, int e3){
-  String strTopic = buildE2(e1, e2);
-  strTopic += "/";
-  strTopic += topic.pub.E3.item[e1][e2][e3];
-  return strTopic;
-}
-/*
-String ESP8266_Basic::buildE4(int e1, int e2, int e3, int 43){
-  String strTopic = buildE1(e1);
-  strTopic += "/";
-  strTopic += buildE2(e1, e2);
-  strTopic += "/";
-  strTopic += buildE3(e1, e2, e3);
-  strTopic += "/";
-  strTopic += topic.pub.E4.item[e1][e2][e3][e4];
-  return strTopic;
-}
-*/
-
 //===> incomming subscribe <---------------------------------------------------
 void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int length) {
 
@@ -345,7 +76,7 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
     
 //202 ADE7953.write
     if (dissectResult.itemPath == "2/0/2"){   
-      Serial.println("Write to ADE");
+      //Serial.println("Write to ADE");
             
       ADE.write(String(value));
       
@@ -356,7 +87,7 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
       strcpy(chr, strReg.c_str());
       pub(2,0, chr);
       
-      uint32_t reg = ADE.read(String(value));
+      uint32_t reg = ADE.read(String(value));      
       String str = "0x";
       str += String(reg, HEX);
       strcpy(chr, str.c_str());
@@ -433,9 +164,14 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
       Serial.print("UpdateMesure_time = "); Serial.println(value);
     }
 
-//207 ADE7953.init
+//207 ADE7953.saveConfig
     if (dissectResult.itemPath == "2/0/7"){         
       ADE.write_ADE7953_json();
+    }
+
+//208 ADE7953.setDefault
+    if (dissectResult.itemPath == "2/0/8"){         
+      ADE.setDefault();
     }
 
 //210 ADE7953.getV_INST
@@ -464,26 +200,122 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
     }*/
     
     /*if (dissectResult.itemPath == "1/0/0"){
-	    if (strcmp(value, "Reboot") == 0){
-	      ESP.restart();
-	    }
-	  }
+      if (strcmp(value, "Reboot") == 0){
+        ESP.restart();
+      }
+    }
     if (dissectResult.itemPath == "1/0/1"){
-	    pubConfig();
-	  }
+      pubConfig();
+    }
     if (dissectResult.itemPath == "1/0/2"){
       //UpdateFirmware()
       webServer.updateFirmware();
     }
-	
+  
     if (dissectResult.itemPath == "3/0/0"){
-	    //Read Field_01
-	    strcpy(myFile.Field_01, "");
-	    read_MyFile();
-	    Serial.println(myFile.Field_01);
-	  }*/
+      //Read Field_01
+      strcpy(myFile.Field_01, "");
+      read_MyFile();
+      Serial.println(myFile.Field_01);
+    }*/
   }
 }
+
+//===============================================================================
+//  AktSen Control 
+//===============================================================================
+//===> updateMeasurement <-----------------------------------------------------
+void ESP8266_Basic::handle_Measurement(){
+  if (mqtt_client.connected()){
+    long now = millis();
+    if (now - lastMeasure_time > updateMeasure_time) {
+      lastMeasure_time = now;
+      //run_oneWire();
+      //run_I2C();
+
+      char chr[50];
+      String strVal = String(ADE.getVRMS());
+      strcpy(chr, strVal.c_str());
+      pub(2,1,0, chr);
+      strVal = String(ADE.getIRMSA());
+      strcpy(chr, strVal.c_str());
+      pub(2,1,1, chr);
+      strVal = String(ADE.getIRMSB());
+      strcpy(chr, strVal.c_str());
+      pub(2,1,2, chr);
+    }
+  }
+}
+//===> run I2C <-----------------------------------------------------
+void ESP8266_Basic::run_I2C(){
+  int nDevices = 0;
+  int mDevices = 0;
+  String str; char chr[15];
+ 
+  Wire.begin(I2C_SDA, I2C_SCL);     
+}
+
+
+
+//===============================================================================
+//  MQTT Control 
+//===============================================================================
+//===> publish Topics <--------------------------------------------------------
+bool ESP8266_Basic::pub(int e1, char* Payload){
+  String strTopic = buildE1(e1);
+  mqtt_client.publish(strTopic.c_str(), Payload); 
+  mqtt_client.loop();
+}
+bool ESP8266_Basic::pub(int e1, int e2, char* Payload){
+  String strTopic = buildE2(e1, e2);
+  mqtt_client.publish(strTopic.c_str(), Payload); 
+  mqtt_client.loop();
+}
+bool ESP8266_Basic::pub(int e1, int e2, int e3, char* Payload){
+  String strTopic = buildE3(e1, e2, e3);
+  mqtt_client.publish(strTopic.c_str(), Payload); 
+  mqtt_client.loop();
+}
+/*
+bool ESP8266_Basic::pub(int e1, int e2, int e3, int e4, char* Payload){
+  String strTopic = buildE4(e1, e2, e3, e4);
+  mqtt_client.publish(strTopic.c_str(), Payload); 
+  mqtt_client.loop();
+}
+*/
+//===> build Topics <----------------------------------------------------------
+String ESP8266_Basic::buildE1(int e1){
+  String strTopic = cfg.mqttDeviceName;
+  strTopic += "/";
+  strTopic += topic.pub.E1.item[e1];
+  return strTopic;
+}
+String ESP8266_Basic::buildE2(int e1, int e2){
+  String strTopic = buildE1(e1);
+  strTopic += "/";
+  strTopic += topic.pub.E2.item[e1][e2];
+  return strTopic;
+}
+String ESP8266_Basic::buildE3(int e1, int e2, int e3){
+  String strTopic = buildE2(e1, e2);
+  strTopic += "/";
+  strTopic += topic.pub.E3.item[e1][e2][e3];
+  return strTopic;
+}
+/*
+String ESP8266_Basic::buildE4(int e1, int e2, int e3, int 43){
+  String strTopic = buildE1(e1);
+  strTopic += "/";
+  strTopic += buildE2(e1, e2);
+  strTopic += "/";
+  strTopic += buildE3(e1, e2, e3);
+  strTopic += "/";
+  strTopic += topic.pub.E4.item[e1][e2][e3][e4];
+  return strTopic;
+}
+*/
+
+
 
 //===> dissect incomming subscribe <-------------------------------------------
 TdissectResult ESP8266_Basic::dissectPayload(String subTopic, String subValue){
@@ -697,7 +529,7 @@ bool WiFiOK = false;
     //TopicHeader = ip[3];
 
     //MySQL   
-    start_MySQL();
+    //start_MySQL();
     
   }  
   return WiFiOK; 
@@ -746,7 +578,7 @@ bool MQTTOK = false;
 
 
 //===> MySQL SETUP <---------------------------------------------------------
-void ESP8266_Basic::start_MySQL(){
+/*void ESP8266_Basic::start_MySQL(){
  
   IPAddress server_addr(192,168,1,3);  // IP of the MySQL *server* here
   char user[] = "fhemuser";              // MySQL user login username
@@ -779,7 +611,7 @@ void ESP8266_Basic::start_MySQL(){
     
   conn.close();
     
-}
+}*/
 
 //===============================================================================
 //  Configuration 
