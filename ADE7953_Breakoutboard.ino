@@ -34,6 +34,7 @@ void loop() {
 }
 
 /*ToDo
+ * readBit / writeBit by Name
  * DONE -  write only changed json, at MQTT command 
  * DONE - SAVE
  * LastRW aus Register

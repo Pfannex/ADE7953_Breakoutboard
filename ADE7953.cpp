@@ -295,7 +295,7 @@ uint32_t ADE7953::read(uint16_t Reg){
     }
     Wire.endTransmission();
   }else{                                               //read soft Register
-    Serial.println("read SOFT register");
+    //Serial.println("read SOFT register");
     for (auto element : reg){
       if (element.regAdr == Reg){
         val = element.regVal;

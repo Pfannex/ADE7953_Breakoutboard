@@ -119,11 +119,13 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
       pub(2,0,4, chr);
 
       pub(2,0,0, "");
-      uint32_t reg = ADE.read(String(value));
-      String str = "0x";
+      
+      uint32_t reg = ADE.read(ADE.StrToInt(String(value)));
+      String str = "0b";
       str = String(reg, BIN);
-      strcpy(chr, str.c_str());
+      strcpy(chr, str.c_str());     
       pub(2,0,1, chr);
+      
       pub(2,0,2, "");
     }
     
