@@ -6,9 +6,18 @@ Die Ankopplung der Leistungsmessgrößen erfolgt zu einem späteren Zeitpunkt.
 
 ***
 
-[ESP8266-Web-Interface](https://github.com/Pfannex/ADE7953_Breakoutboard/wiki/ESP8266-Web-Interface)
+[HOME](https://github.com/Pfannex/ADE7953_Breakoutboard/wiki)
 
-[MQTT](https://github.com/Pfannex/ADE7953_Breakoutboard/wiki/ADE7953-MQTT-Wattmeter)
+[ESP8266-Web-Interface](https://github.com/Pfannex/ADE7953_Breakoutboard/wiki/ESP8266-Web-Interface-%7C-ADE7953-MQTT-Wattmeter)
+
+[MQTT](https://github.com/Pfannex/ADE7953_Breakoutboard/wiki/MQTT-%7C-ADE7953-MQTT-Wattmeter)
+
+[FileSystem](https://github.com/Pfannex/ADE7953_Breakoutboard/wiki/FileSystem-%7C-ADE7953-MQTT-Wattmeter)
+
+[OTA](https://github.com/Pfannex/ADE7953_Breakoutboard/wiki/OTA-%7C-ADE7953-MQTT-Wattmeter)
+
+
+
 
 
 
