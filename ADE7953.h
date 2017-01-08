@@ -45,6 +45,17 @@ public:
   double getIRMSA();
   double getIRMSB();
   double getVRMS();
+  double getPFA();
+  double getPFB();
+  double getANGLE_A();
+  double getANGLE_B();
+  double getPERIOD();
+  double getP_A();
+  double getQ_A();
+  double getS_A();
+  double getP_B();
+  double getQ_B();
+  double getS_B();
   double getV();
 
   void pREG(uint16_t reg);

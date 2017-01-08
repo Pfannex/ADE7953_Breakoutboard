@@ -29,7 +29,7 @@ Treg reg[] ={
   { 8, "LAST_RWDATA8",   LAST_RWDATA8,   0x000000, false, false, false},
   { 8, "Version",        Version,        0x000000, false, false, false},
   { 8, "EX_REF",         EX_REF,         0x000000, false, true,  false},
-  { 8, "unlock",         unlock,         0x0000AD, false, false,  false},
+  { 8, "unlock",         unlock,         0x0000AD, false, false, false},
 
   //16-Bit Registers
   //   Name              Address         Def       Signed RW     Changed
@@ -156,6 +156,13 @@ bool ADE7953::init(){
   }
   Serial.println("");
   Serial.println("ADE7953.init OK");
+  //Check I2C-Communication
+  if (read(0x203) == 0xE419){
+    Serial.println("I2C-Communication OK");
+  }else{
+      Serial.println("I2C-Communication failed!!!!");
+      while (1){}
+  }
 
   //write_ADE7953_json();
   read_ADE7953_json();
@@ -492,6 +499,43 @@ double ADE7953::getIRMSB(){
 double ADE7953::getVRMS(){
   return double(read(VRMS)) / 26000 * read(k_V);
 }
+
+double ADE7953::getPFA(){
+  return double(read(PFA)) ;
+}
+double ADE7953::getPFB(){
+  return double(read(PFB));
+}
+double ADE7953::getANGLE_A(){
+  return double(read(ANGLE_A)) ;
+}
+double ADE7953::getANGLE_B(){
+  return double(read(ANGLE_B)) ;
+}
+double ADE7953::getPERIOD(){
+  return double(read(Period));
+}
+double ADE7953::getP_A(){
+  return double(read(AENERGYA)) ;
+}
+double ADE7953::getQ_A(){
+  return double(read(RENERGYA)) ;
+}
+double ADE7953::getS_A(){
+  return double(read(APENERGYA)) ;
+}
+double ADE7953::getP_B(){
+  return double(read(AENERGYB)) ;
+}
+double ADE7953::getQ_B(){
+  return double(read(RENERGYB)) ;
+}
+double ADE7953::getS_B(){
+  return double(read(APENERGYB)) ;
+}
+
+
+
 //===============================================================================
 //  read instantaneous values 
 //===============================================================================

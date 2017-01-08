@@ -187,7 +187,7 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
           
         str = String(inst[i]);
         strcpy(chr, str.c_str());      
-        pub(2,1,3, chr);
+        pub(2,1,14, chr);
         //delay(100);
       }
     }
@@ -245,6 +245,41 @@ void ESP8266_Basic::handle_Measurement(){
       strVal = String(ADE.getIRMSB());
       strcpy(chr, strVal.c_str());
       pub(2,1,2, chr);
+
+      strVal = String(ADE.getPFA());
+      strcpy(chr, strVal.c_str());
+      pub(2,1,3, chr);
+      strVal = String(ADE.getPFB());
+      strcpy(chr, strVal.c_str());
+      pub(2,1,4, chr);
+      strVal = String(ADE.getANGLE_A());
+      strcpy(chr, strVal.c_str());
+      pub(2,1,5, chr);
+      strVal = String(ADE.getANGLE_B());
+      strcpy(chr, strVal.c_str());
+      pub(2,1,6, chr);
+      strVal = String(ADE.getPERIOD());
+      strcpy(chr, strVal.c_str());
+      pub(2,1,7, chr);
+      strVal = String(ADE.getP_A());
+      strcpy(chr, strVal.c_str());
+      pub(2,1,8, chr);
+      strVal = String(ADE.getQ_A());
+      strcpy(chr, strVal.c_str());
+      pub(2,1,9, chr);
+      strVal = String(ADE.getS_A());
+      strcpy(chr, strVal.c_str());
+      pub(2,1,10, chr);
+      strVal = String(ADE.getP_B());
+      strcpy(chr, strVal.c_str());
+      pub(2,1,11, chr);
+      strVal = String(ADE.getQ_B());
+      strcpy(chr, strVal.c_str());
+      pub(2,1,12, chr);
+      strVal = String(ADE.getS_B());
+      strcpy(chr, strVal.c_str());
+      pub(2,1,13, chr);
+      
     }
   }
 }

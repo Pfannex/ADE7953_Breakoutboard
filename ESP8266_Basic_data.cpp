@@ -58,6 +58,8 @@ Topics::Topics(){
   sub.E3.item[2][0][8] = "setDefault";
   sub.E2.item[2][1] = "getValues";
   sub.E3.item[2][1][0] = "V_INST";
+  sub.E3.item[2][1][1] = "IA_INST";
+  sub.E3.item[2][1][2] = "IB_INST";
 
   sub.E1.item[3] = "File";
   sub.E2.item[3][0] = "Read";
@@ -108,7 +110,20 @@ Topics::Topics(){
   pub.E3.item[2][1][0] = "V_RMS";
   pub.E3.item[2][1][1] = "IA_RMS";
   pub.E3.item[2][1][2] = "IB_RMS";
-  pub.E3.item[2][1][3] = "V_INST";
+  pub.E3.item[2][1][3] = "PFA";
+  pub.E3.item[2][1][4] = "PFB";
+  pub.E3.item[2][1][5] = "ANGLE_A";
+  pub.E3.item[2][1][6] = "ANGLE_B";
+  pub.E3.item[2][1][7] = "PERIOD";
+  pub.E3.item[2][1][8] = "P_A";
+  pub.E3.item[2][1][9] = "Q_A";
+  pub.E3.item[2][1][10] = "S_A";
+  pub.E3.item[2][1][11] = "P_B";
+  pub.E3.item[2][1][12] = "Q_B";
+  pub.E3.item[2][1][13] = "S_B";
+  pub.E3.item[2][1][14] = "V_INST";
+  pub.E3.item[2][1][15] = "IA_INST";
+  pub.E3.item[2][1][16] = "IB_INST";
 
 
 
