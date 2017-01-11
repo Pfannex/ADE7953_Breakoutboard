@@ -498,7 +498,7 @@ double ADE7953::getVRMS(){
 double ADE7953::getV(){
   long int_dblV = read(V);
   //double dblV =  uint24Tolong32(read(V))/ 13000;
-  return uint24Tolong32(read(V))/ 13000 * read(k_V);
+  return uint24Tolong32(read(V))/ 13000.0 * read(k_V);
 
 /*  int Bitdepth = 0xFFFFFF;
 
