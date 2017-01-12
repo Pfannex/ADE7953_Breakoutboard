@@ -228,6 +228,14 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
 //===============================================================================
 //===> updateMeasurement <-----------------------------------------------------
 void ESP8266_Basic::handle_Measurement(){
+
+  //Serial.println(ADE.readBit(RSTIRQSTATA,17));
+  if (ADE.readBit(RSTIRQSTATA,17) == 1){
+    Serial.println(ADE.read(AWATT));
+    //ADE.writeBit(IRQSTATA,17,0);
+    Serial.println(ADE.readBit(IRQSTATA,17));
+  }
+  
   if (mqtt_client.connected()){
     long now = millis();
     if (now - lastMeasure_time > updateMeasure_time) {
@@ -261,24 +269,27 @@ void ESP8266_Basic::handle_Measurement(){
       strVal = String(ADE.getPERIOD());
       strcpy(chr, strVal.c_str());
       pub(2,1,7, chr);
-      strVal = String(ADE.getP_A());
+      strVal = String(ADE.getFREQ());
       strcpy(chr, strVal.c_str());
       pub(2,1,8, chr);
-      strVal = String(ADE.getQ_A());
+      strVal = String(ADE.getP_A());
       strcpy(chr, strVal.c_str());
       pub(2,1,9, chr);
-      strVal = String(ADE.getS_A());
+      strVal = String(ADE.getQ_A());
       strcpy(chr, strVal.c_str());
       pub(2,1,10, chr);
-      strVal = String(ADE.getP_B());
+      strVal = String(ADE.getS_A());
       strcpy(chr, strVal.c_str());
       pub(2,1,11, chr);
-      strVal = String(ADE.getQ_B());
+      strVal = String(ADE.getP_B());
       strcpy(chr, strVal.c_str());
       pub(2,1,12, chr);
-      strVal = String(ADE.getS_B());
+      strVal = String(ADE.getQ_B());
       strcpy(chr, strVal.c_str());
       pub(2,1,13, chr);
+      strVal = String(ADE.getS_B());
+      strcpy(chr, strVal.c_str());
+      pub(2,1,14, chr);
       
     }
   }

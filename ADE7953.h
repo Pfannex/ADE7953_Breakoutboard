@@ -50,6 +50,7 @@ public:
   double getANGLE_A();
   double getANGLE_B();
   double getPERIOD();
+  double getFREQ();
   double getP_A();
   double getQ_A();
   double getS_A();
@@ -61,6 +62,7 @@ public:
   void pREG(uint16_t reg);
   long int StrToInt(String str); 
   long int uint24Tolong32(uint32_t val); 
+  long int uint16Tolong32(uint16_t val); 
   void Test();
 
 //ADE7953 config-File-Control

@@ -200,7 +200,7 @@ void ADE7953::write(uint16_t Reg, uint32_t val){
   else if (Reg < 0x400){count = 4;}                           //32Bit
   else {count = 5;}                                           //soft register
 
-  if (count < 5){    
+  if (count < 5){                                             //HW register
     Wire.beginTransmission(I2Caddr); 
     Wire.write(Reg >> 8); 
     Wire.write(Reg);  
@@ -208,22 +208,15 @@ void ADE7953::write(uint16_t Reg, uint32_t val){
       Wire.write(val >> (count-1-i)*8);               //write MSB first
     } 
     Wire.endTransmission(); 
-
-    for (auto &element : reg){
-      if (element.regAdr == Reg){
-        element.regVal = val;
-        element.changed = true;
-      }
-    }
-  }else{
-    for (auto &element : reg){
-      if (element.regAdr == Reg){
-        element.regVal = val;
-        element.changed = true;
-      }
-    } 
   }
 
+  //save to registerArray
+  for (auto &element : reg){
+    if (element.regAdr == Reg){
+      element.regVal = val;
+      element.changed = true;
+    }
+  } 
 }
 
 void ADE7953::write(String strRegVal){
@@ -491,7 +484,7 @@ void ADE7953::setDefault(){
 //  read RMS values 
 //===============================================================================
 double ADE7953::getIRMSA(){
-  return double(read(IRMSA)) / 26000 * read(k_IA);
+  return double(read(IRMSA)) / 26000 * read(k_IA);  //ändern von mV auf V divider = 26000000
 }
 double ADE7953::getIRMSB(){
   return double(read(IRMSB)) / 26000 * read(k_IB);
@@ -506,32 +499,40 @@ double ADE7953::getPFA(){
 double ADE7953::getPFB(){
   return double(read(PFB));
 }
+
 double ADE7953::getANGLE_A(){
-  return double(read(ANGLE_A)) ;
+  double angle = double(uint16Tolong32(read(ANGLE_A))) * (360 * getFREQ() / 223000);
+  return angle ;
 }
 double ADE7953::getANGLE_B(){
-  return double(read(ANGLE_B)) ;
+  double angle = double(uint16Tolong32(read(ANGLE_B))) * (360 * getFREQ() / 223000);
+  return angle ;
 }
+
 double ADE7953::getPERIOD(){
-  return double(read(Period));
+  return double(read(Period)+1) / 223000 * 1000; //223kHz clock result in ms
 }
+double ADE7953::getFREQ(){
+  return 1 / (double(read(Period)+1) / 223000);
+}
+
 double ADE7953::getP_A(){
-  return double(read(AENERGYA)) ;
+  return double(read(AWATT)) ;
 }
 double ADE7953::getQ_A(){
-  return double(read(RENERGYA)) ;
+  return double(read(AVAR)) ;
 }
 double ADE7953::getS_A(){
-  return double(read(APENERGYA)) ;
+  return double(read(AVA)) ;
 }
 double ADE7953::getP_B(){
-  return double(read(AENERGYB)) ;
+  return double(read(BWATT)) ;
 }
 double ADE7953::getQ_B(){
-  return double(read(RENERGYB)) ;
+  return double(read(BVAR)) ;
 }
 double ADE7953::getS_B(){
-  return double(read(APENERGYB)) ;
+  return double(read(BVA)) ;
 }
 
 
@@ -611,6 +612,12 @@ long int ADE7953::StrToInt(String str){
 long ADE7953::uint24Tolong32(uint32_t val){
   long tmp = val;
   if (tmp >= 0xFFFFFF/2) tmp = (0xFFFFFF - tmp +1) * -1;
+  return tmp;  
+}
+//uint32_t to long int
+long ADE7953::uint16Tolong32(uint16_t val){
+  long tmp = val;
+  if (tmp >= 0xFFFF/2) tmp = (0xFFFF - tmp +1) * -1;
   return tmp;  
 }
 
