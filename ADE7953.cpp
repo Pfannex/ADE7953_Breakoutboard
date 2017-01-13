@@ -29,7 +29,7 @@ Treg reg[] ={
   { 8, "LAST_RWDATA8",   LAST_RWDATA8,   0x000000, false, false, false},
   { 8, "Version",        Version,        0x000000, false, false, false},
   { 8, "EX_REF",         EX_REF,         0x000000, false, true,  false},
-  { 8, "unlock",         unlock,         0x0000AD, false, false,  false},
+  { 8, "unlock",         unlock,         0x0000AD, false, false, false},
 
   //16-Bit Registers
   //   Name              Address         Def       Signed RW     Changed
@@ -156,6 +156,13 @@ bool ADE7953::init(){
   }
   Serial.println("");
   Serial.println("ADE7953.init OK");
+  //Check I2C-Communication
+  if (read(0x203) == 0xE419){
+    Serial.println("I2C-Communication OK");
+  }else{
+      Serial.println("I2C-Communication failed!!!!");
+      while (1){}
+  }
 
   //write_ADE7953_json();
   read_ADE7953_json();
@@ -193,7 +200,7 @@ void ADE7953::write(uint16_t Reg, uint32_t val){
   else if (Reg < 0x400){count = 4;}                           //32Bit
   else {count = 5;}                                           //soft register
 
-  if (count < 5){    
+  if (count < 5){                                             //HW register
     Wire.beginTransmission(I2Caddr); 
     Wire.write(Reg >> 8); 
     Wire.write(Reg);  
@@ -201,22 +208,15 @@ void ADE7953::write(uint16_t Reg, uint32_t val){
       Wire.write(val >> (count-1-i)*8);               //write MSB first
     } 
     Wire.endTransmission(); 
-
-    for (auto &element : reg){
-      if (element.regAdr == Reg){
-        element.regVal = val;
-        element.changed = true;
-      }
-    }
-  }else{
-    for (auto &element : reg){
-      if (element.regAdr == Reg){
-        element.regVal = val;
-        element.changed = true;
-      }
-    } 
   }
 
+  //save to registerArray
+  for (auto &element : reg){
+    if (element.regAdr == Reg){
+      element.regVal = val;
+      element.changed = true;
+    }
+  } 
 }
 
 void ADE7953::write(String strRegVal){
@@ -484,7 +484,7 @@ void ADE7953::setDefault(){
 //  read RMS values 
 //===============================================================================
 double ADE7953::getIRMSA(){
-  return double(read(IRMSA)) / 26000 * read(k_IA);
+  return double(read(IRMSA)) / 26000 * read(k_IA);  //ändern von mV auf V divider = 26000000
 }
 double ADE7953::getIRMSB(){
   return double(read(IRMSB)) / 26000 * read(k_IB);
@@ -492,6 +492,51 @@ double ADE7953::getIRMSB(){
 double ADE7953::getVRMS(){
   return double(read(VRMS)) / 26000 * read(k_V);
 }
+
+double ADE7953::getPFA(){
+  return double(read(PFA)) ;
+}
+double ADE7953::getPFB(){
+  return double(read(PFB));
+}
+
+double ADE7953::getANGLE_A(){
+  double angle = double(uint16Tolong32(read(ANGLE_A))) * (360 * getFREQ() / 223000);
+  return angle ;
+}
+double ADE7953::getANGLE_B(){
+  double angle = double(uint16Tolong32(read(ANGLE_B))) * (360 * getFREQ() / 223000);
+  return angle ;
+}
+
+double ADE7953::getPERIOD(){
+  return double(read(Period)+1) / 223000 * 1000; //223kHz clock result in ms
+}
+double ADE7953::getFREQ(){
+  return 1 / (double(read(Period)+1) / 223000);
+}
+
+double ADE7953::getP_A(){
+  return double(read(AWATT)) ;
+}
+double ADE7953::getQ_A(){
+  return double(read(AVAR)) ;
+}
+double ADE7953::getS_A(){
+  return double(read(AVA)) ;
+}
+double ADE7953::getP_B(){
+  return double(read(BWATT)) ;
+}
+double ADE7953::getQ_B(){
+  return double(read(BVAR)) ;
+}
+double ADE7953::getS_B(){
+  return double(read(BVA)) ;
+}
+
+
+
 //===============================================================================
 //  read instantaneous values 
 //===============================================================================
@@ -567,6 +612,12 @@ long int ADE7953::StrToInt(String str){
 long ADE7953::uint24Tolong32(uint32_t val){
   long tmp = val;
   if (tmp >= 0xFFFFFF/2) tmp = (0xFFFFFF - tmp +1) * -1;
+  return tmp;  
+}
+//uint32_t to long int
+long ADE7953::uint16Tolong32(uint16_t val){
+  long tmp = val;
+  if (tmp >= 0xFFFF/2) tmp = (0xFFFF - tmp +1) * -1;
   return tmp;  
 }
 
