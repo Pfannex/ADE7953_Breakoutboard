@@ -230,12 +230,16 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
 void ESP8266_Basic::handle_Measurement(){
 
   //Serial.println(ADE.readBit(RSTIRQSTATA,17));
-  if (ADE.readBit(RSTIRQSTATA,17) == 1){
-    Serial.println(ADE.read(AWATT));
+  //if (ADE.readBit(IRQSTATA,12) == 1){
+    //Serial.print("ZX_A detected @"); Serial.println(millis());
+    //Serial.println(ADE.read(AWATT));
+    //ADE.read(RSTIRQSTATA);
     //ADE.writeBit(IRQSTATA,17,0);
-    Serial.println(ADE.readBit(IRQSTATA,17));
-  }
+    //Serial.println(ADE.readBit(IRQSTATA,17));
+  //}
+
   
+
   if (mqtt_client.connected()){
     long now = millis();
     if (now - lastMeasure_time > updateMeasure_time) {
@@ -290,7 +294,9 @@ void ESP8266_Basic::handle_Measurement(){
       strVal = String(ADE.getS_B());
       strcpy(chr, strVal.c_str());
       pub(2,1,14, chr);
-      
+
+      ADE.read(RSTIRQSTATA);
+      ADE.read(RSTIRQSTATB);
     }
   }
 }

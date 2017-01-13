@@ -115,7 +115,7 @@ Topics::Topics(){
   pub.E3.item[2][1][5] = "ANGLE_A";
   pub.E3.item[2][1][6] = "ANGLE_B";
   pub.E3.item[2][1][7] = "PERIOD";
-  pub.E3.item[2][1][8] = "FREQENZ";
+  pub.E3.item[2][1][8] = "FREQUENZ";
   pub.E3.item[2][1][9] = "P_A";
   pub.E3.item[2][1][10] = "Q_A";
   pub.E3.item[2][1][11] = "S_A";
