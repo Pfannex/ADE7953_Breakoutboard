@@ -415,7 +415,7 @@ void ADE7953::write_ADE7953_json(){
   //json["AIGAIN"]  = ADE7953_json.AIGAINjson;
 
   for (auto &element : reg){
-    if (element.RW and element.changed){
+    if (element.RW){  //and element.changed
       json[element.regName] = element.regVal;
       element.changed = false;
       String line = element.regName  + " | " + String(element.regVal, HEX);
@@ -538,7 +538,7 @@ double ADE7953::getP_A(){
 double ADE7953::getP_Arel(){
   int sign = 1;
   if (readBit(ACCMODE,10) == 1) sign = -1;
-  return 100.0 / 4862401 * double(read(AWATT)) * sign ;
+  return 100.0 / 4862401 * double(read(AWATT)) * double(sign) ;
 }
 
 double ADE7953::getQ_A(){
@@ -547,7 +547,7 @@ double ADE7953::getQ_A(){
 double ADE7953::getQ_Arel(){
   int sign = 1;
   if (readBit(ACCMODE,12) == 1) sign = -1;
-  return 100.0 / 4862401 * double(read(AVAR)) * sign;
+  return 100.0 / 4862401 * double(read(AVAR)) * double(sign);
 }
 
 double ADE7953::getS_A(){
@@ -563,7 +563,7 @@ double ADE7953::getP_B(){
 double ADE7953::getP_Brel(){
   int sign = 1;
   if (readBit(ACCMODE,11) == 1) sign = -1;
-  return 100.0 / 4862401 * double(read(BWATT)) * sign;
+  return 100.0 / 4862401 * double(read(BWATT));// * double(sign);
 }
 
 double ADE7953::getQ_B(){
@@ -572,7 +572,7 @@ double ADE7953::getQ_B(){
 double ADE7953::getQ_Brel(){
   int sign = 1;
   if (readBit(ACCMODE,13) == 1) sign = -1;
-  return 100.0 / 4862401 * double(read(BVAR)) * sign;
+  return 100.0 / 4862401 * double(read(BVAR)) * double(sign);
 }
 
 double ADE7953::getS_B(){

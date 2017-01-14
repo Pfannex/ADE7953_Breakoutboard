@@ -17,14 +17,7 @@
 "CFMODE"        : "115",
 "PHCALA"        : "0",
 "PHCALB"        : "0",
-"PFA"           : "0",
-"PFB"           : "0",
-"ANGLE_A"       : "0",
-"ANGLE_B"       : "0",
-"Period"        : "0",
 "ALT_OUTPUT"    : "0",
-"LAST_ADD"      : "0",
-"LAST_RWDATA16" : "0",
 "Reserved1"     : "48",
 
 "SAGLVL"        : "0",
@@ -62,5 +55,7 @@
 "BVAOS"         : "0",
 "k_V"           : "1",
 "k_IA"          : "1",
+"k_IB"          : "1",
+"k_IB"          : "1",
 "k_IB"          : "1"
 }
