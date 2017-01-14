@@ -43,8 +43,11 @@ public:
   bool readBit(String strRegPos);
   
   double getIRMSA();
+  double getIRMSArel();
   double getIRMSB();
+  double getIRMSBrel();
   double getVRMS();
+  double getVRMSrel();
   double getPFA();
   double getPFB();
   double getANGLE_A();
@@ -52,18 +55,26 @@ public:
   double getPERIOD();
   double getFREQ();
   double getP_A();
+  double getP_Arel();
   double getQ_A();
+  double getQ_Arel();
   double getS_A();
+  double getS_Arel();
   double getP_B();
+  double getP_Brel();
   double getQ_B();
+  double getQ_Brel();
   double getS_B();
+  double getS_Brel();
   double getV();
 
   void pREG(uint16_t reg);
   long int StrToInt(String str); 
   long int uint24Tolong32(uint32_t val); 
-  long int uint16Tolong32(uint16_t val); 
+  long int uint16Tolong32(uint16_t val);
+  String getRegName(uint16_t regNumber); 
   void Test();
+  String formatDouble(double value, int dec);
 
 //ADE7953 config-File-Control
   bool read_ADE7953_json();
@@ -72,6 +83,7 @@ public:
 
 private:
   String strBIN(uint32_t val);
+  double getFullScaleInput(int PGA);
   
 
 };

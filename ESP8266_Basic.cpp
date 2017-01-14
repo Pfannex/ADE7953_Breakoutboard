@@ -60,9 +60,12 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
       strReg += String(ADE.StrToInt(value), HEX);
       strcpy(chr, strReg.c_str());
       pub(2,0, chr);
-
+      String str = ADE.getRegName(ADE.StrToInt(value));      
+      strcpy(chr, str.c_str());
+      pub(2,0,5, chr);
+      
       uint32_t reg = ADE.read(String(value));
-      String str = "0x";
+      str = "0x";
       str += String(reg, HEX);
       strcpy(chr, str.c_str());
       pub(2,0,0, chr);
@@ -86,9 +89,13 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
       
       strcpy(chr, strReg.c_str());
       pub(2,0, chr);
+      String str = ADE.getRegName(ADE.StrToInt(value));      
+      strcpy(chr, str.c_str());
+      pub(2,0,5, chr);
+
       
       uint32_t reg = ADE.read(String(value));      
-      String str = "0x";
+      str = "0x";
       str += String(reg, HEX);
       strcpy(chr, str.c_str());
       pub(2,0,0, chr);
@@ -109,6 +116,9 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
       strReg += String(ADE.StrToInt(String(value).substring(0, pos)), HEX);
       strcpy(chr, strReg.c_str());
       pub(2,0, chr);
+      String str = ADE.getRegName(ADE.StrToInt(value));      
+      strcpy(chr, str.c_str());
+      pub(2,0,5, chr);
 
       strReg = String(value).substring(pos+1);
       strcpy(chr, strReg.c_str());
@@ -121,7 +131,7 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
       pub(2,0,0, "");
       
       uint32_t reg = ADE.read(ADE.StrToInt(String(value)));
-      String str = "0b";
+      str = "0b";
       str = String(reg, BIN);
       strcpy(chr, str.c_str());     
       pub(2,0,1, chr);
@@ -138,9 +148,12 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
       strReg += String(ADE.StrToInt(String(value).substring(0, pos)), HEX);
       strcpy(chr, strReg.c_str());
       pub(2,0, chr);
+      String str = ADE.getRegName(ADE.StrToInt(value));      
+      strcpy(chr, str.c_str());
+      pub(2,0,5, chr);
 
       uint32_t reg = ADE.read(ADE.StrToInt(strReg));
-      String str = "0x";
+      str = "0x";
       str += String(reg, HEX);
       strcpy(chr, str.c_str());
       pub(2,0,0, chr);
@@ -248,15 +261,26 @@ void ESP8266_Basic::handle_Measurement(){
       //run_I2C();
 
       char chr[50];
-      String strVal = String(ADE.getVRMS());
+      String strVal = ADE.formatDouble(ADE.getVRMS(),5);
       strcpy(chr, strVal.c_str());
       pub(2,1,0, chr);
-      strVal = String(ADE.getIRMSA());
+      strVal = String(ADE.getVRMSrel());
+      strcpy(chr, strVal.c_str());
+      pub(2,1,18, chr);
+     
+      strVal = ADE.formatDouble(ADE.getIRMSA(),5);
       strcpy(chr, strVal.c_str());
       pub(2,1,1, chr);
-      strVal = String(ADE.getIRMSB());
+      strVal = String(ADE.getIRMSArel());
+      strcpy(chr, strVal.c_str());
+      pub(2,1,19, chr);
+
+      strVal = ADE.formatDouble(ADE.getIRMSB(),5);
       strcpy(chr, strVal.c_str());
       pub(2,1,2, chr);
+      strVal = String(ADE.getIRMSBrel());
+      strcpy(chr, strVal.c_str());
+      pub(2,1,20, chr);
 
       strVal = String(ADE.getPFA());
       strcpy(chr, strVal.c_str());
@@ -276,24 +300,48 @@ void ESP8266_Basic::handle_Measurement(){
       strVal = String(ADE.getFREQ());
       strcpy(chr, strVal.c_str());
       pub(2,1,8, chr);
+      
       strVal = String(ADE.getP_A());
       strcpy(chr, strVal.c_str());
       pub(2,1,9, chr);
+      strVal = String(ADE.getP_Arel());
+      strcpy(chr, strVal.c_str());
+      pub(2,1,21, chr);
+      
       strVal = String(ADE.getQ_A());
       strcpy(chr, strVal.c_str());
       pub(2,1,10, chr);
+      strVal = String(ADE.getQ_Arel());
+      strcpy(chr, strVal.c_str());
+      pub(2,1,22, chr);
+      
       strVal = String(ADE.getS_A());
       strcpy(chr, strVal.c_str());
       pub(2,1,11, chr);
+      strVal = String(ADE.getS_Arel());
+      strcpy(chr, strVal.c_str());
+      pub(2,1,23, chr);
+      
       strVal = String(ADE.getP_B());
       strcpy(chr, strVal.c_str());
       pub(2,1,12, chr);
+      strVal = String(ADE.getP_Brel());
+      strcpy(chr, strVal.c_str());
+      pub(2,1,24, chr);
+      
       strVal = String(ADE.getQ_B());
       strcpy(chr, strVal.c_str());
       pub(2,1,13, chr);
+      strVal = String(ADE.getQ_Brel());
+      strcpy(chr, strVal.c_str());
+      pub(2,1,25, chr);
+      
       strVal = String(ADE.getS_B());
       strcpy(chr, strVal.c_str());
       pub(2,1,14, chr);
+      strVal = String(ADE.getS_Brel());
+      strcpy(chr, strVal.c_str());
+      pub(2,1,26, chr);
 
       ADE.read(RSTIRQSTATA);
       ADE.read(RSTIRQSTATB);

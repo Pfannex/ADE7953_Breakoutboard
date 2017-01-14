@@ -481,25 +481,40 @@ void ADE7953::setDefault(){
 }
 
 //===============================================================================
-//  read RMS values 
+//  read values 
 //===============================================================================
 double ADE7953::getIRMSA(){
-  return double(read(IRMSA)) / 26000 * read(k_IA);  //ändern von mV auf V divider = 26000000
+  //return double(read(IRMSA)) / 26000 * read(k_IA);  //ändern von mV auf V divider = 26000000  
+  return getFullScaleInput(read(PGA_IA)) * double(read(IRMSA)) / 9032007 * read(k_IA);
 }
+double ADE7953::getIRMSArel(){
+ //int gain = 0x400000 - read(AVGAIN);
+ return 100.0 / (0x89D147) * double(read(IRMSA));
+}
+//----------------------------------
 double ADE7953::getIRMSB(){
-  return double(read(IRMSB)) / 26000 * read(k_IB);
+  return getFullScaleInput(read(PGA_IB)) * double(read(IRMSB)) / 9032007 * read(k_IB);
 }
+double ADE7953::getIRMSBrel(){
+  return 100.0 / (0x89D147) * double(read(IRMSB));
+}
+//----------------------------------
 double ADE7953::getVRMS(){
-  return double(read(VRMS)) / 26000 * read(k_V);
+  return getFullScaleInput(read(PGA_V)) * double(read(VRMS)) / 9032007 * read(k_V);
 }
-
+double ADE7953::getVRMSrel(){
+  return 100.0 / (0x89D147) * double(read(VRMS));
+}
+//--------------------------------------------------------------------------------
 double ADE7953::getPFA(){
-  return double(read(PFA)) ;
+  double pf = 1.0 / 0x8000 * double(uint16Tolong32(read(PFA))); 
+  return pf;
 }
 double ADE7953::getPFB(){
-  return double(read(PFB));
+  double pf = 1.0 / 0x8000 * double(uint16Tolong32(read(PFB)));
+  return pf;
 }
-
+//----------------------------------
 double ADE7953::getANGLE_A(){
   double angle = double(uint16Tolong32(read(ANGLE_A))) * (360 * getFREQ() / 223000);
   return angle ;
@@ -508,31 +523,63 @@ double ADE7953::getANGLE_B(){
   double angle = double(uint16Tolong32(read(ANGLE_B))) * (360 * getFREQ() / 223000);
   return angle ;
 }
-
+//----------------------------------
 double ADE7953::getPERIOD(){
   return double(read(Period)+1) / 223000 * 1000; //223kHz clock result in ms
 }
 double ADE7953::getFREQ(){
-  return 1 / (double(read(Period)+1) / 223000);
+  return 1.0 / (double(read(Period)+1) / 223000);
 }
 
+//--------------------------------------------------------------------------------
 double ADE7953::getP_A(){
   return double(read(AWATT)) ;
 }
+double ADE7953::getP_Arel(){
+  int sign = 1;
+  if (readBit(ACCMODE,10) == 1) sign = -1;
+  return 100.0 / 4862401 * double(read(AWATT)) * sign ;
+}
+
 double ADE7953::getQ_A(){
   return double(read(AVAR)) ;
 }
+double ADE7953::getQ_Arel(){
+  int sign = 1;
+  if (readBit(ACCMODE,12) == 1) sign = -1;
+  return 100.0 / 4862401 * double(read(AVAR)) * sign;
+}
+
 double ADE7953::getS_A(){
   return double(read(AVA)) ;
 }
+double ADE7953::getS_Arel(){
+  return 100.0 / 4862401 * double(read(AVA)) ;
+}
+//----------------------------------
 double ADE7953::getP_B(){
   return double(read(BWATT)) ;
 }
+double ADE7953::getP_Brel(){
+  int sign = 1;
+  if (readBit(ACCMODE,11) == 1) sign = -1;
+  return 100.0 / 4862401 * double(read(BWATT)) * sign;
+}
+
 double ADE7953::getQ_B(){
   return double(read(BVAR)) ;
 }
+double ADE7953::getQ_Brel(){
+  int sign = 1;
+  if (readBit(ACCMODE,13) == 1) sign = -1;
+  return 100.0 / 4862401 * double(read(BVAR)) * sign;
+}
+
 double ADE7953::getS_B(){
   return double(read(BVA)) ;
+}
+double ADE7953::getS_Brel(){
+  return 100.0 / 4862401 * double(read(BVA)) ;
 }
 
 
@@ -557,6 +604,39 @@ double ADE7953::getV(){
 //===============================================================================
 //  helpers 
 //===============================================================================
+//format double
+String ADE7953::formatDouble(double value, int dec){
+  char out[20];
+  char str_temp[20];
+  /* 4 is mininum width, 2 is precision; float value is copied onto str_temp*/
+  dtostrf(value, 1, dec, str_temp);
+  sprintf(out,"%s", str_temp);    
+  return out;
+}
+
+//get InputScale
+double ADE7953::getFullScaleInput(int PGA){
+  double scale = 0;
+  if (PGA == 5){
+     scale = 0.0227 / sqrt(2);
+  }else{
+    scale = 0.5 / pow(2,PGA) / sqrt(2);
+  }
+  return scale; 
+}
+
+//search register name
+String ADE7953::getRegName(uint16_t regNumber){
+  String Name = "NIL";
+  for (auto element : reg){
+    if (element.regAdr == regNumber){
+      Name = element.regName;
+      break;  
+    }
+  }
+  return Name;  
+}
+
 //printout register values
 void ADE7953::pREG(uint16_t reg){
   uint32_t val = read(reg);

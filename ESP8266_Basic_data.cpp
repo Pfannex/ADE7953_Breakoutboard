@@ -106,6 +106,7 @@ Topics::Topics(){
   pub.E3.item[2][0][2] = "DEC";
   pub.E3.item[2][0][3] = "Bit";
   pub.E3.item[2][0][4] = "value";
+  pub.E3.item[2][0][5] = "RegName";
   pub.E2.item[2][1] = "values";
   pub.E3.item[2][1][0] = "V_RMS";
   pub.E3.item[2][1][1] = "IA_RMS";
@@ -125,6 +126,15 @@ Topics::Topics(){
   pub.E3.item[2][1][15] = "V_INST";
   pub.E3.item[2][1][16] = "IA_INST";
   pub.E3.item[2][1][17] = "IB_INST";
+  pub.E3.item[2][1][18] = "V_RMSrel";
+  pub.E3.item[2][1][19] = "IA_RMSrel";
+  pub.E3.item[2][1][20] = "IB_RMSrel";
+  pub.E3.item[2][1][21] = "P_Arel";
+  pub.E3.item[2][1][22] = "Q_Arel";
+  pub.E3.item[2][1][23] = "S_Arel";
+  pub.E3.item[2][1][24] = "P_Brel";
+  pub.E3.item[2][1][25] = "Q_Brel";
+  pub.E3.item[2][1][26] = "S_Brel";
 
 
 
