@@ -66,7 +66,7 @@ public:
   double getQ_Brel();
   double getS_B();
   double getS_Brel();
-  double getV();
+  String getVwave(int samples);
 
   void pREG(uint16_t reg);
   long int StrToInt(String str); 

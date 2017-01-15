@@ -190,19 +190,10 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
     }
 
 //210 ADE7953.getV_INST
-    if (dissectResult.itemPath == "2/1/0"){         
-      for (int i = 0; i<samples; i++){
-        inst[i] = ADE.getV();
-      }
-      for (int i = 0; i<samples; i++){
-        for( int j = 0; j < sizeof(chr);  j++ )
-          chr[j] = (char)0;
-          
-        str = String(inst[i]);
-        strcpy(chr, str.c_str());      
-        pub(2,1,14, chr);
-        //delay(100);
-      }
+    if (dissectResult.itemPath == "2/1/0"){   
+      char wave[255] = "";
+      strcpy(wave, ADE.getVwave(String(value).toInt()).c_str());      
+      pub(2,1,15, wave);
     }
    
 //310 File/Read

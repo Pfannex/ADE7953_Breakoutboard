@@ -484,7 +484,7 @@ void ADE7953::setDefault(){
 //  read values 
 //===============================================================================
 double ADE7953::getIRMSA(){
-  //return double(read(IRMSA)) / 26000 * read(k_IA);  //ändern von mV auf V divider = 26000000  
+  //return double(read(IRMSA));  
   return getFullScaleInput(read(PGA_IA)) * double(read(IRMSA)) / 9032007 * read(k_IA);
 }
 double ADE7953::getIRMSArel(){
@@ -493,6 +493,7 @@ double ADE7953::getIRMSArel(){
 }
 //----------------------------------
 double ADE7953::getIRMSB(){
+  //return double(read(IRMSB));  
   return getFullScaleInput(read(PGA_IB)) * double(read(IRMSB)) / 9032007 * read(k_IB);
 }
 double ADE7953::getIRMSBrel(){
@@ -500,6 +501,7 @@ double ADE7953::getIRMSBrel(){
 }
 //----------------------------------
 double ADE7953::getVRMS(){
+  //return double(read(VRMS));  
   return getFullScaleInput(read(PGA_V)) * double(read(VRMS)) / 9032007 * read(k_V);
 }
 double ADE7953::getVRMSrel(){
@@ -563,7 +565,7 @@ double ADE7953::getP_B(){
 double ADE7953::getP_Brel(){
   int sign = 1;
   if (readBit(ACCMODE,11) == 1) sign = -1;
-  return 100.0 / 4862401 * double(read(BWATT));// * double(sign);
+  return 100.0 / 4862401 * double(read(BWATT)) * double(sign);
 }
 
 double ADE7953::getQ_B(){
@@ -587,18 +589,31 @@ double ADE7953::getS_Brel(){
 //===============================================================================
 //  read instantaneous values 
 //===============================================================================
-double ADE7953::getV(){
-  long int_dblV = read(V);
-  //double dblV =  uint24Tolong32(read(V))/ 13000;
-  return uint24Tolong32(read(V))/ 13000.0 * read(k_V);
+String ADE7953::getVwave(int samples){
+  Serial.print("getWave - ");Serial.println(samples);
 
-/*  int Bitdepth = 0xFFFFFF;
-
-  if (int_dblV >= Bitdepth/2){
-    int_dblV = (Bitdepth - int_dblV +1) * -1;
+  Serial.println("sample");
+  double timeStamp[samples];
+  double values[samples];
+  int t0 = micros(); 
+  for (int i=0; i<samples; i++){
+    timeStamp[i] = micros() - t0;
+    values[i] = read(V);
   }
-  
-  double dblV = int_dblV / 13000; */
+
+  Serial.println("convert");
+  String wave = "";
+  for (int i=0; i<samples; i++){
+    timeStamp[i] = timeStamp[i] / 1000.0;
+    wave += String(timeStamp[i]);
+    wave += ";";
+    values[i] = getFullScaleInput(read(PGA_V))* sqrt(2) * uint24Tolong32(values[i]) / 6500000.0 * read(k_V);
+    wave += formatDouble(values[i], 5);
+    //wave += "\r\n";
+  }
+  Serial.println("return");
+  Serial.println(wave);
+  return wave;
 }
 
 //===============================================================================
