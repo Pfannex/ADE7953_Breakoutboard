@@ -588,6 +588,9 @@ double ADE7953::getS_Brel(){
 //  read instantaneous values 
 //===============================================================================
 String ADE7953::getWave(int samples, uint16_t regNumber){
+  if (samples == 0) samples = 50;
+  if (samples >100) samples = 100;  
+  
   double timeStamp[samples];
   double values[samples];
   uint16_t k = 1;
