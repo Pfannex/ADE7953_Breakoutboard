@@ -535,53 +535,51 @@ double ADE7953::getFREQ(){
 
 //--------------------------------------------------------------------------------
 double ADE7953::getP_A(){
-  return double(read(AWATT)) ;
+  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IA)) * read(k_V) * read(k_IA);
+  return uint24Tolong32(read(AWATT)) / 4862401.0 * k;
 }
 double ADE7953::getP_Arel(){
-  int sign = 1;
-  if (readBit(ACCMODE,10) == 1) sign = -1;
-  return 100.0 / 4862401 * double(read(AWATT)) * double(sign) ;
+  return 100.0 / 4862401 * uint24Tolong32(read(AWATT));
 }
 
 double ADE7953::getQ_A(){
-  return double(read(AVAR)) ;
+  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IA)) * read(k_V) * read(k_IA);
+  return uint24Tolong32(read(AVAR)) / 4862401.0 * k;
 }
 double ADE7953::getQ_Arel(){
-  int sign = 1;
-  if (readBit(ACCMODE,12) == 1) sign = -1;
-  return 100.0 / 4862401 * double(read(AVAR)) * double(sign);
+  return 100.0 / 4862401 * uint24Tolong32(read(AVAR));
 }
 
 double ADE7953::getS_A(){
-  return double(read(AVA)) ;
+  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IA)) * read(k_V) * read(k_IA);
+  return uint24Tolong32(read(AVA)) / 4862401.0 * k;
 }
 double ADE7953::getS_Arel(){
-  return 100.0 / 4862401 * double(read(AVA)) ;
+  return 100.0 / 4862401 * uint24Tolong32(read(AVA));
 }
 //----------------------------------
 double ADE7953::getP_B(){
-  return double(read(BWATT)) ;
+  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IB)) * read(k_V) * read(k_IB);
+  return uint24Tolong32(read(BWATT)) / 4862401.0 * k;
 }
 double ADE7953::getP_Brel(){
-  int sign = 1;
-  if (readBit(ACCMODE,11) == 1) sign = -1;
-  return 100.0 / 4862401 * double(read(BWATT)) * double(sign);
+  return 100.0 / 4862401 * uint24Tolong32(read(BWATT));
 }
 
 double ADE7953::getQ_B(){
-  return double(read(BVAR)) ;
+  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IB)) * read(k_V) * read(k_IB);
+  return uint24Tolong32(read(BVAR)) / 4862401.0 * k;
 }
 double ADE7953::getQ_Brel(){
-  int sign = 1;
-  if (readBit(ACCMODE,13) == 1) sign = -1;
-  return 100.0 / 4862401 * double(read(BVAR)) * double(sign);
+  return 100.0 / 4862401 * uint24Tolong32(read(BVAR));
 }
 
 double ADE7953::getS_B(){
-  return double(read(BVA)) ;
+  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IB)) * read(k_V) * read(k_IB);
+  return uint24Tolong32(read(BVA)) / 4862401.0 * k;
 }
 double ADE7953::getS_Brel(){
-  return 100.0 / 4862401 * double(read(BVA)) ;
+  return 100.0 / 4862401 * uint24Tolong32(read(BVA));
 }
 
 
@@ -589,30 +587,44 @@ double ADE7953::getS_Brel(){
 //===============================================================================
 //  read instantaneous values 
 //===============================================================================
-String ADE7953::getVwave(int samples){
-  Serial.print("getWave - ");Serial.println(samples);
-
-  Serial.println("sample");
+String ADE7953::getWave(int samples, uint16_t regNumber){
   double timeStamp[samples];
   double values[samples];
+  uint16_t k = 1;
+  uint16_t PGA = 1;
+  if (regNumber == V){
+    k = k_V;
+    PGA = PGA_V;
+  }
+  if (regNumber == IA){
+    k = k_IA;
+    PGA = PGA_IA;
+  }
+  if (regNumber == IB){
+    k = k_IB;
+    PGA = PGA_IB;
+  }
+
+  read(RSTIRQSTATA); //Clear IROs
+  while (readBit(RSTIRQSTATA,15) == 0){   //wait for IRQ V zeroCross
+  }
+  
   int t0 = micros(); 
   for (int i=0; i<samples; i++){
     timeStamp[i] = micros() - t0;
     values[i] = read(V);
   }
-
-  Serial.println("convert");
-  String wave = "";
+  //create json {"ts":"val","ts":"val"}
+  String wave = "{";
   for (int i=0; i<samples; i++){
     timeStamp[i] = timeStamp[i] / 1000.0;
     wave += String(timeStamp[i]);
-    wave += ";";
-    values[i] = getFullScaleInput(read(PGA_V))* sqrt(2) * uint24Tolong32(values[i]) / 6500000.0 * read(k_V);
+    wave += ":";
+    values[i] = getFullScaleInput(read(PGA))* sqrt(2) * uint24Tolong32(values[i]) / 6500000.0 * read(k);
     wave += formatDouble(values[i], 5);
-    //wave += "\r\n";
+    if (i<samples-1) wave += ",";
   }
-  Serial.println("return");
-  Serial.println(wave);
+  wave += "}";
   return wave;
 }
 

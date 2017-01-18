@@ -34,17 +34,20 @@ ESP8266_Basic::ESP8266_Basic() : webServer(),
 //===> incomming subscribe <---------------------------------------------------
 void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int length) {
 
-  char value[50] = "";
-  char chr[50] = "";
+  char value[500] = "";
+  char chr[500] = "";
   int samples = 50;
   double inst[samples];
   String str = "";
+
   
   for (int i = 0; i < length; i++) {
     value[i] = payload[i];
   }
 
-  Serial.print("incoming subscribe: ");
+  Serial.print("incoming subscribe - LEN: ");
+  Serial.print(length);
+  Serial.print(" | ");
   Serial.print(topic);
   Serial.print(" | ");
   Serial.println(value);
@@ -189,11 +192,56 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
       ADE.setDefault();
     }
 
-//210 ADE7953.getV_INST
+//210 ADE7953.get_VINST
     if (dissectResult.itemPath == "2/1/0"){   
-      char wave[255] = "";
-      strcpy(wave, ADE.getVwave(String(value).toInt()).c_str());      
-      pub(2,1,15, wave);
+      DynamicJsonBuffer JsonBuffer;
+      JsonObject& root = JsonBuffer.parseObject(ADE.getWave(String(value).toInt(), V).c_str());
+      //root.printTo(Serial); 
+     for (auto &element : root){
+        String Key = element.key;
+        String Value = element.value;
+        String samples = Key;
+        samples += ",";
+        samples += Value;
+        
+        //Serial.println(samples);      
+        strcpy(chr, samples.c_str());      
+        pub(2,1,15, chr);
+      }
+    }
+//211 ADE7953.get_IAINST
+    if (dissectResult.itemPath == "2/1/1"){   
+      DynamicJsonBuffer JsonBuffer;
+      JsonObject& root = JsonBuffer.parseObject(ADE.getWave(String(value).toInt(), IA).c_str());
+      //root.printTo(Serial); 
+     for (auto &element : root){
+        String Key = element.key;
+        String Value = element.value;
+        String samples = Key;
+        samples += ",";
+        samples += Value;
+        
+        //Serial.println(samples);      
+        strcpy(chr, samples.c_str());      
+        pub(2,1,16, chr);
+      }
+    }
+//212 ADE7953.get_IBINST
+    if (dissectResult.itemPath == "2/1/2"){   
+      DynamicJsonBuffer JsonBuffer;
+      JsonObject& root = JsonBuffer.parseObject(ADE.getWave(String(value).toInt(), IB).c_str());
+      //root.printTo(Serial); 
+     for (auto &element : root){
+        String Key = element.key;
+        String Value = element.value;
+        String samples = Key;
+        samples += ",";
+        samples += Value;
+        
+        //Serial.println(samples);      
+        strcpy(chr, samples.c_str());      
+        pub(2,1,17, chr);
+      }
     }
    
 //310 File/Read
@@ -292,42 +340,42 @@ void ESP8266_Basic::handle_Measurement(){
       strcpy(chr, strVal.c_str());
       pub(2,1,8, chr);
       
-      strVal = String(ADE.getP_A());
+      strVal = ADE.formatDouble(ADE.getP_A(),7);
       strcpy(chr, strVal.c_str());
       pub(2,1,9, chr);
       strVal = String(ADE.getP_Arel());
       strcpy(chr, strVal.c_str());
       pub(2,1,21, chr);
       
-      strVal = String(ADE.getQ_A());
+      strVal = ADE.formatDouble(ADE.getQ_A(),7);
       strcpy(chr, strVal.c_str());
       pub(2,1,10, chr);
       strVal = String(ADE.getQ_Arel());
       strcpy(chr, strVal.c_str());
       pub(2,1,22, chr);
       
-      strVal = String(ADE.getS_A());
+      strVal = ADE.formatDouble(ADE.getS_A(),7);
       strcpy(chr, strVal.c_str());
       pub(2,1,11, chr);
       strVal = String(ADE.getS_Arel());
       strcpy(chr, strVal.c_str());
       pub(2,1,23, chr);
       
-      strVal = String(ADE.getP_B());
+      strVal = ADE.formatDouble(ADE.getP_B(),7);
       strcpy(chr, strVal.c_str());
       pub(2,1,12, chr);
       strVal = String(ADE.getP_Brel());
       strcpy(chr, strVal.c_str());
       pub(2,1,24, chr);
       
-      strVal = String(ADE.getQ_B());
+      strVal = ADE.formatDouble(ADE.getQ_B(),7);
       strcpy(chr, strVal.c_str());
       pub(2,1,13, chr);
       strVal = String(ADE.getQ_Brel());
       strcpy(chr, strVal.c_str());
       pub(2,1,25, chr);
       
-      strVal = String(ADE.getS_B());
+      strVal = ADE.formatDouble(ADE.getS_B(),7);
       strcpy(chr, strVal.c_str());
       pub(2,1,14, chr);
       strVal = String(ADE.getS_Brel());
