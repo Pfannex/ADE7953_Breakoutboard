@@ -12,6 +12,8 @@ Die Ankopplung der Leistungsmessgrößen erfolgt zu einem späteren Zeitpunkt.
 
 [MQTT](https://github.com/Pfannex/ADE7953_Breakoutboard/wiki/MQTT-%7C-ADE7953-MQTT-Wattmeter)
 
+[Kalibrierung](https://github.com/Pfannex/ADE7953_Breakoutboard/wiki/Kalibrierung-%7C-ADE7953-MQTT-Wattmeter)
+
 [FileSystem](https://github.com/Pfannex/ADE7953_Breakoutboard/wiki/FileSystem-%7C-ADE7953-MQTT-Wattmeter)
 
 [OTA](https://github.com/Pfannex/ADE7953_Breakoutboard/wiki/OTA-%7C-ADE7953-MQTT-Wattmeter)
