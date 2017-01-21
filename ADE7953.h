@@ -67,6 +67,12 @@ public:
   double getS_B();
   double getS_Brel();
   String getWave(int samples, uint16_t regNumber);
+  double getW_A();
+  double getWb_A();
+  double getWs_A();
+  double getW_B();
+  double getWb_B();
+  double getWs_B();
 
   void pREG(uint16_t reg);
   long int StrToInt(String str); 

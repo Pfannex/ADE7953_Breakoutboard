@@ -580,6 +580,29 @@ double ADE7953::getS_B(){
 }
 double ADE7953::getS_Brel(){
   return 100.0 / 4862401 * uint24Tolong32(read(BVA));
+  
+//----------------------------------
+  
+}
+double ADE7953::getW_A(){
+  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IB)) * read(k_V) * read(k_IB);
+  return uint24Tolong32(read(AENERGYA)) / 4862401.0 * k  * 3600 /;
+}
+double ADE7953::getWb_A(){
+  return uint24Tolong32(read(RENERGYA));
+}
+double ADE7953::getWs_A(){
+  return uint24Tolong32(read(APENERGYA));
+}
+//----------------------------------
+double ADE7953::getW_B(){
+  return uint24Tolong32(read(AENERGYB));
+}
+double ADE7953::getWb_B(){
+  return uint24Tolong32(read(RENERGYB));
+}
+double ADE7953::getWs_B(){
+  return uint24Tolong32(read(APENERGYB));
 }
 
 

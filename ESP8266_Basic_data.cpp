@@ -135,6 +135,12 @@ Topics::Topics(){
   pub.E3.item[2][1][24] = "P_Brel";
   pub.E3.item[2][1][25] = "Q_Brel";
   pub.E3.item[2][1][26] = "S_Brel";
+  pub.E3.item[2][1][27] = "W_A";
+  pub.E3.item[2][1][28] = "Wb_A";
+  pub.E3.item[2][1][29] = "Ws_A";
+  pub.E3.item[2][1][30] = "W_B";
+  pub.E3.item[2][1][31] = "Wb_B";
+  pub.E3.item[2][1][32] = "Ws_B";
 
 
 

@@ -382,8 +382,28 @@ void ESP8266_Basic::handle_Measurement(){
       strcpy(chr, strVal.c_str());
       pub(2,1,26, chr);
 
-      ADE.read(RSTIRQSTATA);
-      ADE.read(RSTIRQSTATB);
+      strVal = ADE.formatDouble(ADE.getW_A(),7);
+      strcpy(chr, strVal.c_str());
+      pub(2,1,27, chr);
+      strVal = ADE.formatDouble(ADE.getWb_A(),7);
+      strcpy(chr, strVal.c_str());
+      pub(2,1,28, chr);
+      strVal = ADE.formatDouble(ADE.getWs_A(),7);
+      strcpy(chr, strVal.c_str());
+      pub(2,1,29, chr);
+      
+      strVal = ADE.formatDouble(ADE.getW_B(),7);
+      strcpy(chr, strVal.c_str());
+      pub(2,1,30, chr);
+      strVal = ADE.formatDouble(ADE.getWb_B(),7);
+      strcpy(chr, strVal.c_str());
+      pub(2,1,31, chr);
+      strVal = ADE.formatDouble(ADE.getWs_B(),7);
+      strcpy(chr, strVal.c_str());
+      pub(2,1,32, chr);
+
+      //ADE.read(RSTIRQSTATA);
+      //ADE.read(RSTIRQSTATB);
     }
   }
 }
