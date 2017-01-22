@@ -201,13 +201,19 @@ void ADE7953::write(uint16_t Reg, uint32_t val){
   else {count = 5;}                                           //soft register
 
   if (count < 5){                                             //HW register
-    Wire.beginTransmission(I2Caddr); 
-    Wire.write(Reg >> 8); 
-    Wire.write(Reg);  
+
+    uint8_t buffer[10];
+    buffer[0] = Reg >> 8;
+    buffer[1] = Reg;
+    brzo_i2c_start_transaction(I2Caddr,400);
+    brzo_i2c_write(buffer, 2, false); 
+        
     for (int i = 0; i<count; i++){
-      Wire.write(val >> (count-1-i)*8);               //write MSB first
+      buffer[i] = (val >> (count-1-i)*8);               //write MSB first
     } 
-    Wire.endTransmission(); 
+    brzo_i2c_write(buffer, count, false);
+    brzo_i2c_end_transaction(); 
+ 
   }
 
   //save to registerArray
@@ -282,19 +288,21 @@ uint32_t ADE7953::read(uint16_t Reg){
   else {count = 5;}                                           //soft register
 
   if (count < 5){
-    Wire.beginTransmission(I2Caddr);  
-    Wire.write(Reg >> 8); 
-    Wire.write(Reg); 
-    Wire.endTransmission();     
-
-    Wire.beginTransmission(I2Caddr); 
-    Wire.requestFrom(I2Caddr, count);
+    uint8_t buffer[10];
+    buffer[0] = Reg >> 8;
+    buffer[1] = Reg;
+    brzo_i2c_start_transaction(I2Caddr, 400);
+    brzo_i2c_write(buffer, 2, false); 
+    brzo_i2c_end_transaction();     
+    
+    brzo_i2c_start_transaction(I2Caddr, 400);
+    brzo_i2c_read(buffer, count, false);
+    brzo_i2c_end_transaction(); 
+        
     for (int i = 0; i<count; i++){
-      val = (val << 8) + Wire.read();                  //read MSB first
-      //if (i>0) val = val << 8; 
-      //val += Wire.read();                            //read MSB first
+      val = (val << 8) + buffer[i];                  //read MSB first
     }
-    Wire.endTransmission();
+
   }else{                                               //read soft Register
     //Serial.println("read SOFT register");
     for (auto element : reg){

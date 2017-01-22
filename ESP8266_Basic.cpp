@@ -425,7 +425,8 @@ void ESP8266_Basic::run_I2C(){
   int mDevices = 0;
   String str; char chr[15];
  
-  Wire.begin(I2C_SDA, I2C_SCL);     
+  //Wire.begin(I2C_SDA, I2C_SCL);
+  brzo_i2c_setup(I2C_SDA, I2C_SCL, 2000);     
 }
 
 

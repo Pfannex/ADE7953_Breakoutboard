@@ -41,6 +41,7 @@
 //Bus
   //I2C
   #include <Wire.h>              
+  #include <brzo_i2c.h>
 
 //MySQL
   //#include <MySQL_Connection.h>
