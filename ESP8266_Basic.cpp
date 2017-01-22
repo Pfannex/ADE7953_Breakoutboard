@@ -290,8 +290,6 @@ void ESP8266_Basic::handle_Measurement(){
     //Serial.println(ADE.readBit(IRQSTATA,17));
   //}
 
-  
-
   if (mqtt_client.connected()){
     long now = millis();
     if (now - lastMeasure_time > updateMeasure_time) {
@@ -591,6 +589,7 @@ void ESP8266_Basic::start_WiFi_connections(){
     startAccessPoint();
   }
   printCFG();
+  
 }
 
 //===> handle connections WiFi, MQTT, WebServer <------------------------------

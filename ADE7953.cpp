@@ -21,9 +21,9 @@ Treg reg[] ={
   { 8, "SAGCYC",         SAGCYC,         0x000000, false, true,  false},
   { 8, "DISNOLOAD",      DISNOLOAD,      0x000000, false, true,  false},
   { 8, "LCYCMODE",       LCYCMODE,       0x000040, false, true,  false},
-  { 8, "PGA_V",          PGA_V,          0x000000, false, true,  false},
-  { 8, "PGA_IA",         PGA_IA,         0x000000, false, true,  false},
-  { 8, "PGA_IB",         PGA_IB,         0x000000, false, true,  false},
+  { 8, "PGA_V",          PGA_V,          0x000001, false, true,  false},
+  { 8, "PGA_IA",         PGA_IA,         0x000001, false, true,  false},
+  { 8, "PGA_IB",         PGA_IB,         0x000001, false, true,  false},
   { 8, "WRITE_PROTECT",  WRITE_PROTECT,  0x000000, false, true,  false},
   { 8, "LAST_OP",        LAST_OP,        0x000000, false, false, false},
   { 8, "LAST_RWDATA8",   LAST_RWDATA8,   0x000000, false, false, false},
@@ -119,9 +119,9 @@ Treg reg[] ={
 
   //24-Bit SOFT Registers
   //   Name              Address         Def       Signed RW     Changed
-  {24, "k_V",            k_V,            0x000000, false, true,  false},
-  {24, "k_IA",           k_IA,           0x000000, false, true,  false},
-  {24, "k_IB",           k_IB,           0x000000, false, true,  false}
+  {24, "k_V",            k_V,            0x000001, false, true,  false},
+  {24, "k_IA",           k_IA,           0x000001, false, true,  false},
+  {24, "k_IB",           k_IB,           0x000001, false, true,  false}
   };
 
 ADE7953::ADE7953(){
@@ -290,8 +290,9 @@ uint32_t ADE7953::read(uint16_t Reg){
     Wire.beginTransmission(I2Caddr); 
     Wire.requestFrom(I2Caddr, count);
     for (int i = 0; i<count; i++){
-      if (i>0) val = val << 8; 
-      val += Wire.read();                              //read MSB first
+      val = (val << 8) + Wire.read();                  //read MSB first
+      //if (i>0) val = val << 8; 
+      //val += Wire.read();                            //read MSB first
     }
     Wire.endTransmission();
   }else{                                               //read soft Register
@@ -586,7 +587,7 @@ double ADE7953::getS_Brel(){
 }
 double ADE7953::getW_A(){
   double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IB)) * read(k_V) * read(k_IB);
-  return uint24Tolong32(read(AENERGYA)) / 4862401.0 * k  * 3600 /;
+  return uint24Tolong32(read(AENERGYA)) / 4862401.0 * k  * 3600 ;
 }
 double ADE7953::getWb_A(){
   return uint24Tolong32(read(RENERGYA));
@@ -614,37 +615,35 @@ String ADE7953::getWave(int samples, uint16_t regNumber){
   if (samples == 0) samples = 50;
   if (samples >100) samples = 100;  
   
-  double timeStamp[samples];
+  long t[samples];
   double values[samples];
   uint16_t k = 1;
   uint16_t PGA = 1;
   if (regNumber == V){
     k = k_V;
     PGA = PGA_V;
-  }
+  } else
   if (regNumber == IA){
     k = k_IA;
     PGA = PGA_IA;
-  }
+  } else
   if (regNumber == IB){
     k = k_IB;
     PGA = PGA_IB;
   }
 
   read(RSTIRQSTATA); //Clear IROs
-  while (readBit(RSTIRQSTATA,15) == 0){   //wait for IRQ V zeroCross
-  }
-  
+  while (!readBit(RSTIRQSTATA,15)) {   //wait for IRQ V zeroCross
+  }    
   int t0 = micros(); 
   for (int i=0; i<samples; i++){
-    timeStamp[i] = micros() - t0;
-    values[i] = read(V);
+    t[i] = micros();
+    values[i] = read(regNumber);
   }
   //create json {"ts":"val","ts":"val"}
   String wave = "{";
   for (int i=0; i<samples; i++){
-    timeStamp[i] = timeStamp[i] / 1000.0;
-    wave += String(timeStamp[i]);
+    wave += String(0.000001*(t[i]- t0), 5);
     wave += ":";
     values[i] = getFullScaleInput(read(PGA))* sqrt(2) * uint24Tolong32(values[i]) / 6500000.0 * read(k);
     wave += formatDouble(values[i], 5);

@@ -26,6 +26,8 @@
   #include <ESP8266WebServer.h>
   #include <WiFiClient.h> 
   #include <DNSServer.h>
+  #include <NTPClient.h>
+  #include <WiFiUdp.h>
   
 //MQTT Client
   #include <PubSubClient.h>
@@ -72,6 +74,14 @@ public:
   void run_I2C();
 
   ADE7953 ADE;
+  
+  // By default 'time.nist.gov' is used with 60 seconds update interval and
+  // no offset
+  WiFiUDP ntpUDP;
+  //NTPClient timeClient(ntpUDP);
+  // You can specify the time server pool and the offset, (in seconds)
+  // additionaly you can specify the update interval (in milliseconds).
+  // NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 60000);
  
 private:
   WiFiClient wifi_client;
