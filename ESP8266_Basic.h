@@ -75,13 +75,8 @@ public:
 
   ADE7953 ADE;
   
-  // By default 'time.nist.gov' is used with 60 seconds update interval and
-  // no offset
   WiFiUDP ntpUDP;
-  //NTPClient timeClient(ntpUDP);
-  // You can specify the time server pool and the offset, (in seconds)
-  // additionaly you can specify the update interval (in milliseconds).
-  // NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 60000);
+  NTPClient timeClient;
  
 private:
   WiFiClient wifi_client;

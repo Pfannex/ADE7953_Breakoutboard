@@ -22,7 +22,14 @@
 
 //CLASS ESP8266_Basic################################################################
 ESP8266_Basic::ESP8266_Basic() : webServer(), 
-                                 mqtt_client(wifi_client){
+                                 mqtt_client(wifi_client),
+                                 timeClient(ntpUDP, "europe.pool.ntp.org", 3600,1000){
+                                 // By default 'time.nist.gov' is used with 60 seconds update interval and
+                                 // no offset
+                                 // You can specify the time server pool and the offset, (in seconds)
+                                 // additionaly you can specify the update interval (in milliseconds).
+                                 // NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 60000);
+
   //Callbacks								 
   webServer.set_saveConfig_Callback(std::bind(&ESP8266_Basic::cfgChange_Callback, this));
   mqtt_client.setCallback(std::bind(&ESP8266_Basic::mqttBroker_Callback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
@@ -290,6 +297,8 @@ void ESP8266_Basic::handle_Measurement(){
     //Serial.println(ADE.readBit(IRQSTATA,17));
   //}
 
+  timeClient.update();
+
   if (mqtt_client.connected()){
     long now = millis();
     if (now - lastMeasure_time > updateMeasure_time) {
@@ -399,6 +408,11 @@ void ESP8266_Basic::handle_Measurement(){
       strVal = ADE.formatDouble(ADE.getWs_B(),7);
       strcpy(chr, strVal.c_str());
       pub(2,1,32, chr);
+
+      strVal = timeClient.getFormattedTime();
+      strcpy(chr, strVal.c_str());
+      pub(2,1,33, chr);
+
 
       //ADE.read(RSTIRQSTATA);
       //ADE.read(RSTIRQSTATB);
@@ -583,13 +597,13 @@ void ESP8266_Basic::start_WiFi_connections(){
   
   if (start_WiFi()){
     WiFi.mode(WIFI_STA);     //exit AP-Mode if set once
-	config_running = false;
-	startConfigServer();
+	  config_running = false;
+	  startConfigServer();
+    timeClient.begin();
   }else{
     startAccessPoint();
   }
   printCFG();
-  
 }
 
 //===> handle connections WiFi, MQTT, WebServer <------------------------------
