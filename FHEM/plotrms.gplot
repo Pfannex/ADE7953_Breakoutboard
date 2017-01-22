@@ -1,0 +1,19 @@
+set terminal png transparent size <SIZE> crop
+set output '<OUT>.png'
+set xdata time
+set timefmt "%Y-%m-%d_%H:%M:%S"
+set xlabel " "
+set title 'Voltage'
+set ytics 
+set y2tics 
+set grid
+set ylabel "Voltage / V"
+set y2label "Voltage / V"
+
+#log 4:ade.V_RMS\x3a::
+#log 4:ade.IA_RMS\x3a::
+#log 4:ade.IB_RMS\x3a::
+
+plot "<IN>" using 1:2 axes x1y2 title 'V' ls l0 lw 1 with lines,\
+     "<IN>" using 1:2 axes x1y2 title 'IA' ls l1 lw 1 with lines,\
+     "<IN>" using 1:2 axes x1y2 title 'IB' ls l2 lw 1 with lines
