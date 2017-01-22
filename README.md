@@ -18,6 +18,8 @@ Die Ankopplung der Leistungsmessgrößen erfolgt zu einem späteren Zeitpunkt.
 
 [OTA](https://github.com/Pfannex/ADE7953_Breakoutboard/wiki/OTA-%7C-ADE7953-MQTT-Wattmeter)
 
+[FHEM](https://github.com/Pfannex/ADE7953_Breakoutboard/wiki/FHEM-%7C-ADE7953-MQTT-Wattmeter)
+
 
 
 
