@@ -37,9 +37,8 @@ public:
   void write(String strRegVal);
   void writeBit(uint16_t reg, uint32_t pos, bool val);
   void writeBit(String strRegPosVal);
-  uint32_t read(uint16_t reg);
   uint32_t readI2C(uint16_t Reg, int count);
-  uint32_t read24bitReg(uint16_t Reg);
+  uint32_t read(uint16_t reg);
   uint32_t read(String strReg);
   bool readBit(uint16_t reg, uint32_t pos);
   bool readBit(String strRegPos);
@@ -68,7 +67,9 @@ public:
   double getQ_Brel();
   double getS_B();
   double getS_Brel();
-  String getWave(int samples, uint16_t regNumber);
+  double getV();
+  long getVraw();
+  double VrawtoV(long);
 
   void pREG(uint16_t reg);
   long int StrToInt(String str); 

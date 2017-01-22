@@ -283,7 +283,8 @@ uint32_t ADE7953::readI2C(uint16_t Reg, int count) {
   Wire.beginTransmission(I2Caddr); 
   Wire.requestFrom(I2Caddr, count);
   for (int i= 0; i< count; i++) {
-      val = (val << 8) + Wire.read(); //read MSB first
+      if (i> 0) val = val << 8; 
+      val += Wire.read();                              //read MSB first
   }
   Wire.endTransmission();
   return val;  
@@ -291,7 +292,6 @@ uint32_t ADE7953::readI2C(uint16_t Reg, int count) {
 
 uint32_t ADE7953::read(uint16_t Reg){
   int count = 0;
-  uint32_t val = 0x00;
   
   if (Reg < 0x100 | Reg == 0x702 | Reg == 0x800) {count = 1;} //8Bit inkl. 0x702/0x800
   else if (Reg < 0x200){count = 2;}                           //16Bit 
@@ -299,22 +299,18 @@ uint32_t ADE7953::read(uint16_t Reg){
   else if (Reg < 0x400){count = 4;}                           //32Bit
   else {count = 5;}                                           //soft register
 
-  if (count < 5){
-     return readI2C(Reg, count);
-  }else{                                               //read soft Register
+  if (count < 5) {
+    return readI2C(Reg, count);
+  } else {                                               //read soft Register
+    uint32_t val = 0x00;
     //Serial.println("read SOFT register");
     for (auto element : reg){
       if (element.regAdr == Reg){
         val = element.regVal;
       }
     } 
+    return val;
   }
-  return val;
-}
-
-// shortcut for faster reading 24bit registers
-uint32_t ADE7953::read24bitReg(uint16_t Reg){
-  return readI2C(Reg, 3);
 }
 
 uint32_t ADE7953::read(String strReg){
@@ -496,7 +492,7 @@ void ADE7953::setDefault(){
 //  read values 
 //===============================================================================
 double ADE7953::getIRMSA(){
-  //return double(read(IRMSA));  
+  //return double(read(IRMSA)) / 26000 * read(k_IA);  //ändern von mV auf V divider = 26000000  
   return getFullScaleInput(read(PGA_IA)) * double(read(IRMSA)) / 9032007 * read(k_IA);
 }
 double ADE7953::getIRMSArel(){
@@ -505,7 +501,6 @@ double ADE7953::getIRMSArel(){
 }
 //----------------------------------
 double ADE7953::getIRMSB(){
-  //return double(read(IRMSB));  
   return getFullScaleInput(read(PGA_IB)) * double(read(IRMSB)) / 9032007 * read(k_IB);
 }
 double ADE7953::getIRMSBrel(){
@@ -513,7 +508,6 @@ double ADE7953::getIRMSBrel(){
 }
 //----------------------------------
 double ADE7953::getVRMS(){
-  //return double(read(VRMS));  
   return getFullScaleInput(read(PGA_V)) * double(read(VRMS)) / 9032007 * read(k_V);
 }
 double ADE7953::getVRMSrel(){
@@ -547,51 +541,53 @@ double ADE7953::getFREQ(){
 
 //--------------------------------------------------------------------------------
 double ADE7953::getP_A(){
-  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IA)) * read(k_V) * read(k_IA);
-  return uint24Tolong32(read(AWATT)) / 4862401.0 * k;
+  return double(read(AWATT)) ;
 }
 double ADE7953::getP_Arel(){
-  return 100.0 / 4862401 * uint24Tolong32(read(AWATT));
+  int sign = 1;
+  if (readBit(ACCMODE,10) == 1) sign = -1;
+  return 100.0 / 4862401 * double(read(AWATT)) * double(sign) ;
 }
 
 double ADE7953::getQ_A(){
-  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IA)) * read(k_V) * read(k_IA);
-  return uint24Tolong32(read(AVAR)) / 4862401.0 * k;
+  return double(read(AVAR)) ;
 }
 double ADE7953::getQ_Arel(){
-  return 100.0 / 4862401 * uint24Tolong32(read(AVAR));
+  int sign = 1;
+  if (readBit(ACCMODE,12) == 1) sign = -1;
+  return 100.0 / 4862401 * double(read(AVAR)) * double(sign);
 }
 
 double ADE7953::getS_A(){
-  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IA)) * read(k_V) * read(k_IA);
-  return uint24Tolong32(read(AVA)) / 4862401.0 * k;
+  return double(read(AVA)) ;
 }
 double ADE7953::getS_Arel(){
-  return 100.0 / 4862401 * uint24Tolong32(read(AVA));
+  return 100.0 / 4862401 * double(read(AVA)) ;
 }
 //----------------------------------
 double ADE7953::getP_B(){
-  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IB)) * read(k_V) * read(k_IB);
-  return uint24Tolong32(read(BWATT)) / 4862401.0 * k;
+  return double(read(BWATT)) ;
 }
 double ADE7953::getP_Brel(){
-  return 100.0 / 4862401 * uint24Tolong32(read(BWATT));
+  int sign = 1;
+  if (readBit(ACCMODE,11) == 1) sign = -1;
+  return 100.0 / 4862401 * double(read(BWATT));// * double(sign);
 }
 
 double ADE7953::getQ_B(){
-  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IB)) * read(k_V) * read(k_IB);
-  return uint24Tolong32(read(BVAR)) / 4862401.0 * k;
+  return double(read(BVAR)) ;
 }
 double ADE7953::getQ_Brel(){
-  return 100.0 / 4862401 * uint24Tolong32(read(BVAR));
+  int sign = 1;
+  if (readBit(ACCMODE,13) == 1) sign = -1;
+  return 100.0 / 4862401 * double(read(BVAR)) * double(sign);
 }
 
 double ADE7953::getS_B(){
-  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IB)) * read(k_V) * read(k_IB);
-  return uint24Tolong32(read(BVA)) / 4862401.0 * k;
+  return double(read(BVA)) ;
 }
 double ADE7953::getS_Brel(){
-  return 100.0 / 4862401 * uint24Tolong32(read(BVA));
+  return 100.0 / 4862401 * double(read(BVA)) ;
 }
 
 
@@ -599,47 +595,26 @@ double ADE7953::getS_Brel(){
 //===============================================================================
 //  read instantaneous values 
 //===============================================================================
-String ADE7953::getWave(int samples, uint16_t regNumber){
-  if (samples == 0) samples = 50;
-  if (samples >100) samples = 100;  
-  
-  long t[samples];
-  double values[samples];
-  uint16_t k = 1;
-  uint16_t PGA = 1;
-  if (regNumber == V){
-    k = k_V;
-    PGA = PGA_V;
-  } else
-  if (regNumber == IA){
-    k = k_IA;
-    PGA = PGA_IA;
-  } else
-  if (regNumber == IB){
-    k = k_IB;
-    PGA = PGA_IB;
-  }
-
-  read(RSTIRQSTATA); //Clear IROs
-  while (!readBit(RSTIRQSTATA,15)) {   //wait for IRQ V zeroCross
-  }    
-  int t0 = micros(); 
-  for (int i=0; i<samples; i++){
-    t[i] = micros();
-    values[i] = read24bitReg(V);
-  }
-  //create json {"ts":"val","ts":"val"}
-  String wave = "{";
-  for (int i=0; i<samples; i++){
-    wave += String(0.000001*(t[i]- t0), 5);
-    wave += ":";
-    values[i] = getFullScaleInput(read(PGA))* sqrt(2) * uint24Tolong32(values[i]) / 6500000.0 * read(k);
-    wave += formatDouble(values[i], 5);
-    if (i<samples-1) wave += ",";
-  }
-  wave += "}";
-  return wave;
+inline long ADE7953::getVraw() {
+  return readI2C(V, 3); // 24bit unsigned integer
 }
+
+double ADE7953::VrawtoV(long Vraw) {
+  return uint24Tolong32(Vraw)/ 13000.0 * read(k_V);
+}
+
+double ADE7953::getV(){
+  return VrawtoV(getVraw());
+}
+
+/*  int Bitdepth = 0xFFFFFF;
+
+  if (int_dblV >= Bitdepth/2){
+    int_dblV = (Bitdepth - int_dblV +1) * -1;
+  }
+  
+  double dblV = int_dblV / 13000; */
+
 
 //===============================================================================
 //  helpers 
