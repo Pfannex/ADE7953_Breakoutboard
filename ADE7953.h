@@ -21,6 +21,7 @@
   #include <ESP8266WiFi.h>          //https://github.com/esp8266/Arduino  
 //Tools
   #include <Wire.h>                 //I²C
+  #include <brzo_i2c.h>
 //ADE7953  
   #include "ADE7953_REG.h"          //ADE7953 Registers
 
