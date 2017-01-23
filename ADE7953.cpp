@@ -163,9 +163,9 @@ bool ADE7953::init(){
       Serial.println("I2C-Communication failed!!!!");
       while (1){}
   }
-  write(0x284, 0xABABAB);
-  read(0x284);
-  while (1){}
+  //write(0x284, 0xABABAB);
+  //read(0x284);
+  //while (1){}
 
   //write_ADE7953_json();
   read_ADE7953_json();
@@ -208,15 +208,12 @@ void ADE7953::write(uint16_t Reg, uint32_t val){
     uint8_t buffer[10];
     buffer[0] = Reg >> 8;
     buffer[1] = Reg;
-    brzo_i2c_start_transaction(I2Caddr,400);
-    //brzo_i2c_write(buffer, 2, false); 
-        
     for (int i = 2; i<count+2; i++){
-      buffer[i] = (val >> (count-1-i)*8);               //write MSB first
+      buffer[i] = (val >> (count-1-i-2)*8);               //write MSB first
     } 
+    brzo_i2c_start_transaction(I2Caddr,400);
     brzo_i2c_write(buffer, count+2, false);
     brzo_i2c_end_transaction(); 
- 
   }
 
   //save to registerArray
@@ -294,12 +291,9 @@ uint32_t ADE7953::read(uint16_t Reg){
     uint8_t buffer[10];
     buffer[0] = Reg >> 8;
     buffer[1] = Reg;
-    brzo_i2c_start_transaction(I2Caddr, 400);
-    brzo_i2c_write(buffer, 2, false); 
-    brzo_i2c_end_transaction();     
-    
-    brzo_i2c_start_transaction(I2Caddr, 400);
-    brzo_i2c_read(buffer, count, false);
+    brzo_i2c_start_transaction(I2Caddr, 600);
+    brzo_i2c_write(buffer, 2, true); 
+    brzo_i2c_read(buffer, count, true);
     brzo_i2c_end_transaction(); 
         
     for (int i = 0; i<count; i++){
