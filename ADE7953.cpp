@@ -164,6 +164,10 @@ bool ADE7953::init(){
       while (1){}
   }
 
+  //write(0x284, 0xABABAB);
+  //read(0x284);
+  //while (1){}
+
   //write_ADE7953_json();
   read_ADE7953_json();
   //Test();
