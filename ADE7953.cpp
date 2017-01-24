@@ -591,8 +591,10 @@ double ADE7953::getS_Brel(){
   
 }
 double ADE7953::getW_A(){
+  double rollOverTime = (60.78-20.26)/4194304 * read(AWGAIN);
+  
   double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IB)) * read(k_V) * read(k_IB);
-  return uint24Tolong32(read(AENERGYA)) / 4862401.0 * k  * 3600 ;
+  return uint24Tolong32(read(AENERGYA));
 }
 double ADE7953::getWb_A(){
   return uint24Tolong32(read(RENERGYA));
