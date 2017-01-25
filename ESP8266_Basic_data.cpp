@@ -56,6 +56,7 @@ Topics::Topics(){
   sub.E3.item[2][0][6] = "updateTime";
   sub.E3.item[2][0][7] = "saveConfig";
   sub.E3.item[2][0][8] = "setDefault";
+  sub.E3.item[2][0][9] = "resetEnergy";
   sub.E2.item[2][1] = "getValues";
   sub.E3.item[2][1][0] = "V_INST";
   sub.E3.item[2][1][1] = "IA_INST";

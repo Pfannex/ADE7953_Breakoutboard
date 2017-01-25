@@ -42,6 +42,7 @@ public:
   uint32_t read(String strReg);
   bool readBit(uint16_t reg, uint32_t pos);
   bool readBit(String strRegPos);
+  //void resetEnergy(String strReg);
   
   double getIRMSA();
   double getIRMSArel();
@@ -74,6 +75,9 @@ public:
   double getW_B();
   double getWb_B();
   double getWs_B();
+  void updateEnergy();
+
+  double energy[5];
 
   void pREG(uint16_t reg);
   long int StrToInt(String str); 
@@ -92,6 +96,9 @@ private:
   String strBIN(uint32_t val);
   double getFullScaleInput(int PGA);
   
+  //UpdateEnergy
+  long lastMeasure_time;
+  long updateMeasure_time = 1000;
 
 };
 

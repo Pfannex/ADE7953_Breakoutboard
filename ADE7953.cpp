@@ -118,10 +118,18 @@ Treg reg[] ={
   {24, "LAST_RWDATA24",  LAST_RWDATA24,  0x000000, false, false, false},
 
   //24-Bit SOFT Registers
-  //   Name              Address         Def       Signed RW     Changed
-  {24, "k_V",            k_V,            0x000001, false, true,  false},
-  {24, "k_IA",           k_IA,           0x000001, false, true,  false},
-  {24, "k_IB",           k_IB,           0x000001, false, true,  false}
+  //   Name                Address           Def       Signed RW     Changed
+  {24, "k_V",              k_V,              0x000001, false, true,  false},
+  {24, "k_IA",             k_IA,             0x000001, false, true,  false},
+  {24, "k_IB",             k_IB,             0x000001, false, true,  false},
+  {24, "WA",               WA,               0x000000, true,  true,  false},
+  {24, "WbA",              WbA,              0x000000, true,  true,  false},
+  {24, "WsA",              WsA,              0x000000, true,  true,  false},
+  {24, "WB",               WB,               0x000000, true,  true,  false},
+  {24, "WbB",              WbB,              0x000000, true,  true,  false},
+  {24, "WsB",              WsB,              0x000000, true,  true,  false},
+  {24, "updateTimeEnergy", updateTimeEnergy, 0x0003E8, false, true,  false},
+  {24, "updateTimeMQTT",   updateTimeMQTT,   0x0003E8, false, true,  false}
   };
 
 ADE7953::ADE7953(){
@@ -589,12 +597,45 @@ double ADE7953::getS_B(){
   return uint24Tolong32(read(BVA)) / 4862401.0 * k;
 }
 double ADE7953::getS_Brel(){
-  return 100.0 / 4862401 * uint24Tolong32(read(BVA));
-  
-//----------------------------------
-  
+  return 100.0 / 4862401 * uint24Tolong32(read(BVA)); 
 }
-double ADE7953::getW_A(){
+
+//----------------------------------
+
+void ADE7953::updateEnergy(){
+  long now = millis();
+  if (now - lastMeasure_time > read(updateTimeEnergy)) {
+    lastMeasure_time = now;
+
+    int regGAIN[] = {AWGAIN, AVARGAIN, AVAGAIN, BWGAIN, BVARGAIN, BVAGAIN};
+    double PN_A = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IA)) * read(k_V) * read(k_IA);
+    double PN_B = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IB)) * read(k_V) * read(k_IB);   
+    double PN_AB[] = {PN_A, PN_A, PN_A, PN_B, PN_B, PN_B };
+    int regEnergy[] = {AENERGYA, RENERGYA, APENERGYA, AENERGYB, RENERGYB, APENERGYB};
+    //double Energy[] = {WA, WbA, WsA, WB, WbB, WsB};
+    
+    for (int i=0; i<6; i++){
+      double t_rollOver = (1/206900.0 * 0x7FFFFF) / (double(read(regGAIN[i])) / 0x400000);
+      double PN = PN_AB[i];
+      double Wmax = PN * t_rollOver;
+      double Wist = double(uint24Tolong32(read(regEnergy[i]))) / 0x7FFFFF * Wmax;
+      
+      //Serial.print("Wist:  ");Serial.println(Wist,6);
+      //Serial.print("old:   ");Serial.println(energy[i],6);
+      
+      energy[i] = energy[i] + Wist;
+      
+      //Serial.print("new:   ");Serial.println(energy[i],6);
+      //Serial.println("--------");
+      
+
+    }
+    //Serial.println("-----------------------");
+
+  }
+}
+
+double ADE7953::getW_A(){  
   double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IB)) * read(k_V) * read(k_IB);
   return uint24Tolong32(read(AENERGYA)) / 4862401.0 * k  * 3600 ;
 }
@@ -767,6 +808,7 @@ long ADE7953::uint16Tolong32(uint16_t val){
 //===============================================================================
 
 void ADE7953::Test(){
+/*
   Serial.println("list changed registers");
   for (auto element : reg){
     if (element.changed){
@@ -774,22 +816,22 @@ void ADE7953::Test(){
       Serial.println(line);   
     }
   }
-
+*/
 
   
-/*
+
   for (auto element : reg){
-    Serial.print(element.BitSize);Serial.print(" | ");
+    //Serial.print(element.BitSize);Serial.print(" | ");
     Serial.print(element.regName);Serial.print(" | ");
-    Serial.print(element.regAdr, HEX);Serial.print(" | ");
-    Serial.print(element.regVal);Serial.print(" | ");
-    Serial.print(element.Signed);Serial.print(" | ");
-    Serial.print(element.RW);Serial.print(" | ");
-    Serial.println(element.changed);
+    //Serial.print(element.regAdr, HEX);Serial.print(" | ");
+    Serial.print(element.regVal);Serial.println(" | ");
+    //Serial.print(element.Signed);Serial.print(" | ");
+    //Serial.print(element.RW);Serial.print(" | ");
+    //Serial.println(element.changed);
   }
     Serial.println(""); 
     Serial.println(""); 
-*/
+
 /*  for (auto element : reg){
     if (element.RW){
       String line = char(34) +  element.regName + char(34) + " : " + char(34)+char(34) + ",";

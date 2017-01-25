@@ -126,10 +126,18 @@ typedef struct Treg{
 #define LAST_RWDATA24	0x2FF 		//0x3FF   R   0x000000 Unsigned Contains the data from the last successful 24-bit/32-bit register communication
 
 //24-Bit SOFT Registers
-//      Register Name Add24               R/W Def      Type     Register Description
-#define k_V           0x500             //R/W 0x000000 Unsigned k-Faktor for voltage multiplikation
-#define k_IA          0x501             //R/W 0x000000 Unsigned k-Faktor for current A multiplikation
-#define k_IB          0x502             //R/W 0x000000 Unsigned k-Faktor for current B multiplikation
+//      Register Name    Add24               R/W Def      Type     Register Description
+#define k_V              0x500             //R/W 0x000000 Unsigned k-Faktor for voltage multiplikation
+#define k_IA             0x501             //R/W 0x000000 Unsigned k-Faktor for current A multiplikation
+#define k_IB             0x502             //R/W 0x000000 Unsigned k-Faktor for current B multiplikation
+#define WA               0x503             //R/W 0x000000 Signed   Scaled active energy A
+#define WbA              0x504             //R/W 0x000000 Signed   Scaled reactive energy A
+#define WsA              0x505             //R/W 0x000000 Signed   Scaled apparent energy A
+#define WB               0x506             //R/W 0x000000 Signed   Scaled active energy B
+#define WbB              0x507             //R/W 0x000000 Signed   Scaled reactive energy B
+#define WsB              0x508             //R/W 0x000000 Signed   Scaled apparent energy B
+#define updateTimeEnergy 0x509             //R/W 0x0003E8 Unsigned Energy measurement update time
+#define updateTimeMQTT   0x50A             //R/W 0x0003E8 Unsigned MQTT update time
 
 
 

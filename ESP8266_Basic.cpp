@@ -199,6 +199,29 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
       ADE.setDefault();
     }
 
+//209 ADE7953.resetEnergy
+    if (dissectResult.itemPath == "2/0/9"){
+      if (strcmp(value, "WA") == 0){
+        ADE.energy[0] = 0;
+      }
+      if (strcmp(value, "WbA") == 0){
+        ADE.energy[1] = 0;
+      }
+      if (strcmp(value, "WsA") == 0){
+        ADE.energy[2] = 0;
+      }
+      if (strcmp(value, "WB") == 0){
+        ADE.energy[3] = 0;
+      }
+      if (strcmp(value, "WbB") == 0){
+        ADE.energy[4] = 0;
+      }
+      if (strcmp(value, "WsB") == 0){
+        ADE.energy[5] = 0;
+      }
+    }
+    
+
 //210 ADE7953.get_VINST
     if (dissectResult.itemPath == "2/1/0"){   
       DynamicJsonBuffer JsonBuffer;
@@ -288,20 +311,12 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
 //===> updateMeasurement <-----------------------------------------------------
 void ESP8266_Basic::handle_Measurement(){
 
-  //Serial.println(ADE.readBit(RSTIRQSTATA,17));
-  //if (ADE.readBit(IRQSTATA,12) == 1){
-    //Serial.print("ZX_A detected @"); Serial.println(millis());
-    //Serial.println(ADE.read(AWATT));
-    //ADE.read(RSTIRQSTATA);
-    //ADE.writeBit(IRQSTATA,17,0);
-    //Serial.println(ADE.readBit(IRQSTATA,17));
-  //}
-
   timeClient.update();
+  ADE.updateEnergy();
 
   if (mqtt_client.connected()){
     long now = millis();
-    if (now - lastMeasure_time > updateMeasure_time) {
+    if (now - lastMeasure_time > ADE.read(updateTimeMQTT)) {
       lastMeasure_time = now;
       //run_oneWire();
       //run_I2C();
@@ -389,6 +404,15 @@ void ESP8266_Basic::handle_Measurement(){
       strcpy(chr, strVal.c_str());
       pub(2,1,26, chr);
 
+      //Energy
+      for (int i=0; i<6; i++){
+        strVal = String(ADE.energy[i],7);
+        strcpy(chr, strVal.c_str());
+        pub(2,1,27+i, chr);
+      }
+
+
+/*      
       strVal = ADE.formatDouble(ADE.getW_A(),7);
       strcpy(chr, strVal.c_str());
       pub(2,1,27, chr);
@@ -408,6 +432,7 @@ void ESP8266_Basic::handle_Measurement(){
       strVal = ADE.formatDouble(ADE.getWs_B(),7);
       strcpy(chr, strVal.c_str());
       pub(2,1,32, chr);
+*/
 
       strVal = timeClient.getFormattedTime();
       strcpy(chr, strVal.c_str());
