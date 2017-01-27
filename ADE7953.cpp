@@ -502,16 +502,13 @@ void ADE7953::setDefault(){
 //  read values 
 //===============================================================================
 double ADE7953::getIRMSA(){
-  //return double(read(IRMSA));  
   return getFullScaleInput(read(PGA_IA)) * double(read(IRMSA)) / 9032007 * read(k_IA);
 }
 double ADE7953::getIRMSArel(){
- //int gain = 0x400000 - read(AVGAIN);
  return 100.0 / (0x89D147) * double(read(IRMSA));
 }
 //----------------------------------
 double ADE7953::getIRMSB(){
-  //return double(read(IRMSB));  
   return getFullScaleInput(read(PGA_IB)) * double(read(IRMSB)) / 9032007 * read(k_IB);
 }
 double ADE7953::getIRMSBrel(){
@@ -519,7 +516,6 @@ double ADE7953::getIRMSBrel(){
 }
 //----------------------------------
 double ADE7953::getVRMS(){
-  //return double(read(VRMS));  
   return getFullScaleInput(read(PGA_V)) * double(read(VRMS)) / 9032007 * read(k_V);
 }
 double ADE7953::getVRMSrel(){
@@ -545,10 +541,10 @@ double ADE7953::getANGLE_B(){
 }
 //----------------------------------
 double ADE7953::getPERIOD(){
-  return double(read(Period)+1) / 223000 * 1000; //223kHz clock result in ms
+  return double(read(Period)+1) / 223000 * 1000 -0.07; //223kHz clock result in ms
 }
 double ADE7953::getFREQ(){
-  return 1.0 / (double(read(Period)+1) / 223000);
+  return 1.0 / (getPERIOD()/1000);
 }
 
 //--------------------------------------------------------------------------------
