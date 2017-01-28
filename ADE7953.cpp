@@ -502,21 +502,21 @@ void ADE7953::setDefault(){
 //  read values 
 //===============================================================================
 double ADE7953::getIRMSA(){
-  return getFullScaleInput(read(PGA_IA)) * double(read(IRMSA)) / 9032007 * read(k_IA);
+  return getFullScaleInput(read(PGA_IA)) * double(read(IRMSA)) / 9032007 * read(k_IA) / 100;
 }
 double ADE7953::getIRMSArel(){
  return 100.0 / (0x89D147) * double(read(IRMSA));
 }
 //----------------------------------
 double ADE7953::getIRMSB(){
-  return getFullScaleInput(read(PGA_IB)) * double(read(IRMSB)) / 9032007 * read(k_IB);
+  return getFullScaleInput(read(PGA_IB)) * double(read(IRMSB)) / 9032007 * read(k_IB) / 100;
 }
 double ADE7953::getIRMSBrel(){
   return 100.0 / (0x89D147) * double(read(IRMSB));
 }
 //----------------------------------
 double ADE7953::getVRMS(){
-  return getFullScaleInput(read(PGA_V)) * double(read(VRMS)) / 9032007 * read(k_V);
+  return getFullScaleInput(read(PGA_V)) * double(read(VRMS)) / 9032007 * read(k_V) / 100;
 }
 double ADE7953::getVRMSrel(){
   return 100.0 / (0x89D147) * double(read(VRMS));
@@ -541,7 +541,8 @@ double ADE7953::getANGLE_B(){
 }
 //----------------------------------
 double ADE7953::getPERIOD(){
-  return double(read(Period)+1) / 223000 * 1000 -0.07; //223kHz clock result in ms
+  return double(read(Period)+1) / 223.753; //3.58 MHz/16= 223.750 kHz clock result in ms
+
 }
 double ADE7953::getFREQ(){
   return 1.0 / (getPERIOD()/1000);
@@ -549,7 +550,7 @@ double ADE7953::getFREQ(){
 
 //--------------------------------------------------------------------------------
 double ADE7953::getP_A(){
-  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IA)) * read(k_V) * read(k_IA);
+  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IA)) * read(k_V) / 100 * read(k_IA) / 100;
   return uint24Tolong32(read(AWATT)) / 4862401.0 * k;
 }
 double ADE7953::getP_Arel(){
@@ -557,7 +558,7 @@ double ADE7953::getP_Arel(){
 }
 
 double ADE7953::getQ_A(){
-  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IA)) * read(k_V) * read(k_IA);
+  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IA)) * read(k_V) / 100 * read(k_IA) / 100;
   return uint24Tolong32(read(AVAR)) / 4862401.0 * k;
 }
 double ADE7953::getQ_Arel(){
@@ -565,7 +566,7 @@ double ADE7953::getQ_Arel(){
 }
 
 double ADE7953::getS_A(){
-  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IA)) * read(k_V) * read(k_IA);
+  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IA)) * read(k_V) / 100 * read(k_IA) / 100;
   return uint24Tolong32(read(AVA)) / 4862401.0 * k;
 }
 double ADE7953::getS_Arel(){
@@ -573,7 +574,7 @@ double ADE7953::getS_Arel(){
 }
 //----------------------------------
 double ADE7953::getP_B(){
-  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IB)) * read(k_V) * read(k_IB);
+  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IB)) * read(k_V) / 100 * read(k_IB) / 100;
   return uint24Tolong32(read(BWATT)) / 4862401.0 * k;
 }
 double ADE7953::getP_Brel(){
@@ -581,7 +582,7 @@ double ADE7953::getP_Brel(){
 }
 
 double ADE7953::getQ_B(){
-  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IB)) * read(k_V) * read(k_IB);
+  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IB)) * read(k_V) / 100 * read(k_IB) / 100;
   return uint24Tolong32(read(BVAR)) / 4862401.0 * k;
 }
 double ADE7953::getQ_Brel(){
@@ -589,7 +590,7 @@ double ADE7953::getQ_Brel(){
 }
 
 double ADE7953::getS_B(){
-  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IB)) * read(k_V) * read(k_IB);
+  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IB)) * read(k_V) / 100 * read(k_IB) / 100;
   return uint24Tolong32(read(BVA)) / 4862401.0 * k;
 }
 double ADE7953::getS_Brel(){
@@ -604,8 +605,8 @@ void ADE7953::updateEnergy(){
     lastMeasure_time = now;
 
     int regGAIN[] = {AWGAIN, AVARGAIN, AVAGAIN, BWGAIN, BVARGAIN, BVAGAIN};
-    double PN_A = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IA)) * read(k_V) * read(k_IA);
-    double PN_B = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IB)) * read(k_V) * read(k_IB);   
+    double PN_A = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IA)) * read(k_V) / 100 * read(k_IA) / 100;
+    double PN_B = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IB)) * read(k_V) / 100 * read(k_IB) / 100;   
     double PN_AB[] = {PN_A, PN_A, PN_A, PN_B, PN_B, PN_B };
     int regEnergy[] = {AENERGYA, RENERGYA, APENERGYA, AENERGYB, RENERGYB, APENERGYB};
     //double Energy[] = {WA, WbA, WsA, WB, WbB, WsB};
@@ -632,24 +633,29 @@ void ADE7953::updateEnergy(){
 }
 
 double ADE7953::getW_A(){  
-  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IB)) * read(k_V) * read(k_IB);
+  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IA)) * read(k_V) / 100 * read(k_IA) / 100;
   return uint24Tolong32(read(AENERGYA)) / 4862401.0 * k  * 3600 ;
 }
 double ADE7953::getWb_A(){
-  return uint24Tolong32(read(RENERGYA));
+  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IA)) * read(k_V) / 100 * read(k_IA) / 100;
+  return uint24Tolong32(read(RENERGYA)) / 4862401.0 * k  * 3600 ;
 }
 double ADE7953::getWs_A(){
-  return uint24Tolong32(read(APENERGYA));
+  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IA)) * read(k_V) / 100 * read(k_IA) / 100;
+  return uint24Tolong32(read(APENERGYA)) / 4862401.0 * k  * 3600 ;
 }
 //----------------------------------
 double ADE7953::getW_B(){
-  return uint24Tolong32(read(AENERGYB));
+  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IB)) * read(k_V) / 100 * read(k_IB) / 100;
+  return uint24Tolong32(read(AENERGYB)) / 4862401.0 * k  * 3600 ;
 }
 double ADE7953::getWb_B(){
-  return uint24Tolong32(read(RENERGYB));
+  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IB)) * read(k_V) / 100 * read(k_IB) / 100;
+  return uint24Tolong32(read(RENERGYB)) / 4862401.0 * k  * 3600 ;
 }
 double ADE7953::getWs_B(){
-  return uint24Tolong32(read(APENERGYB));
+  double k = getFullScaleInput(read(PGA_V)) * getFullScaleInput(read(PGA_IB)) * read(k_V) / 100 * read(k_IB) / 100;
+  return uint24Tolong32(read(APENERGYB)) / 4862401.0 * k  * 3600 ;
 }
 
 
