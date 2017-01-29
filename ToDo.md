@@ -17,10 +17,21 @@ letzte Änderung: Pf@nne
 - **FHEM**
   - Skalierung Plott in V/A nicht mV/mA
   - Hübsch machen... :-)
+  - ToggleButton für die Umschaltung der MQTT-UpdateTime. "Normal" 60 Sekunden oder mehr. "Betrachten" 1 Sekunde
   
-  ***
-  ##Themen:
-  ###NTP
-  NTP wird viel zu häufig abgefragt - beim Start und jede Stunde einmal genügt
+***
+##Themen:
+```diff
++ Pf@nne
+- Boris
+```
+  
+###NTP
+```diff
+- NTP wird viel zu häufig abgefragt - beim Start und jede Stunde einmal genügt
++ Die UpdateTime ist an die MQTT-Update-Time angekoppelt. Im "normalen" Betrieb werden die Messwerte vielleicht einmal pro Minute published,
++ da fällt dich neben den zig MQTT-Paketen das NTP-Paket nic´ht ins Gewicht. Eine Änderung würde die Implementaion einer "SoftClock" 
++ nach sich ziehen. 
+```
   
   
