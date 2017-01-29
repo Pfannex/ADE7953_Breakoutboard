@@ -5,6 +5,9 @@ Aktuell gibt es nur ein Breakoutboard mit Grundbeschaltung.
 Die Ankopplung der Leistungsmessgrößen erfolgt zu einem späteren Zeitpunkt.
 
 ***
+[ToDo](https://github.com/Pfannex/ADE7953_Breakoutboard/blob/master/ToDo.md)
+***
+
 - **ADE7953**
   - [Kalibrierung](https://github.com/Pfannex/ADE7953_Breakoutboard/wiki/Kalibrierung-%7C-ADE7953-MQTT-Wattmeter)
 - **Firmware**
