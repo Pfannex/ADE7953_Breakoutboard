@@ -441,6 +441,7 @@ void ESP8266_Basic::handle_Measurement(){
 
       //ADE.read(RSTIRQSTATA);
       //ADE.read(RSTIRQSTATB);
+
     }
   }
 }
@@ -812,6 +813,130 @@ bool MQTTOK = false;
   conn.close();
     
 }*/
+
+//===============================================================================
+//  Peripherals
+//===============================================================================
+
+void ESP8266_Basic::setup_Peripherals() {
+
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(LED_PIN, OUTPUT);
+  for(int i= 0; i< 17; i++) {
+      buttonPinState[i]= 0;
+      lastDebounceTime[i]= 0;
+  }
+  
+}
+
+// software debouncer
+int ESP8266_Basic::getButtonPinState(int buttonPin) {
+
+  // combine with hardware debouncer (100 nF capacitor from buttonPin to GND)
+  
+  int lastButtonPinState= buttonPinState[buttonPin];
+  buttonPinState[buttonPin]= digitalRead(buttonPin); 
+  unsigned long now= millis();
+  /* char s[128];
+  sprintf(s, "%d(%d) -> %d(%d)", lastButtonPinState, lastDebounceTime[buttonPin], 
+    buttonPinState[buttonPin], now);
+  Serial.println(s);   */
+  if(buttonPinState[buttonPin] != lastButtonPinState)
+    lastDebounceTime[buttonPin]= now;
+  if(now - lastDebounceTime[buttonPin]> DEBOUNCETIME) 
+    return buttonPinState[buttonPin];
+  else
+    return -1; // undecided, still bouncing
+}
+
+void ESP8266_Basic::printButtonMode(String msg, buttonMode_t mode) {
+  
+  Serial.println(msg+": Button mode S= "+String(mode.S)+
+    " L= "+String(mode.L)+" button= "+String(mode.state)+
+    " idle= "+String(mode.idle));
+}
+
+void ESP8266_Basic::setButtonMode(buttonMode_t mode) {
+  
+  onSetButtonMode(currentButtonMode, mode);
+  currentButtonMode= mode;
+}
+
+void ESP8266_Basic::handle_Peripherals() {
+
+  // how to use the buttonMode?
+  // - state signals if the button is up (0) or down (1)
+  // - statex signals if state has been the same for at least BTIME milliseconds
+  // - a short press of the button toggles the modeS between off (0) and on (1)
+  // - a long press of the button toggles the modeL between off (0) and on (1)
+
+  int buttonPinState= getButtonPinState(BUTTON_PIN);
+  if(buttonPinState < 0) return; // still bouncing
+  
+  unsigned long now= millis();
+
+  buttonMode_t mode= currentButtonMode;
+  mode.state= !buttonPinState; // down if pin is 0
+  if(mode.state != currentButtonMode.state) {
+    // button changed
+    mode.t= now;  
+    /*Serial.println("Button changed to "+ 
+      String(mode.state)+" @ "+String(mode.t));*/
+    if(!mode.state) {
+       // button up  
+       if(mode.idle) mode.L= !mode.L; else mode.S= !mode.S;
+    }
+    mode.idle= 0;  
+    setButtonMode(mode);
+  } else {
+    if(!mode.idle && (now - mode.t >= BTIME)) {
+      mode.idle= 1;
+      setButtonMode(mode);
+    }
+  }
+}
+
+void ESP8266_Basic::LED(ledMode_t ledMode) {
+  
+  switch(ledMode) {
+    case ON: digitalWrite(LED_PIN, 1); break;
+    case OFF: digitalWrite(LED_PIN, 0); break;
+  }
+}
+
+//===> button mode service routine --------------------------------------------
+
+void ESP8266_Basic::onSetButtonMode(buttonMode_t oldMode, buttonMode_t newMode) {
+
+  // examples for how to use the idle flag:
+  // - if button is pressed, indicate that releasing the button will toggle the L mode
+  // - leave an input mode when not button is pressed for some time
+
+  /*printButtonMode("old", oldMode);
+  printButtonMode("new", newMode);*/
+  if(newMode.S != oldMode.S) {
+    if(newMode.S) {
+      LED(ON); 
+      Serial.println("Relay is on.");
+    } else { 
+      LED(OFF);
+      Serial.println("Relay is off.");
+    }
+  }
+  if(newMode.L != oldMode.L) {
+    if(newMode.L)
+      Serial.println("God mode is on.");
+    else
+      Serial.println("God mode is off.");
+  } else {
+    if(newMode.state && newMode.idle != oldMode.idle && newMode.idle) {
+      if(newMode.L)       
+        Serial.println("Prepare to leave God mode.");
+      else
+        Serial.println("Prepare to enter God mode.");
+    }
+  }
+}
 
 //===============================================================================
 //  Configuration 

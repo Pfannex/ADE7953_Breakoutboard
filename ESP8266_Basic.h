@@ -47,6 +47,17 @@
   //#include <MySQL_Connection.h>
   //#include <MySQL_Cursor.h>
 
+//Peripherals
+  #define BTIME 5000
+  typedef struct { 
+   int S;           // mode S 0 or 1  
+   int L;           // mode L 0 or 1
+   unsigned long t; // time of last change
+   int state;       // button down 0 or 1
+   int idle;        // state lasts longer than >= BTIME
+  } buttonMode_t;
+  typedef enum ledMode_t { OFF, ON };
+
 //===> GPIO <--------------------------------------------------------------
 //1Wire
   //#define oneW 2
@@ -70,6 +81,10 @@ public:
   bool pub(int e1, int e2, char* Payload);
   bool pub(int e1, int e2, int e3, char* Payload);
   
+  //Peripherals
+  void setup_Peripherals();
+  void handle_Peripherals();
+ 
   //AktSen
   void handle_Measurement();
   void run_I2C();
@@ -84,7 +99,26 @@ private:
   PubSubClient mqtt_client;
   File cfgFile;
   ESP8266_Basic_webServer webServer;  
+
+  //Peripherals------------------------
+  // see https://github.com/esp8266/Arduino/blob/master/doc/reference.md
+
+  #define DEBOUNCETIME 50
+  int buttonPinState[17];                 // the last pin state
+  unsigned long lastDebounceTime[17];     // when the pin state changed last
+  int getButtonPinState(int buttonPin);
   
+  #define BUTTON_PIN 12 // Arduino Pin 12 = = IO12 = Physical Pin 6 = NodeMCU/WeMos Pin 6
+  buttonMode_t currentButtonMode;
+  unsigned long buttonChangeTime= 0;      
+
+  void printButtonMode(String msg, buttonMode_t mode);
+  void setButtonMode(buttonMode_t mode);
+  void onSetButtonMode(buttonMode_t oldMode, buttonMode_t newMode);
+  
+  #define LED_PIN 15 // Arduino Pin 15 = IO15 = Physical Pin 16 = NodeMCU/WeMos Pin 8
+  void LED(ledMode_t ledMode);
+
   //AktSen
   long lastMeasure_time;
   long updateMeasure_time = 5000;

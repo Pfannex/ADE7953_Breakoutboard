@@ -21,7 +21,8 @@ ESP8266_Basic espClient;
 void setup() {  
   Serial.begin(115200); 
   Serial.println("");
-  
+
+  espClient.setup_Peripherals();
   espClient.start_WiFi_connections();
   espClient.run_I2C();
   espClient.ADE.init();
@@ -31,6 +32,7 @@ void setup() {
 void loop() {
   espClient.handle_connections(); 
   espClient.handle_Measurement();
+  espClient.handle_Peripherals();
 }
 
 /*ToDo
