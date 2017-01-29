@@ -1,5 +1,5 @@
 #ToDo
-Stand: 29.01.2017  
+Stand: 29.01.2017 / 19:22h  
 letzte Änderung: Pf@nne
 
 - **Hardware**
