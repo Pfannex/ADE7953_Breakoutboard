@@ -1,21 +1,2 @@
-# Created by FHEM/98_SVG.pm, 2017-01-29 12:43:45
-set terminal png transparent size <SIZE> crop
-set output '<OUT>.png'
-set xdata time
-set timefmt "%Y-%m-%d_%H:%M:%S"
-set xlabel " "
-set title 'waveforms'
-set ytics 
-set y2tics 
-set grid ytics y2tics
-set ylabel "Voltage / V"
-set y2label "Current / A"
-set xrange [0:0.045]
-
-#logproxy Func:logProxy_xyFile2Plot("/volumeUSB1/usbshare/fhem/log/waveform.log",4,"V_INST:")
-#logproxy Func:logProxy_xyFile2Plot("/volumeUSB1/usbshare/fhem/log/waveform.log",4,"IA_INST:")
-#logproxy Func:logProxy_xyFile2Plot("/volumeUSB1/usbshare/fhem/log/waveform.log",4,"IB_INST:")
-
-plot "<IN>" using 1:2 axes x1y1 title 'V' ls l0 lw 1 with quadraticSmooth,\
-     "<IN>" using 1:2 axes x1y2 title 'IA' ls l1 lw 1 with quadraticSmooth,\
-     "<IN>" using 1:2 axes x1y2 title 'IB' ls l2 lw 1 with quadraticSmooth
+- ss
+  - ff
