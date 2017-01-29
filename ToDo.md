@@ -3,7 +3,7 @@ Stand: 29.01.2017
 letzte Änderung: Pf@nne
 
 - **Hardware**
-  - CT-Test - erl. 20.01.2017
+  - ~~CT-Test~~ - 20.01.2017
   - Ankopplung 230VAC
   
 - **Firmware**
