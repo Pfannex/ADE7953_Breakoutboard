@@ -17,3 +17,10 @@ letzte Änderung: Pf@nne
 - **FHEM**
   - Skalierung Plott in V/A nicht mV/mA
   - Hübsch machen... :-)
+  
+  ***
+  ##Themen:
+  ###NTP
+  NTP wird viel zu häufig abgefragt - beim Start und jede Stunde einmal genügt
+  
+  
