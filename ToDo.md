@@ -12,6 +12,7 @@ letzte Änderung: Pf@nne
   - Frequenz SoftRegister für GAIN
   - Kalibrierungsfunktion in FW implementieren
   - WiKi Kalibrierungshinweis GAIN = 0x400000
+  - NTP wird viel zu häufig abgefragt - beim Start und jede Stunde einmal genügt
 
 - **FHEM**
   - Skalierung Plott in V/A nicht mV/mA
