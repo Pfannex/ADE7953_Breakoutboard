@@ -223,7 +223,30 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
     
 
 //210 ADE7953.get_VINST
-    if (dissectResult.itemPath == "2/1/0"){   
+    if (dissectResult.itemPath == "2/1/0"){  
+
+/*      DynamicJsonBuffer JsonBuffer;
+      JsonObject& root = JsonBuffer.parseObject(ADE.getWave(String(value).toInt(), V).c_str());
+      int i = 0;
+      for (auto &element : root){
+        String Key = element.key;
+        String Value = element.value;
+        String samples = Key;
+        samples += ",";
+        samples += Value;
+        samples += " | " + String(i);
+        Serial.println(samples);
+        i++;
+      }
+
+      for (int i=0; i<1000; i++){
+        String str = "0.1234567,-12.34567 | Counter=" + String(i);
+        mqtt_client.publish("ESP8266_12345/ADE7953/values/V_INST", str.c_str());
+        //client.loop();
+      }  
+*/      
+
+       
       DynamicJsonBuffer JsonBuffer;
       JsonObject& root = JsonBuffer.parseObject(ADE.getWave(String(value).toInt(), V).c_str());
       //root.printTo(Serial); 
@@ -238,6 +261,7 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
         strcpy(chr, samples.c_str());      
         pub(2,1,15, chr);
       }
+
     }
 //211 ADE7953.get_IAINST
     if (dissectResult.itemPath == "2/1/1"){   

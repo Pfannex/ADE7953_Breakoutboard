@@ -303,7 +303,7 @@ uint32_t ADE7953::read(uint16_t Reg){
     uint8_t buffer[10];
     buffer[0] = Reg >> 8;
     buffer[1] = Reg;
-    brzo_i2c_start_transaction(I2Caddr, 600);
+    brzo_i2c_start_transaction(I2Caddr, 200);
     brzo_i2c_write(buffer, 2, true); 
     brzo_i2c_read(buffer, count, true);
     brzo_i2c_end_transaction(); 
@@ -665,10 +665,13 @@ double ADE7953::getWs_B(){
 //===============================================================================
 String ADE7953::getWave(int samples, uint16_t regNumber){
   if (samples == 0) samples = 50;
-  if (samples >100) samples = 100;  
+  //if (samples >100) samples = 100;  
   
   long t[samples];
+  Serial.println("--------------------");
+  Serial.println("FreeHeap float start = " + String(ESP.getFreeHeap()));
   double values[samples];
+  Serial.println("FreeHeap float ende = " + String(ESP.getFreeHeap()));
   uint16_t k = 1;
   uint16_t PGA = 1;
   if (regNumber == V){
@@ -693,13 +696,18 @@ String ADE7953::getWave(int samples, uint16_t regNumber){
     values[i] = read(regNumber);
   }
   //create json {"ts":"val","ts":"val"}
+  //Serial.println("--------------------");
+  //Serial.println("FreeHeap Start = " + String(ESP.getFreeHeap()));
   String wave = "{";
   for (int i=0; i<samples; i++){
     wave += String(0.000001*(t[i]- t0), 5);
     wave += ":";
-    values[i] = getFullScaleInput(read(PGA))* sqrt(2) * uint24Tolong32(values[i]) / 6500000.0 * read(k);
+    values[i] = getFullScaleInput(read(PGA))* sqrt(2) * uint24Tolong32(values[i]) / 6500000.0 * read(k) / 100;
     wave += formatDouble(values[i], 5);
     if (i<samples-1) wave += ",";
+    
+    //Serial.println("FreeHeap Start = " + String(ESP.getFreeHeap()));
+
   }
   wave += "}";
   return wave;
