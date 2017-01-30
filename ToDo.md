@@ -15,7 +15,7 @@ letzte Änderung: Pf@nne
   - NTP wird viel zu häufig abgefragt - beim Start und jede Stunde einmal genügt
 
 - **FHEM**
-  - Skalierung Plott in V/A nicht mV/mA
+  - ~~Skalierung Plott in V/A nicht mV/mA~~ 30.01.2017 - FW fehler
   - Hübsch machen... :-)
   - ToggleButton für die Umschaltung der MQTT-UpdateTime. "Normal" 60 Sekunden oder mehr. "Betrachten" 1 Sekunde
   
