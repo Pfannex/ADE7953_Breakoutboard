@@ -665,13 +665,12 @@ double ADE7953::getWs_B(){
 //===============================================================================
 String ADE7953::getWave(int samples, uint16_t regNumber){
   if (samples == 0) samples = 50;
-  //if (samples >100) samples = 100;  
+  if (samples >240) samples = 240;  
   
-  long t[samples];
+  unsigned long t[samples];
   Serial.println("--------------------");
   Serial.println("FreeHeap float start = " + String(ESP.getFreeHeap()));
-  double values[samples];
-  Serial.println("FreeHeap float ende = " + String(ESP.getFreeHeap()));
+  uint32_t values[samples];
   uint16_t k = 1;
   uint16_t PGA = 1;
   if (regNumber == V){
@@ -690,7 +689,7 @@ String ADE7953::getWave(int samples, uint16_t regNumber){
   read(RSTIRQSTATA); //Clear IROs
   while (!readBit(RSTIRQSTATA,15)) {   //wait for IRQ V zeroCross
   }    
-  int t0 = micros(); 
+  unsigned long t0 = micros(); 
   for (int i=0; i<samples; i++){
     t[i] = micros();
     values[i] = read(regNumber);
@@ -702,14 +701,18 @@ String ADE7953::getWave(int samples, uint16_t regNumber){
   for (int i=0; i<samples; i++){
     wave += String(0.000001*(t[i]- t0), 5);
     wave += ":";
-    values[i] = getFullScaleInput(read(PGA))* sqrt(2) * uint24Tolong32(values[i]) / 6500000.0 * read(k) / 100;
-    wave += formatDouble(values[i], 5);
+    double val = getFullScaleInput(read(PGA))* sqrt(2) * uint24Tolong32(values[i]) / 6500000.0 * read(k) / 100;
+    wave += formatDouble(val, 2);
     if (i<samples-1) wave += ",";
-    
-    //Serial.println("FreeHeap Start = " + String(ESP.getFreeHeap()));
-
   }
   wave += "}";
+  Serial.println("===============================");
+  Serial.println("FreeHeap  = " + String(ESP.getFreeHeap()));
+  Serial.println("StringLength  = " + String(wave.length()));
+  Serial.println(wave);
+  Serial.println("===============================");
+  
+  
   return wave;
 }
 

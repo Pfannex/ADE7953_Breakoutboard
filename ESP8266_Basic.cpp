@@ -52,12 +52,12 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
     value[i] = payload[i];
   }
 
-  Serial.print("incoming subscribe - LEN: ");
+/*  Serial.print("incoming subscribe - LEN: ");
   Serial.print(length);
   Serial.print(" | ");
   Serial.print(topic);
   Serial.print(" | ");
-  Serial.println(value);
+  Serial.println(value);*/
   
   TdissectResult dissectResult;    
   dissectResult = dissectPayload(topic, value);
