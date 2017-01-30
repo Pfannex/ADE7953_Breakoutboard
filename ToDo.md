@@ -1,5 +1,5 @@
 #ToDo
-Stand: 30.01.2017 / 20:16h  
+Stand: 30.01.2017 / 20:27h  
 letzte Änderung: Pf@nne
 
 - **Hardware**
@@ -12,7 +12,7 @@ letzte Änderung: Pf@nne
   - Topic /getValues/IA_INST Samples, kHz
   - Frequenz SoftRegister für GAIN
   - Kalibrierungsfunktion in FW implementieren
-  - WiKi Kalibrierungshinweis GAIN = 0x400000
+  - ~~WiKi Kalibrierungshinweis GAIN = 0x400000~~ - 30.01.2017
   - NTP wird viel zu häufig abgefragt - beim Start und jede Stunde einmal genügt
 
 - **FHEM**
