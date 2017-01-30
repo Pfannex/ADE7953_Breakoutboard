@@ -297,6 +297,29 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
         pub(2,1,17, chr);
       }
     }
+    
+//213 getWaves
+    if (dissectResult.itemPath == "2/1/3"){ 
+      Serial.println("getWaves");  
+    
+      for (int j=0; j<3; j++){  
+        DynamicJsonBuffer JsonBuffer;
+        JsonObject& root = JsonBuffer.parseObject(ADE.getWave(String(value).toInt(), IA+j).c_str());
+        //root.printTo(Serial); 
+          for (auto &element : root){
+            String Key = element.key;
+            String Value = element.value;
+            String samples = Key;
+            samples += ",";
+            samples += Value;
+        
+            //Serial.println(samples);      
+            strcpy(chr, samples.c_str());      
+            pub(2,1,15+j, chr);
+        }
+        delay(500);
+      }  
+    }
    
 //310 File/Read
     /*if (dissectResult.itemPath == "3/1/0"){

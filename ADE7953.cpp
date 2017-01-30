@@ -706,11 +706,11 @@ String ADE7953::getWave(int samples, uint16_t regNumber){
     if (i<samples-1) wave += ",";
   }
   wave += "}";
-  Serial.println("===============================");
-  Serial.println("FreeHeap  = " + String(ESP.getFreeHeap()));
-  Serial.println("StringLength  = " + String(wave.length()));
-  Serial.println(wave);
-  Serial.println("===============================");
+  //Serial.println("===============================");
+  //Serial.println("FreeHeap  = " + String(ESP.getFreeHeap()));
+  //Serial.println("StringLength  = " + String(wave.length()));
+  //Serial.println(wave);
+  //Serial.println("===============================");
   
   
   return wave;

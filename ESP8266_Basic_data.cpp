@@ -61,6 +61,7 @@ Topics::Topics(){
   sub.E3.item[2][1][0] = "V_INST";
   sub.E3.item[2][1][1] = "IA_INST";
   sub.E3.item[2][1][2] = "IB_INST";
+  sub.E3.item[2][1][3] = "getWaves";
 
   sub.E1.item[3] = "File";
   sub.E2.item[3][0] = "Read";
@@ -124,9 +125,9 @@ Topics::Topics(){
   pub.E3.item[2][1][12] = "P_B";
   pub.E3.item[2][1][13] = "Q_B";
   pub.E3.item[2][1][14] = "S_B";
-  pub.E3.item[2][1][15] = "V_INST";
-  pub.E3.item[2][1][16] = "IA_INST";
-  pub.E3.item[2][1][17] = "IB_INST";
+  pub.E3.item[2][1][15] = "IA_INST";
+  pub.E3.item[2][1][16] = "IB_INST";
+  pub.E3.item[2][1][17] = "V_INST";
   pub.E3.item[2][1][18] = "V_RMSrel";
   pub.E3.item[2][1][19] = "IA_RMSrel";
   pub.E3.item[2][1][20] = "IB_RMSrel";
