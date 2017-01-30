@@ -1,5 +1,5 @@
 #ToDo
-Stand: 29.01.2017 / 19:22h  
+Stand: 30.01.2017 / 20:16h  
 letzte Änderung: Pf@nne
 
 - **Hardware**
@@ -7,8 +7,9 @@ letzte Änderung: Pf@nne
   - Ankopplung 230VAC
   
 - **Firmware**
-  - MQTT max.150 Samples? jsonBuffer?
-  - Topic resetEnergy Samples, kHz
+  - ~~MQTT max.150 Samples? jsonBuffer?~~ - 30.01.2017 - 240 Samples 80ms/3kHz
+  - Topic resetEnergy REG, Value
+  - Topic /getValues/IA_INST Samples, kHz
   - Frequenz SoftRegister für GAIN
   - Kalibrierungsfunktion in FW implementieren
   - WiKi Kalibrierungshinweis GAIN = 0x400000
