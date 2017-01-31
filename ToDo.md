@@ -32,8 +32,8 @@ letzte Änderung: Pf@nne
 ```diff
 - NTP wird viel zu häufig abgefragt - beim Start und jede Stunde einmal genügt
 + Die UpdateTime ist an die MQTT-Update-Time angekoppelt. Im "normalen" Betrieb werden die Messwerte 
-+ vielleicht einmal pro Minute published, da fällt neben den zig MQTT-Paketen das NTP-Paket nicht ins Gewicht. 
-+ Eine Änderung würde die Implementaion einer "SoftClock" nach sich ziehen. 
++ vielleicht einmal pro Minute published, da fällt neben den zig MQTT-Paketen das NTP-Paket nicht 
++ ins Gewicht. Eine Änderung würde die Implementaion einer "SoftClock" nach sich ziehen. 
 ```
   
   
