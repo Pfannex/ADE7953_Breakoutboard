@@ -65,6 +65,10 @@ public:
   void mqttBroker_Callback(char* topic, byte* payload, unsigned int length);
   void setCallback(MQTT_CALLBACK_SIGNATURE);
 
+  void adeCallback();
+  void setADECallback(ADE_CALLBACK_SIGNATURE);
+  void ade_Callback(String sample);
+
 
   bool pub(int e1, char* Payload);
   bool pub(int e1, int e2, char* Payload);

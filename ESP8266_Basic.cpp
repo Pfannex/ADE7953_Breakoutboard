@@ -31,9 +31,23 @@ ESP8266_Basic::ESP8266_Basic() : webServer(),
                                  // NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 60000);
 
   //Callbacks								 
+  ADE.set_Callback(std::bind(&ESP8266_Basic::adeCallback, this));
+  ADE.setADECallback(std::bind(&ESP8266_Basic::ade_Callback, this, std::placeholders::_1));
+  
   webServer.set_saveConfig_Callback(std::bind(&ESP8266_Basic::cfgChange_Callback, this));
   mqtt_client.setCallback(std::bind(&ESP8266_Basic::mqttBroker_Callback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
+//===> ADE Callback <---------------------------------------------------
+void ESP8266_Basic::adeCallback(){
+  Serial.print("ADE Callback -> "); Serial.println("xx");
+ 
+}
+void ESP8266_Basic::ade_Callback(String sample) {
+  Serial.print("ADE new Callback -> "); Serial.println(sample);
+
+  
+}
+
 
 //===============================================================================
 //  incomming subscribe 

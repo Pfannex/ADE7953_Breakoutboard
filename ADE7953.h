@@ -24,6 +24,10 @@
   #include <brzo_i2c.h>
 //ADE7953  
   #include "ADE7953_REG.h"          //ADE7953 Registers
+//callBack
+  #include <functional>
+  typedef std::function<void(void)> CallbackFunction;
+  #define ADE_CALLBACK_SIGNATURE std::function<void(String)> callback
 
   #define I2Caddr 0x38
   #define ADE7953_RESET 2           //GPIO RESET ADE7953
@@ -33,6 +37,12 @@ class ADE7953{
 public:
   ADE7953();
   bool init();
+  void set_Callback(CallbackFunction c);
+  CallbackFunction myCallback;
+  ADE_CALLBACK_SIGNATURE;  
+  void setADECallback(ADE_CALLBACK_SIGNATURE);  
+
+  
   void write(uint16_t reg);
   void write(uint16_t reg, uint32_t val);
   void write(String strRegVal);

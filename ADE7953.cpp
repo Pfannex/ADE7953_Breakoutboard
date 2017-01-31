@@ -201,6 +201,15 @@ bool ADE7953::init(){
   return true;
 }
 
+//===> Callback for CFGchange <------------------------------------------------
+void ADE7953::set_Callback(CallbackFunction c){
+  myCallback = c;
+}
+
+void ADE7953::setADECallback(ADE_CALLBACK_SIGNATURE) {
+    this->callback = callback;
+    //return *this;
+}
 
 //===============================================================================
 //  ADE7953 read/write Register / Bit
@@ -665,12 +674,23 @@ double ADE7953::getWs_B(){
 //===============================================================================
 String ADE7953::getWave(int samples, uint16_t regNumber){
   if (samples == 0) samples = 50;
-  if (samples >240) samples = 240;  
+  //if (samples >240) samples = 240;  
+
+  Serial.println("do Callback");
+  if (myCallback != nullptr)
+    myCallback();
+  else
+     Serial.println("null");
+     
+  //if (callback != nullptr)
+    //callback("Hello new World");
+  //else
+     //Serial.println("null");
   
-  unsigned long t[samples];
+
+  
   Serial.println("--------------------");
   Serial.println("FreeHeap float start = " + String(ESP.getFreeHeap()));
-  uint32_t values[samples];
   uint16_t k = 1;
   uint16_t PGA = 1;
   if (regNumber == V){
@@ -689,11 +709,14 @@ String ADE7953::getWave(int samples, uint16_t regNumber){
   read(RSTIRQSTATA); //Clear IROs
   while (!readBit(RSTIRQSTATA,15)) {   //wait for IRQ V zeroCross
   }    
+  unsigned long t[samples];
+  uint32_t values[samples];
   unsigned long t0 = micros(); 
   for (int i=0; i<samples; i++){
     t[i] = micros();
     values[i] = read(regNumber);
   }
+  
   //create json {"ts":"val","ts":"val"}
   //Serial.println("--------------------");
   //Serial.println("FreeHeap Start = " + String(ESP.getFreeHeap()));
