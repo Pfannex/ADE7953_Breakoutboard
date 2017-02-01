@@ -42,11 +42,7 @@ void ESP8266_Basic::adeCallback(){
   Serial.print("ADE Callback -> "); Serial.println("xx");
  
 }
-void ESP8266_Basic::ade_Callback(String sample) {
-  Serial.print("ADE new Callback -> "); Serial.println(sample);
 
-  
-}
 
 
 //===============================================================================
@@ -273,7 +269,7 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
         
         //Serial.println(samples);      
         strcpy(chr, samples.c_str());      
-        pub(2,1,15, chr);
+        pub(2,1,17, chr);
       }
 
     }
@@ -308,15 +304,21 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
         
         //Serial.println(samples);      
         strcpy(chr, samples.c_str());      
-        pub(2,1,17, chr);
+        pub(2,1,15, chr);
       }
     }
     
 //213 getWaves
     if (dissectResult.itemPath == "2/1/3"){ 
       Serial.println("getWaves");  
+
+      //for (int j=0; j<3; j++){ 
+        //ADE.getWave(String(value).toInt(), V);  
+      //}
+      
     
-      for (int j=0; j<3; j++){  
+
+      for (int j=0; j<3; j++){ 
         DynamicJsonBuffer JsonBuffer;
         JsonObject& root = JsonBuffer.parseObject(ADE.getWave(String(value).toInt(), IA+j).c_str());
         //root.printTo(Serial); 
@@ -332,40 +334,19 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
             pub(2,1,15+j, chr);
         }
         delay(500);
-      }  
+      } 
+       
     }
-   
-//310 File/Read
-    /*if (dissectResult.itemPath == "3/1/0"){
-      //Write Field_01
-      strcpy(myFile.Field_01, value);
-      write_MyFile();
-      updateMeasure_time = String(value).toInt();
-      Serial.print("UpdateMesure_time = "); Serial.println(value);
-    }*/
-    
-    /*if (dissectResult.itemPath == "1/0/0"){
-      if (strcmp(value, "Reboot") == 0){
-        ESP.restart();
-      }
-    }
-    if (dissectResult.itemPath == "1/0/1"){
-      pubConfig();
-    }
-    if (dissectResult.itemPath == "1/0/2"){
-      //UpdateFirmware()
-      webServer.updateFirmware();
-    }
-  
-    if (dissectResult.itemPath == "3/0/0"){
-      //Read Field_01
-      strcpy(myFile.Field_01, "");
-      read_MyFile();
-      Serial.println(myFile.Field_01);
-    }*/
   }
 }
+void ESP8266_Basic::ade_Callback(String sample) {
+  //Serial.print("ADE new Callback -> "); Serial.println(sample);
 
+  
+  char chr[100] = "";
+  strcpy(chr, sample.c_str());      
+  pub(2,1,17, chr);  
+}
 //===============================================================================
 //  AktSen Control 
 //===============================================================================
