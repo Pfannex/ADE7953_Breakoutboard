@@ -1,5 +1,5 @@
 #changeLOG
-Stand: 01.02.2017 / 18:53h  
+Stand: 03.02.2017 / 23:00h  
 letzte Änderung: Pf@nne
 
 - **Hardware**
@@ -12,4 +12,5 @@ letzte Änderung: Pf@nne
 
 - **FHEM**
   - dummys für INST-Werte ergänzt
+  - Pfanne_fhem.cfg abgelegt
   
