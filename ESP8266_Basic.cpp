@@ -31,17 +31,17 @@ ESP8266_Basic::ESP8266_Basic() : webServer(),
                                  // NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 60000);
 
   //Callbacks								 
-  ADE.set_Callback(std::bind(&ESP8266_Basic::adeCallback, this));
+  //ADE.set_Callback(std::bind(&ESP8266_Basic::adeCallback, this));
   ADE.setADECallback(std::bind(&ESP8266_Basic::ade_Callback, this, std::placeholders::_1));
   
   webServer.set_saveConfig_Callback(std::bind(&ESP8266_Basic::cfgChange_Callback, this));
   mqtt_client.setCallback(std::bind(&ESP8266_Basic::mqttBroker_Callback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 //===> ADE Callback <---------------------------------------------------
-void ESP8266_Basic::adeCallback(){
-  Serial.print("ADE Callback -> "); Serial.println("xx");
+//void ESP8266_Basic::adeCallback(){
+  //Serial.print("ADE Callback -> "); Serial.println("xx");
  
-}
+//}
 
 
 
@@ -310,15 +310,18 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
     
 //213 getWaves
     if (dissectResult.itemPath == "2/1/3"){ 
-      Serial.println("getWaves");  
+      //Serial.println("getWaves");  
 
       //for (int j=0; j<3; j++){ 
-        //ADE.getWave(String(value).toInt(), V);  
-      //}
+      //Serial.println("===============================");
+      //Serial.println("FreeHeap  = " + String(ESP.getFreeHeap()));
+        ADE.getWave(String(value).toInt(), V);  
+      //Serial.println("FreeHeap  = " + String(ESP.getFreeHeap()));
+     //}
       
     
 
-      for (int j=0; j<3; j++){ 
+      /*for (int j=0; j<3; j++){ 
         DynamicJsonBuffer JsonBuffer;
         JsonObject& root = JsonBuffer.parseObject(ADE.getWave(String(value).toInt(), IA+j).c_str());
         //root.printTo(Serial); 
@@ -334,7 +337,7 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
             pub(2,1,15+j, chr);
         }
         delay(500);
-      } 
+      } */
        
     }
   }
@@ -342,8 +345,7 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
 void ESP8266_Basic::ade_Callback(String sample) {
   //Serial.print("ADE new Callback -> "); Serial.println(sample);
 
-  
-  char chr[100] = "";
+  char chr[300] = "";
   strcpy(chr, sample.c_str());      
   pub(2,1,17, chr);  
 }

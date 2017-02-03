@@ -202,9 +202,9 @@ bool ADE7953::init(){
 }
 
 //===> Callback for CFGchange <------------------------------------------------
-void ADE7953::set_Callback(CallbackFunction c){
-  myCallback = c;
-}
+//void ADE7953::set_Callback(CallbackFunction c){
+  //myCallback = c;
+//}
 
 void ADE7953::setADECallback(ADE_CALLBACK_SIGNATURE) {
     this->callback = callback;
@@ -312,7 +312,7 @@ uint32_t ADE7953::read(uint16_t Reg){
     uint8_t buffer[10];
     buffer[0] = Reg >> 8;
     buffer[1] = Reg;
-    brzo_i2c_start_transaction(I2Caddr, 200);
+    brzo_i2c_start_transaction(I2Caddr, 700);
     brzo_i2c_write(buffer, 2, true); 
     brzo_i2c_read(buffer, count, true);
     brzo_i2c_end_transaction(); 
@@ -676,11 +676,11 @@ String ADE7953::getWave(int samples, uint16_t regNumber){
   if (samples == 0) samples = 50;
   //if (samples >240) samples = 240;  
 
-  Serial.println("do Callback");
-  if (myCallback != nullptr)
-    myCallback();
-  else
-     Serial.println("null");
+  //Serial.println("do Callback");
+  //if (myCallback != nullptr)
+    //myCallback();
+  //else
+     //Serial.println("null");
      
   //if (callback != nullptr)
     //callback("Hello new World");
@@ -706,10 +706,11 @@ String ADE7953::getWave(int samples, uint16_t regNumber){
   while (!readBit(RSTIRQSTATA,15)) {   //wait for IRQ V zeroCross
   }    
   
-  Serial.println("===============================");
-  Serial.println("FreeHeap  = " + String(ESP.getFreeHeap()));
-  unsigned long t[samples+1];
-  uint32_t values[samples];
+  //Serial.println("FreeHeap  = " + String(ESP.getFreeHeap()));
+
+  
+  //unsigned long t[samples+1];
+  //uint32_t values[samples+1];
   unsigned long t0 = micros(); 
   for (int i=0; i<samples; i++){
     t[i] = micros();
@@ -719,18 +720,18 @@ String ADE7953::getWave(int samples, uint16_t regNumber){
   //Serial.println("ArraySize  = " + String(samples * 4));
   
   
-  String wave = "{";
+  String wave = "";
   for (int i=0; i<samples; i++){
+    wave = "";
     wave += String(0.000001*(t[i]- t0), 5);
-    wave += ":";
+    wave += ",";
     double val = getFullScaleInput(read(PGA))* sqrt(2) * uint24Tolong32(values[i]) / 6500000.0 * read(k) / 100;
     wave += formatDouble(val, 2);
-    if (i<samples-1) wave += ",";
-    //wave = formatDouble(i, 2);
-    //if (callback != nullptr) callback(wave);
-    //delay(200);
+    //wave += formatDouble(i, 4);
+    //if (i<samples-1) wave += ",";
+    if (callback != nullptr) callback(wave);
   }  
-  wave += "}";
+  //wave += "}";
   return wave;
 }
 
