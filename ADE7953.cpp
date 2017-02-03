@@ -698,7 +698,7 @@ String ADE7953::getWave(uint16_t regNumber){
   int sampleRate = read(SampleRate);  //in kHz
   unsigned int tsample = 1000000.0 / (sampleRate * 1000); //in µs
   int samples = read(Periods) * 20000 / tsample;
-  
+   
   //unsigned long avarage = 0;
   //unsigned long t0 = micros();
   for (int i=0; i<samples; i++){
@@ -721,7 +721,31 @@ String ADE7953::getWave(uint16_t regNumber){
     strcat(cTime, cValue);
 
     if (callback != nullptr) callback(cTime, regNumber);
+  } 
+
+  
+//ENDLESS with 320Hz  
+/*  
+  unsigned long t0 = micros();  
+  double scale = getFullScaleInput(read(PGA))* sqrt(2)  / 6500000.0 * read(k) / 100;
+  for (int i=0; i<samples; i++){
+    
+    double t = 0.000001 * (micros()- t0);
+    double val = uint24Tolong32(read(regNumber)) * scale;
+    
+    char cTime[30] {""};
+    char cValue[15] {""};
+    dtostrf(t, 1, 5, cTime);
+    dtostrf(val, 1, 5, cValue);
+    
+    strcat(cTime, ",");
+    strcat(cTime, cValue);
+
+    if (callback != nullptr) callback(cTime, regNumber);
   }  
+*/  
+  
+
   return "";
 }
 
