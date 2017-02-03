@@ -27,7 +27,7 @@
 //callBack
   #include <functional>
   //typedef std::function<void(void)> CallbackFunction;
-  #define ADE_CALLBACK_SIGNATURE std::function<void(String)> callback
+  #define ADE_CALLBACK_SIGNATURE std::function<void(char*, uint16_t)> callback
 
   #define I2Caddr 0x38
   #define ADE7953_RESET 2           //GPIO RESET ADE7953
@@ -78,7 +78,7 @@ public:
   double getQ_Brel();
   double getS_B();
   double getS_Brel();
-  String getWave(int samples, uint16_t regNumber);
+  String getWave(uint16_t regNumber);
   double getW_A();
   double getWb_A();
   double getWs_A();
@@ -89,8 +89,8 @@ public:
 
   double energy[5];
   
-  unsigned long t[500];
-  uint32_t values[500];
+  //unsigned long t[500];
+  uint32_t values[1000];
 
   void pREG(uint16_t reg);
   long int StrToInt(String str); 

@@ -67,7 +67,7 @@ public:
 
   //void adeCallback();
   void setADECallback(ADE_CALLBACK_SIGNATURE);
-  void ade_Callback(String sample);
+  void ade_Callback(char* sample, uint16_t instREG);
 
 
   bool pub(int e1, char* Payload);

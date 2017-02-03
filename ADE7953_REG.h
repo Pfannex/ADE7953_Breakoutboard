@@ -138,6 +138,8 @@ typedef struct Treg{
 #define WsB              0x508             //R/W 0x000000 Signed   Scaled apparent energy B
 #define updateTimeEnergy 0x509             //R/W 0x0003E8 Unsigned Energy measurement update time
 #define updateTimeMQTT   0x50A             //R/W 0x0003E8 Unsigned MQTT update time
+#define SampleRate       0x50B             //R/W 0x000001 Unsigned INST SampleRate in kHz
+#define Periods          0x50C             //R/W 0x000003 Unsigned INST number of periods
 
 
 

@@ -31,8 +31,8 @@ ESP8266_Basic::ESP8266_Basic() : webServer(),
                                  // NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 60000);
 
   //Callbacks								 
-  //ADE.set_Callback(std::bind(&ESP8266_Basic::adeCallback, this));
-  ADE.setADECallback(std::bind(&ESP8266_Basic::ade_Callback, this, std::placeholders::_1));
+  //ADE.set_Callback(std::bind(&ESP8266_Basic::adeCallback, this));  
+  ADE.setADECallback(std::bind(&ESP8266_Basic::ade_Callback, this, std::placeholders::_1, std::placeholders::_2));
   
   webServer.set_saveConfig_Callback(std::bind(&ESP8266_Basic::cfgChange_Callback, this));
   mqtt_client.setCallback(std::bind(&ESP8266_Basic::mqttBroker_Callback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
@@ -234,120 +234,31 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
 
 //210 ADE7953.get_VINST
     if (dissectResult.itemPath == "2/1/0"){  
-
-/*      DynamicJsonBuffer JsonBuffer;
-      JsonObject& root = JsonBuffer.parseObject(ADE.getWave(String(value).toInt(), V).c_str());
-      int i = 0;
-      for (auto &element : root){
-        String Key = element.key;
-        String Value = element.value;
-        String samples = Key;
-        samples += ",";
-        samples += Value;
-        samples += " | " + String(i);
-        Serial.println(samples);
-        i++;
-      }
-
-      for (int i=0; i<1000; i++){
-        String str = "0.1234567,-12.34567 | Counter=" + String(i);
-        mqtt_client.publish("ESP8266_12345/ADE7953/values/V_INST", str.c_str());
-        //client.loop();
-      }  
-*/      
-
-       
-      DynamicJsonBuffer JsonBuffer;
-      JsonObject& root = JsonBuffer.parseObject(ADE.getWave(String(value).toInt(), V).c_str());
-      //root.printTo(Serial); 
-     for (auto &element : root){
-        String Key = element.key;
-        String Value = element.value;
-        String samples = Key;
-        samples += ",";
-        samples += Value;
-        
-        //Serial.println(samples);      
-        strcpy(chr, samples.c_str());      
-        pub(2,1,17, chr);
-      }
-
+        ADE.getWave(V);  
     }
 //211 ADE7953.get_IAINST
     if (dissectResult.itemPath == "2/1/1"){   
-      DynamicJsonBuffer JsonBuffer;
-      JsonObject& root = JsonBuffer.parseObject(ADE.getWave(String(value).toInt(), IA).c_str());
-      //root.printTo(Serial); 
-     for (auto &element : root){
-        String Key = element.key;
-        String Value = element.value;
-        String samples = Key;
-        samples += ",";
-        samples += Value;
-        
-        //Serial.println(samples);      
-        strcpy(chr, samples.c_str());      
-        pub(2,1,16, chr);
-      }
+        ADE.getWave(IA);  
     }
 //212 ADE7953.get_IBINST
     if (dissectResult.itemPath == "2/1/2"){   
-      DynamicJsonBuffer JsonBuffer;
-      JsonObject& root = JsonBuffer.parseObject(ADE.getWave(String(value).toInt(), IB).c_str());
-      //root.printTo(Serial); 
-     for (auto &element : root){
-        String Key = element.key;
-        String Value = element.value;
-        String samples = Key;
-        samples += ",";
-        samples += Value;
-        
-        //Serial.println(samples);      
-        strcpy(chr, samples.c_str());      
-        pub(2,1,15, chr);
-      }
+        ADE.getWave(IB);  
     }
     
 //213 getWaves
     if (dissectResult.itemPath == "2/1/3"){ 
-      //Serial.println("getWaves");  
-
-      //for (int j=0; j<3; j++){ 
-      //Serial.println("===============================");
-      //Serial.println("FreeHeap  = " + String(ESP.getFreeHeap()));
-        ADE.getWave(String(value).toInt(), V);  
-      //Serial.println("FreeHeap  = " + String(ESP.getFreeHeap()));
-     //}
-      
-    
-
-      /*for (int j=0; j<3; j++){ 
-        DynamicJsonBuffer JsonBuffer;
-        JsonObject& root = JsonBuffer.parseObject(ADE.getWave(String(value).toInt(), IA+j).c_str());
-        //root.printTo(Serial); 
-          for (auto &element : root){
-            String Key = element.key;
-            String Value = element.value;
-            String samples = Key;
-            samples += ",";
-            samples += Value;
-        
-            //Serial.println(samples);      
-            strcpy(chr, samples.c_str());      
-            pub(2,1,15+j, chr);
-        }
-        delay(500);
-      } */
-       
+      ADE.getWave(V);  
+      ADE.getWave(IA);  
+      ADE.getWave(IB);  
     }
+
+    
   }
 }
-void ESP8266_Basic::ade_Callback(String sample) {
-  //Serial.print("ADE new Callback -> "); Serial.println(sample);
-
-  char chr[300] = "";
-  strcpy(chr, sample.c_str());      
-  pub(2,1,17, chr);  
+void ESP8266_Basic::ade_Callback(char* sample, uint16_t instREG) {
+  if (instREG == V) pub(2,1,17, sample);  
+  if (instREG == IA) pub(2,1,15, sample);  
+  if (instREG == IB) pub(2,1,16, sample);  
 }
 //===============================================================================
 //  AktSen Control 

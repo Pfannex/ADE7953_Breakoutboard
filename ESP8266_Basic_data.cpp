@@ -62,6 +62,8 @@ Topics::Topics(){
   sub.E3.item[2][1][1] = "IA_INST";
   sub.E3.item[2][1][2] = "IB_INST";
   sub.E3.item[2][1][3] = "getWaves";
+  sub.E3.item[2][1][4] = "SampleRate";
+  sub.E3.item[2][1][5] = "Periods";
 
   sub.E1.item[3] = "File";
   sub.E2.item[3][0] = "Read";
