@@ -1,5 +1,5 @@
 #ToDo
-Stand: 02.02.2017 / 20:27h  
+Stand: 03.02.2017 / 23:00h  
 letzte Änderung: Pf@nne
 
 - **Hardware**
@@ -7,7 +7,7 @@ letzte Änderung: Pf@nne
   - Ankopplung 230VAC
   
 - **Firmware**
-  - ~~MQTT max.150 Samples? jsonBuffer?~~ - 30.01.2017 - 240 Samples 80ms/3kHz
+  - ~~MQTT max.150 Samples? jsonBuffer?~~ - 03.02.2017 - 1000 Samples @7kHz
   - Topic resetEnergy REG, Value
   - Topic /getValues/IA_INST Samples, kHz
   - Frequenz SoftRegister für GAIN
