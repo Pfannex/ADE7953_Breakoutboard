@@ -17,7 +17,8 @@ Die Ankopplung der Leistungsmessgrößen erfolgt zu einem späteren Zeitpunkt.
   - [FHEM](https://github.com/Pfannex/ADE7953_Breakoutboard/wiki/FHEM-%7C-ADE7953-MQTT-Wattmeter)  
   
 ***
-[ToDo](https://github.com/Pfannex/ADE7953_Breakoutboard/blob/master/ToDo.md)
+[ToDo](https://github.com/Pfannex/ADE7953_Breakoutboard/blob/master/ToDo.md)  
+[changeLOG](https://github.com/Pfannex/ADE7953_Breakoutboard/blob/master/changeLOG.md)
 
 
 
