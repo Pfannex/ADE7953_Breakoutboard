@@ -815,6 +815,27 @@ bool MQTTOK = false;
 }*/
 
 //===============================================================================
+//  Timer Stuff
+//===============================================================================
+
+
+void ESP8266_Basic::setup_Timer() {
+
+  os_timer_setfn(&timer, tick, NULL);
+  os_timer_arm(&timer, TIMER_T, true); // TIMER_T ms
+}
+
+void ESP8266_Basic::timerCallback() {
+  
+  ticks++;
+  switch(currentLedMode) {
+    case OFF:   Led(0); break;
+    case ON:    Led(1); break;
+    case BLINK: Led((ticks/BLINK_T) % 2); break;
+  }
+}
+
+//===============================================================================
 //  Peripherals
 //===============================================================================
 
@@ -826,6 +847,7 @@ void ESP8266_Basic::setup_Peripherals() {
       buttonPinState[i]= 0;
       lastDebounceTime[i]= 0;
   }
+  pinMode(RELAY_PIN, OUTPUT);
   
 }
 
@@ -896,12 +918,14 @@ void ESP8266_Basic::handle_Peripherals() {
   }
 }
 
-void ESP8266_Basic::LED(ledMode_t ledMode) {
+void ESP8266_Basic::Led(int on) {
   
-  switch(ledMode) {
-    case ON: digitalWrite(LED_PIN, 1); break;
-    case OFF: digitalWrite(LED_PIN, 0); break;
-  }
+  digitalWrite(LED_PIN, on);
+}
+
+void ESP8266_Basic::Relay(int on) {
+
+  digitalWrite(RELAY_PIN, on);
 }
 
 //===> button mode service routine --------------------------------------------
@@ -916,24 +940,29 @@ void ESP8266_Basic::onSetButtonMode(buttonMode_t oldMode, buttonMode_t newMode) 
   printButtonMode("new", newMode);*/
   if(newMode.S != oldMode.S) {
     if(newMode.S) {
-      LED(ON); 
+      if(!newMode.L) currentLedMode= ON;   // signalisation of Mode L takes precedence
+      Relay(1);
       Serial.println("Relay is on.");
     } else { 
-      LED(OFF);
+      if(!newMode.L) currentLedMode= OFF; // signalisation of Mode L takes precedence
+      Relay(0);
       Serial.println("Relay is off.");
     }
   }
   if(newMode.L != oldMode.L) {
     if(newMode.L)
       Serial.println("God mode is on.");
-    else
+    else 
       Serial.println("God mode is off.");
   } else {
     if(newMode.state && newMode.idle != oldMode.idle && newMode.idle) {
-      if(newMode.L)       
+      if(newMode.L) {      
         Serial.println("Prepare to leave God mode.");
-      else
+        if(newMode.S) currentLedMode= ON; else currentLedMode= OFF;
+      } else  {
         Serial.println("Prepare to enter God mode.");
+        currentLedMode= BLINK;
+      }
     }
   }
 }
