@@ -17,11 +17,17 @@
 #include "ESP8266_Basic.h"
 ESP8266_Basic espClient;
 
+void tick(void *pArg) {
+  espClient.timerCallback();
+}
+
 
 void setup() {  
   Serial.begin(115200); 
   Serial.println("");
-  
+
+  espClient.setup_Timer();
+  espClient.setup_Peripherals();
   espClient.start_WiFi_connections();
   espClient.run_I2C();
   espClient.ADE.init();
@@ -31,6 +37,7 @@ void setup() {
 void loop() {
   espClient.handle_connections(); 
   espClient.handle_Measurement();
+  espClient.handle_Peripherals();
 }
 
 /*ToDo

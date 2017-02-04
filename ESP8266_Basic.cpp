@@ -396,6 +396,7 @@ void ESP8266_Basic::handle_Measurement(){
 
       //ADE.read(RSTIRQSTATA);
       //ADE.read(RSTIRQSTATB);
+
     }
   }
 }
@@ -767,6 +768,159 @@ bool MQTTOK = false;
   conn.close();
     
 }*/
+
+//===============================================================================
+//  Timer Stuff
+//===============================================================================
+
+
+void ESP8266_Basic::setup_Timer() {
+
+  os_timer_setfn(&timer, tick, NULL);
+  os_timer_arm(&timer, TIMER_T, true); // TIMER_T ms
+}
+
+void ESP8266_Basic::timerCallback() {
+  
+  ticks++;
+  switch(currentLedMode) {
+    case OFF:   Led(0); break;
+    case ON:    Led(1); break;
+    case BLINK: Led((ticks/BLINK_T) % 2); break;
+  }
+}
+
+//===============================================================================
+//  Peripherals
+//===============================================================================
+
+void ESP8266_Basic::setup_Peripherals() {
+
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(LED_PIN, OUTPUT);
+  for(int i= 0; i< 17; i++) {
+      buttonPinState[i]= 0;
+      lastDebounceTime[i]= 0;
+  }
+  pinMode(RELAY_PIN, OUTPUT);
+  
+}
+
+// software debouncer
+int ESP8266_Basic::getButtonPinState(int buttonPin) {
+
+  // combine with hardware debouncer (100 nF capacitor from buttonPin to GND)
+  
+  int lastButtonPinState= buttonPinState[buttonPin];
+  buttonPinState[buttonPin]= digitalRead(buttonPin); 
+  unsigned long now= millis();
+  /* char s[128];
+  sprintf(s, "%d(%d) -> %d(%d)", lastButtonPinState, lastDebounceTime[buttonPin], 
+    buttonPinState[buttonPin], now);
+  Serial.println(s);   */
+  if(buttonPinState[buttonPin] != lastButtonPinState)
+    lastDebounceTime[buttonPin]= now;
+  if(now - lastDebounceTime[buttonPin]> DEBOUNCETIME) 
+    return buttonPinState[buttonPin];
+  else
+    return -1; // undecided, still bouncing
+}
+
+void ESP8266_Basic::printButtonMode(String msg, buttonMode_t mode) {
+  
+  Serial.println(msg+": Button mode S= "+String(mode.S)+
+    " L= "+String(mode.L)+" button= "+String(mode.state)+
+    " idle= "+String(mode.idle));
+}
+
+void ESP8266_Basic::setButtonMode(buttonMode_t mode) {
+  
+  onSetButtonMode(currentButtonMode, mode);
+  currentButtonMode= mode;
+}
+
+void ESP8266_Basic::handle_Peripherals() {
+
+  // how to use the buttonMode?
+  // - state signals if the button is up (0) or down (1)
+  // - statex signals if state has been the same for at least BTIME milliseconds
+  // - a short press of the button toggles the modeS between off (0) and on (1)
+  // - a long press of the button toggles the modeL between off (0) and on (1)
+
+  int buttonPinState= getButtonPinState(BUTTON_PIN);
+  if(buttonPinState < 0) return; // still bouncing
+  
+  unsigned long now= millis();
+
+  buttonMode_t mode= currentButtonMode;
+  mode.state= !buttonPinState; // down if pin is 0
+  if(mode.state != currentButtonMode.state) {
+    // button changed
+    mode.t= now;  
+    /*Serial.println("Button changed to "+ 
+      String(mode.state)+" @ "+String(mode.t));*/
+    if(!mode.state) {
+       // button up  
+       if(mode.idle) mode.L= !mode.L; else mode.S= !mode.S;
+    }
+    mode.idle= 0;  
+    setButtonMode(mode);
+  } else {
+    if(!mode.idle && (now - mode.t >= BTIME)) {
+      mode.idle= 1;
+      setButtonMode(mode);
+    }
+  }
+}
+
+void ESP8266_Basic::Led(int on) {
+  
+  digitalWrite(LED_PIN, on);
+}
+
+void ESP8266_Basic::Relay(int on) {
+
+  digitalWrite(RELAY_PIN, on);
+}
+
+//===> button mode service routine --------------------------------------------
+
+void ESP8266_Basic::onSetButtonMode(buttonMode_t oldMode, buttonMode_t newMode) {
+
+  // examples for how to use the idle flag:
+  // - if button is pressed, indicate that releasing the button will toggle the L mode
+  // - leave an input mode when not button is pressed for some time
+
+  /*printButtonMode("old", oldMode);
+  printButtonMode("new", newMode);*/
+  if(newMode.S != oldMode.S) {
+    if(newMode.S) {
+      if(!newMode.L) currentLedMode= ON;   // signalisation of Mode L takes precedence
+      Relay(1);
+      Serial.println("Relay is on.");
+    } else { 
+      if(!newMode.L) currentLedMode= OFF; // signalisation of Mode L takes precedence
+      Relay(0);
+      Serial.println("Relay is off.");
+    }
+  }
+  if(newMode.L != oldMode.L) {
+    if(newMode.L)
+      Serial.println("God mode is on.");
+    else 
+      Serial.println("God mode is off.");
+  } else {
+    if(newMode.state && newMode.idle != oldMode.idle && newMode.idle) {
+      if(newMode.L) {      
+        Serial.println("Prepare to leave God mode.");
+        if(newMode.S) currentLedMode= ON; else currentLedMode= OFF;
+      } else  {
+        Serial.println("Prepare to enter God mode.");
+        currentLedMode= BLINK;
+      }
+    }
+  }
+}
 
 //===============================================================================
 //  Configuration 
