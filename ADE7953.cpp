@@ -129,7 +129,9 @@ Treg reg[] ={
   {24, "WbB",              WbB,              0x000000, true,  true,  false},
   {24, "WsB",              WsB,              0x000000, true,  true,  false},
   {24, "updateTimeEnergy", updateTimeEnergy, 0x0003E8, false, true,  false},
-  {24, "updateTimeMQTT",   updateTimeMQTT,   0x0003E8, false, true,  false}
+  {24, "updateTimeMQTT",   updateTimeMQTT,   0x0003E8, false, true,  false},
+  {24, "SampleRate",       SampleRate,       0x000001, false, true,  false},
+  {24, "Periods",          Periods,          0x000003, false, true,  false}
   };
 
 ADE7953::ADE7953(){
@@ -202,9 +204,9 @@ bool ADE7953::init(){
 }
 
 //===> Callback for CFGchange <------------------------------------------------
-void ADE7953::set_Callback(CallbackFunction c){
-  myCallback = c;
-}
+//void ADE7953::set_Callback(CallbackFunction c){
+  //myCallback = c;
+//}
 
 void ADE7953::setADECallback(ADE_CALLBACK_SIGNATURE) {
     this->callback = callback;
@@ -312,7 +314,7 @@ uint32_t ADE7953::read(uint16_t Reg){
     uint8_t buffer[10];
     buffer[0] = Reg >> 8;
     buffer[1] = Reg;
-    brzo_i2c_start_transaction(I2Caddr, 200);
+    brzo_i2c_start_transaction(I2Caddr, 700);
     brzo_i2c_write(buffer, 2, true); 
     brzo_i2c_read(buffer, count, true);
     brzo_i2c_end_transaction(); 
@@ -672,21 +674,7 @@ double ADE7953::getWs_B(){
 //===============================================================================
 //  read instantaneous values 
 //===============================================================================
-String ADE7953::getWave(int samples, uint16_t regNumber){
-  if (samples == 0) samples = 50;
-  //if (samples >240) samples = 240;  
-
-  Serial.println("do Callback");
-  if (myCallback != nullptr)
-    myCallback();
-  else
-     Serial.println("null");
-     
-  //if (callback != nullptr)
-    //callback("Hello new World");
-  //else
-     //Serial.println("null");
-  
+String ADE7953::getWave(uint16_t regNumber){  
   uint16_t k = 1;
   uint16_t PGA = 1;
   if (regNumber == V){
@@ -704,34 +692,63 @@ String ADE7953::getWave(int samples, uint16_t regNumber){
 
   read(RSTIRQSTATA); //Clear IROs
   while (!readBit(RSTIRQSTATA,15)) {   //wait for IRQ V zeroCross
-  }    
-  
-  Serial.println("===============================");
-  Serial.println("FreeHeap  = " + String(ESP.getFreeHeap()));
-  unsigned long t[samples+1];
-  uint32_t values[samples];
-  unsigned long t0 = micros(); 
-  for (int i=0; i<samples; i++){
-    t[i] = micros();
-    values[i] = read(regNumber);
-  }
-  //Serial.println("FreeHeap  = " + String(ESP.getFreeHeap()));
-  //Serial.println("ArraySize  = " + String(samples * 4));
-  
-  
-  String wave = "{";
-  for (int i=0; i<samples; i++){
-    wave += String(0.000001*(t[i]- t0), 5);
-    wave += ":";
-    double val = getFullScaleInput(read(PGA))* sqrt(2) * uint24Tolong32(values[i]) / 6500000.0 * read(k) / 100;
-    wave += formatDouble(val, 2);
-    if (i<samples-1) wave += ",";
-    //wave = formatDouble(i, 2);
-    //if (callback != nullptr) callback(wave);
-    //delay(200);
   }  
-  wave += "}";
-  return wave;
+  delayMicroseconds(5300);  
+
+  int sampleRate = read(SampleRate);  //in Hz
+  if (sampleRate > 4000) sampleRate = 4000;
+  unsigned int tsample = 1000000.0 / (sampleRate); //in µs
+  int samples = read(Periods) * 20000 / tsample;
+  if (samples > 500) samples = 500;
+   
+  //unsigned long avarage = 0;
+  //unsigned long t0 = micros();
+  for (int i=0; i<samples; i++){
+    values[i] = read(regNumber);
+    delayMicroseconds(tsample-106);
+    //avarage = (avarage + (micros()-t0) ) / i+1.0;
+    //Serial.println(avarage);
+  }
+  
+  //String wave = "";
+  for (int i=0; i<samples; i++){
+    char cTime[30] {""};
+    char cValue[15] {""};
+    dtostrf(0.000001* tsample * i, 1, 5, cTime);
+    //dtostrf(0.000001* avarage * i, 1, 5, cTime);
+    double val = getFullScaleInput(read(PGA))* sqrt(2) * uint24Tolong32(values[i]) / 6500000.0 * read(k) / 100;
+    dtostrf(val, 1, 5, cValue);
+    
+    strcat(cTime, ",");
+    strcat(cTime, cValue);
+
+    if (callback != nullptr) callback(cTime, regNumber);
+  } 
+
+  
+//ENDLESS with 320Hz  
+/*  
+  unsigned long t0 = micros();  
+  double scale = getFullScaleInput(read(PGA))* sqrt(2)  / 6500000.0 * read(k) / 100;
+  for (int i=0; i<samples; i++){
+    
+    double t = 0.000001 * (micros()- t0);
+    double val = uint24Tolong32(read(regNumber)) * scale;
+    
+    char cTime[30] {""};
+    char cValue[15] {""};
+    dtostrf(t, 1, 5, cTime);
+    dtostrf(val, 1, 5, cValue);
+    
+    strcat(cTime, ",");
+    strcat(cTime, cValue);
+
+    if (callback != nullptr) callback(cTime, regNumber);
+  }  
+*/  
+  
+
+  return "";
 }
 
 //===============================================================================

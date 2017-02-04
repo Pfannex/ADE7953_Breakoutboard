@@ -26,8 +26,8 @@
   #include "ADE7953_REG.h"          //ADE7953 Registers
 //callBack
   #include <functional>
-  typedef std::function<void(void)> CallbackFunction;
-  #define ADE_CALLBACK_SIGNATURE std::function<void(String)> callback
+  //typedef std::function<void(void)> CallbackFunction;
+  #define ADE_CALLBACK_SIGNATURE std::function<void(char*, uint16_t)> callback
 
   #define I2Caddr 0x38
   #define ADE7953_RESET 2           //GPIO RESET ADE7953
@@ -37,8 +37,8 @@ class ADE7953{
 public:
   ADE7953();
   bool init();
-  void set_Callback(CallbackFunction c);
-  CallbackFunction myCallback;
+  //void set_Callback(CallbackFunction c);
+  //CallbackFunction myCallback;
   ADE_CALLBACK_SIGNATURE;  
   void setADECallback(ADE_CALLBACK_SIGNATURE);  
 
@@ -78,7 +78,7 @@ public:
   double getQ_Brel();
   double getS_B();
   double getS_Brel();
-  String getWave(int samples, uint16_t regNumber);
+  String getWave(uint16_t regNumber);
   double getW_A();
   double getWb_A();
   double getWs_A();
@@ -88,6 +88,9 @@ public:
   void updateEnergy();
 
   double energy[5];
+  
+  //unsigned long t[500];
+  uint32_t values[500];
 
   void pREG(uint16_t reg);
   long int StrToInt(String str); 

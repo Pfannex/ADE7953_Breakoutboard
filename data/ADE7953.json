@@ -53,14 +53,16 @@
 "BWATTOS"          : "0",
 "BVAROS"           : "0",
 "BVAOS"            : "0",
-"k_V"              : "1",
-"k_IA"             : "1",
-"k_IB"             : "1",
+"k_V"              : "130000",
+"k_IA"             : "10157",
+"k_IB"             : "5000",
 "WA"               : "0",
 "WbA"              : "0",
 "WsA"              : "0",
 "WB"               : "0",
 "WbB"              : "0",
 "updateTimeEnergy" : "1000",
-"updateTimeMQTT"   : "1000"
+"updateTimeMQTT"   : "1000",
+"SampleRate"       : "1",
+"Periods"          : "3"
 }
