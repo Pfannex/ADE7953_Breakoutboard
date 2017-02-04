@@ -90,7 +90,7 @@ public:
   double energy[5];
   
   //unsigned long t[500];
-  uint32_t values[1000];
+  uint32_t values[500];
 
   void pREG(uint16_t reg);
   long int StrToInt(String str); 

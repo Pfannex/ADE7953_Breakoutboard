@@ -695,9 +695,11 @@ String ADE7953::getWave(uint16_t regNumber){
   }  
   delayMicroseconds(5300);  
 
-  int sampleRate = read(SampleRate);  //in kHz
-  unsigned int tsample = 1000000.0 / (sampleRate * 1000); //in µs
+  int sampleRate = read(SampleRate);  //in Hz
+  if (sampleRate > 4000) sampleRate = 4000;
+  unsigned int tsample = 1000000.0 / (sampleRate); //in µs
   int samples = read(Periods) * 20000 / tsample;
+  if (samples > 500) samples = 500;
    
   //unsigned long avarage = 0;
   //unsigned long t0 = micros();
@@ -708,7 +710,7 @@ String ADE7953::getWave(uint16_t regNumber){
     //Serial.println(avarage);
   }
   
-  String wave = "";
+  //String wave = "";
   for (int i=0; i<samples; i++){
     char cTime[30] {""};
     char cValue[15] {""};
