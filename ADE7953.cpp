@@ -541,8 +541,8 @@ double ADE7953::getANGLE_B(){
 }
 //----------------------------------
 double ADE7953::getPERIOD(){
-  //return double(read(Period)+1) / 223000 * 1000 -0.07; //223kHz clock result in ms
-  return double(read(Period)+1) / 223.750; //3.58 MHz/16= 223.750 kHz clock result in ms
+  return double(read(Period)+1) / 223.753; //3.58 MHz/16= 223.750 kHz clock result in ms
+
 }
 double ADE7953::getFREQ(){
   return 1.0 / (getPERIOD()/1000);
