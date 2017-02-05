@@ -21,8 +21,9 @@ letzte Änderung: Pf@nne
 
 - **FHEM**
   - ~~Skalierung Plott in V/A nicht mV/mA~~ 30.01.2017 - FW fehler
-  - Hübsch machen... :-)
+  - Hübsch machen... :-)  z.B. ReadingsGroups
   - ToggleButton für die Umschaltung der MQTT-UpdateTime. "Normal" 60 Sekunden oder mehr. "Betrachten" 1 Sekunde
+  - ermöglichen, auch Samples im Format t1,x1;t2,x2;... im logProxyFile2xyPlot zu verarbeiten
   
 ***
 ##Themen:
