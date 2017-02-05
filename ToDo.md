@@ -1,5 +1,5 @@
 #ToDo
-Stand: 03.02.2017 / 23:00h  
+Stand: 05.02.2017 / 11:50h  
 letzte Änderung: Pf@nne
 
 - **Hardware**
@@ -8,7 +8,7 @@ letzte Änderung: Pf@nne
   
 - **Firmware**
   - ~~MQTT max.150 Samples? jsonBuffer?~~ - 03.02.2017 - 1000 Samples @7kHz
-  - Begrenzung der SampleRate und der maximalen Samples
+  - ~~Begrenzung der SampleRate und der maximalen Samples~~ - 05.02.2017
   - mehrere Samples in einem 256k Frame pushen
   - Topic resetEnergy REG, Value
   - Topic /getValues/IA_INST Samples, kHz
@@ -17,7 +17,7 @@ letzte Änderung: Pf@nne
   - ~~WiKi Kalibrierungshinweis GAIN = 0x400000~~ - 30.01.2017
   - NTP wird viel zu häufig abgefragt - beim Start und jede Stunde einmal genügt
   - ~~Topic getWave hinzufügen alle drei Waves werden gestaffelt published~~ - 02.02.2017
-  - Sinnvolle Default-Werte für Samples und Periods mit setDefault setzen
+  - ~~Sinnvolle Default-Werte für Samples und Periods mit setDefault setzen~~ wird im SoftRegister gesetzt
 
 - **FHEM**
   - ~~Skalierung Plott in V/A nicht mV/mA~~ 30.01.2017 - FW fehler
