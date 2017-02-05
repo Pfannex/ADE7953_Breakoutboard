@@ -11,6 +11,7 @@ letzte Änderung: Pf@nne
   - INST-Routinen überarbeitet, 1000 Samples mit 7kHz möglich
   - INST mit max 4kHz, Samples auf max. 500 begrenzt
   - INST nach dem publish der INST-Values erfolgt ein INSTready publish zum Refresh des SVG-Plots
+  - Energy /resetEnergy mit Vorgabewert
 
 - **FHEM**
   - dummys für INST-Werte ergänzt
