@@ -11,7 +11,7 @@ letzte Änderung: Pf@nne
   - ~~Begrenzung der SampleRate und der maximalen Samples~~ - 05.02.2017
   - mehrere Samples in einem 256k Frame pushen
   - ~~Topic resetEnergy REG, Value~~ 05.02.2017
-  - Topic /getValues/IA_INST Samples, kHz
+  - ~~Topic /getValues/IA_INST Samples, kHz~~ - 05.02.2017 in SoftRegister implementiert
   - Frequenz SoftRegister für GAIN
   - Kalibrierungsfunktion in FW implementieren
   - ~~WiKi Kalibrierungshinweis GAIN = 0x400000~~ - 30.01.2017
