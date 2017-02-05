@@ -140,6 +140,7 @@ typedef struct Treg{
 #define updateTimeMQTT   0x50A             //R/W 0x0003E8 Unsigned MQTT update time
 #define SampleRate       0x50B             //R/W 0x000001 Unsigned INST SampleRate in kHz
 #define Periods          0x50C             //R/W 0x000003 Unsigned INST number of periods
+#define PERIODGAIN       0x50D             //R/W 0x000000 Unsigned additive to divider 3.58 MHz/16= 223.750 + PERIODGAIN/1000
 
 
 

@@ -146,6 +146,7 @@ Topics::Topics(){
   pub.E3.item[2][1][31] = "Wb_B";
   pub.E3.item[2][1][32] = "Ws_B";
   pub.E3.item[2][1][33] = "Time";
+  pub.E3.item[2][1][34] = "INSTready";
 
 
 

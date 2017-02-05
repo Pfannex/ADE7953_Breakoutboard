@@ -56,10 +56,18 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
   int samples = 50;
   double inst[samples];
   String str = "";
+  String attr[10];
 
-  
+  int attrCount = 0;  
   for (int i = 0; i < length; i++) {
     value[i] = payload[i];
+    char x = payload[i];
+    String y = String(x);
+    if (y == "," ){
+      attrCount++;     
+    }else{
+      attr[attrCount] += (char)payload[i];
+    }
   }
 
 /*  Serial.print("incoming subscribe - LEN: ");
@@ -211,38 +219,42 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
 
 //209 ADE7953.resetEnergy
     if (dissectResult.itemPath == "2/0/9"){
-      if (strcmp(value, "WA") == 0){
-        ADE.energy[0] = 0;
+      
+      if (attr[0] == "WA"){
+        ADE.energy[0] = attr[1].toInt();   //negativ -> 2er komplement!
       }
-      if (strcmp(value, "WbA") == 0){
-        ADE.energy[1] = 0;
+      if (attr[0] == "WbA"){
+        ADE.energy[1] = attr[1].toInt();
       }
-      if (strcmp(value, "WsA") == 0){
-        ADE.energy[2] = 0;
+      if (attr[0] == "WsA"){
+        ADE.energy[2] = attr[1].toInt();
       }
-      if (strcmp(value, "WB") == 0){
-        ADE.energy[3] = 0;
+      if (attr[0] == "WB"){
+        ADE.energy[3] = attr[1].toInt();
       }
-      if (strcmp(value, "WbB") == 0){
-        ADE.energy[4] = 0;
+      if (attr[0] == "WbB"){
+        ADE.energy[4] = attr[1].toInt();
       }
-      if (strcmp(value, "WsB") == 0){
-        ADE.energy[5] = 0;
+      if (attr[0] == "WsB"){
+        ADE.energy[5] = attr[1].toInt();
       }
     }
     
 
 //210 ADE7953.get_VINST
     if (dissectResult.itemPath == "2/1/0"){  
-        ADE.getWave(V);  
+        ADE.getWave(V);
+        pub(2,1,34, "triggered");  
     }
 //211 ADE7953.get_IAINST
     if (dissectResult.itemPath == "2/1/1"){   
-        ADE.getWave(IA);  
+        ADE.getWave(IA);
+        pub(2,1,34, "triggered");  
     }
 //212 ADE7953.get_IBINST
     if (dissectResult.itemPath == "2/1/2"){   
-        ADE.getWave(IB);  
+        ADE.getWave(IB);
+        pub(2,1,34, "triggered");  
     }
     
 //213 getWaves
@@ -250,6 +262,7 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
       ADE.getWave(V);  
       ADE.getWave(IA);  
       ADE.getWave(IB);  
+      pub(2,1,34, "triggered");
     }
 
     
@@ -310,10 +323,10 @@ void ESP8266_Basic::handle_Measurement(){
       strVal = String(ADE.getANGLE_B());
       strcpy(chr, strVal.c_str());
       pub(2,1,6, chr);
-      strVal = String(ADE.getPERIOD());
+      strVal = String(ADE.getPERIOD(), 5);
       strcpy(chr, strVal.c_str());
       pub(2,1,7, chr);
-      strVal = String(ADE.getFREQ());
+      strVal = String(ADE.getFREQ(), 5);
       strcpy(chr, strVal.c_str());
       pub(2,1,8, chr);
       

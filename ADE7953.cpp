@@ -131,7 +131,8 @@ Treg reg[] ={
   {24, "updateTimeEnergy", updateTimeEnergy, 0x0003E8, false, true,  false},
   {24, "updateTimeMQTT",   updateTimeMQTT,   0x0003E8, false, true,  false},
   {24, "SampleRate",       SampleRate,       0x000001, false, true,  false},
-  {24, "Periods",          Periods,          0x000003, false, true,  false}
+  {24, "Periods",          Periods,          0x000003, false, true,  false},
+  {24, "PERIODGAIN",       PERIODGAIN,       0x000000, false, true,  false}
   };
 
 ADE7953::ADE7953(){
@@ -552,7 +553,7 @@ double ADE7953::getANGLE_B(){
 }
 //----------------------------------
 double ADE7953::getPERIOD(){
-  return double(read(Period)+1) / 223.753; //3.58 MHz/16= 223.750 kHz clock result in ms
+  return double(read(Period)+1) / (223.75 + (read(PERIODGAIN)/1000)); //3.58 MHz/16= 223.750 kHz clock result in ms
 
 }
 double ADE7953::getFREQ(){
