@@ -9,7 +9,7 @@ letzte Änderung: Pf@nne
 - **Firmware**
   - ~~MQTT max.150 Samples? jsonBuffer?~~ - 03.02.2017 - 1000 Samples @7kHz
   - ~~Begrenzung der SampleRate und der maximalen Samples~~ - 05.02.2017
-  - mehrere Samples in einem 256k Frame pushen
+  - mehrere Samples in einem 256Byte Frame pushen
   - ~~Topic resetEnergy REG, Value~~ 05.02.2017
   - ~~Topic /getValues/IA_INST Samples, kHz~~ - 05.02.2017 in SoftRegister implementiert
   - ~~Frequenz SoftRegister für GAIN~~ - 05.02.2017 SoftRegister PERIODGAIN hinzugefügt (223.75 + (read(PERIODGAIN)/1000)) obwohl die Korrektur Datasheet 223kHz -> 223.75kHz (3.58 MHz/16= 223.750 kHz clock) schon reichen würde
