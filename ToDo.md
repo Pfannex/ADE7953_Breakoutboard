@@ -10,7 +10,7 @@ letzte Änderung: Pf@nne
   - ~~MQTT max.150 Samples? jsonBuffer?~~ - 03.02.2017 - 1000 Samples @7kHz
   - ~~Begrenzung der SampleRate und der maximalen Samples~~ - 05.02.2017
   - mehrere Samples in einem 256k Frame pushen
-  - Topic resetEnergy REG, Value
+  - ~~Topic resetEnergy REG, Value~~ 05.02.2017
   - Topic /getValues/IA_INST Samples, kHz
   - Frequenz SoftRegister für GAIN
   - Kalibrierungsfunktion in FW implementieren
