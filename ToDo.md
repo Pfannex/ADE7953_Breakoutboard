@@ -12,7 +12,7 @@ letzte Änderung: Pf@nne
   - mehrere Samples in einem 256k Frame pushen
   - ~~Topic resetEnergy REG, Value~~ 05.02.2017
   - ~~Topic /getValues/IA_INST Samples, kHz~~ - 05.02.2017 in SoftRegister implementiert
-  - Frequenz SoftRegister für GAIN
+  - ~~Frequenz SoftRegister für GAIN~~ - 05.02.2017 SoftRegister PERIODGAIN hinzugefügt (223.75 + (read(PERIODGAIN)/1000)) obwohl die Korrektur Datasheet 223kHz -> 223.75kHz (3.58 MHz/16= 223.750 kHz clock) schon reichen würde
   - Kalibrierungsfunktion in FW implementieren
   - ~~WiKi Kalibrierungshinweis GAIN = 0x400000~~ - 30.01.2017
   - NTP wird viel zu häufig abgefragt - beim Start und jede Stunde einmal genügt
