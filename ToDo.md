@@ -18,6 +18,8 @@ letzte Änderung: Pf@nne
   - NTP wird viel zu häufig abgefragt - beim Start und jede Stunde einmal genügt
   - ~~Topic getWave hinzufügen alle drei Waves werden gestaffelt published~~ - 02.02.2017
   - ~~Sinnvolle Default-Werte für Samples und Periods mit setDefault setzen~~ wird im SoftRegister gesetzt
+  - ESP8266/Control/Relay publish/subscribe
+   
 
 - **FHEM**
   - ~~Skalierung Plott in V/A nicht mV/mA~~ 30.01.2017 - FW fehler
