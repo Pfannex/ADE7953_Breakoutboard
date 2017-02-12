@@ -19,6 +19,7 @@ letzte Änderung: Pf@nne
   - ~~Topic getWave hinzufügen alle drei Waves werden gestaffelt published~~ - 02.02.2017
   - ~~Sinnvolle Default-Werte für Samples und Periods mit setDefault setzen~~ wird im SoftRegister gesetzt
   - ESP8266/Control/Relay publish/subscribe
+  - SoftClock
    
 
 - **FHEM**
@@ -40,6 +41,7 @@ letzte Änderung: Pf@nne
 + Die UpdateTime ist an die MQTT-Update-Time angekoppelt. Im "normalen" Betrieb werden die Messwerte 
 + vielleicht einmal pro Minute published, da fällt neben den zig MQTT-Paketen das NTP-Paket nicht 
 + ins Gewicht. Eine Änderung würde die Implementaion einer "SoftClock" nach sich ziehen. 
++ SoftClock wird implementiert!
 ```
   
   
