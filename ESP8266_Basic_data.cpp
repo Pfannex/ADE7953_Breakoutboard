@@ -73,6 +73,10 @@ Topics::Topics(){
   sub.E3.item[3][1][0] = "Field_01";
   sub.E3.item[3][1][1] = "Field_02";
 
+  sub.E1.item[4] = "Relay";
+  sub.E2.item[4][0] = "set";
+  
+
 //publish
   pub.E1.count = pub_e1;
   pub.E2.count = pub_e2;
@@ -148,6 +152,8 @@ Topics::Topics(){
   pub.E3.item[2][1][33] = "Time";
   pub.E3.item[2][1][34] = "INSTready";
 
+  pub.E1.item[3] = "Relay";
+  pub.E2.item[3][0] = "state";
 
 
 

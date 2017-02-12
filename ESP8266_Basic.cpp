@@ -70,15 +70,16 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
     }
   }
 
+  TdissectResult dissectResult;    
+  dissectResult = dissectPayload(topic, value);
+  
 /*  Serial.print("incoming subscribe - LEN: ");
   Serial.print(length);
   Serial.print(" | ");
   Serial.print(topic);
   Serial.print(" | ");
-  Serial.println(value);*/
-  
-  TdissectResult dissectResult;    
-  dissectResult = dissectPayload(topic, value);
+  Serial.println(value);
+  Serial.print("path: ");Serial.println(dissectResult.itemPath);*/
 
   if (dissectResult.found){
     
@@ -264,8 +265,16 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
       ADE.getWave(IB);  
       pub(2,1,34, "triggered");
     }
-
     
+//40 Relais/set|on:off
+    if (dissectResult.itemPath == "4/0"){ 
+      if (attr[0] == "on") switchRelay(1);
+      if (attr[0] == "off") switchRelay(0);      
+    }
+
+//xx
+  
+  
   }
 }
 void ESP8266_Basic::ade_Callback(char* sample, uint16_t instREG) {
@@ -906,17 +915,8 @@ void ESP8266_Basic::onSetButtonMode(buttonMode_t oldMode, buttonMode_t newMode) 
 
   /*printButtonMode("old", oldMode);
   printButtonMode("new", newMode);*/
-  if(newMode.S != oldMode.S) {
-    if(newMode.S) {
-      if(!newMode.L) currentLedMode= ON;   // signalisation of Mode L takes precedence
-      Relay(1);
-      Serial.println("Relay is on.");
-    } else { 
-      if(!newMode.L) currentLedMode= OFF; // signalisation of Mode L takes precedence
-      Relay(0);
-      Serial.println("Relay is off.");
-    }
-  }
+  if(newMode.S != oldMode.S) switchRelay(newMode.S);
+  
   if(newMode.L != oldMode.L) {
     if(newMode.L)
       Serial.println("God mode is on.");
@@ -934,6 +934,21 @@ void ESP8266_Basic::onSetButtonMode(buttonMode_t oldMode, buttonMode_t newMode) 
     }
   }
 }
+
+void ESP8266_Basic::switchRelay(int state) {
+  if (state == 1){
+    if(!currentButtonMode.L) currentLedMode= ON;   // signalisation of Mode L takes precedence
+      Relay(1);
+      pub(3,0, "on");        
+      Serial.println("Relay is on.");
+    } else { 
+      if(!currentButtonMode.L) currentLedMode= OFF; // signalisation of Mode L takes precedence
+      Relay(0);
+      pub(3,0, "off"); 
+     Serial.println("Relay is off.");
+    }  
+}
+
 
 //===============================================================================
 //  Configuration 

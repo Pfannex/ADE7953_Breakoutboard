@@ -701,6 +701,9 @@ String ADE7953::getWave(uint16_t regNumber){
   unsigned int tsample = 1000000.0 / (sampleRate); //in µs
   int samples = read(Periods) * 20000 / tsample;
   if (samples > 500) samples = 500;
+
+
+  //Serial.print("MQTT_MAX_PACKET_SIZE = ");Serial.println(MQTT_MAX_PACKET_SIZE);
    
   //unsigned long avarage = 0;
   //unsigned long t0 = micros();
@@ -712,6 +715,9 @@ String ADE7953::getWave(uint16_t regNumber){
   }
   
   //String wave = "";
+  //char sample[MQTT_MAX_PACKET_SIZE] {""};
+  memset(&sample[0], 0, sizeof(sample));
+  int j = 0;
   for (int i=0; i<samples; i++){
     char cTime[30] {""};
     char cValue[15] {""};
@@ -723,8 +729,39 @@ String ADE7953::getWave(uint16_t regNumber){
     strcat(cTime, ",");
     strcat(cTime, cValue);
 
-    if (callback != nullptr) callback(cTime, regNumber);
+    //Serial.print("PacketSize = ");Serial.println(MQTT_MAX_PACKET_SIZE);
+    //Serial.print("StampSize  = ");Serial.println(strlen(sample));
+
+    if ((strlen(sample) + strlen(cTime)) < MQTT_MAX_PACKET_SIZE-80){
+      if (strlen(sample) > 0) strcat(sample, ";");
+      strcat(sample, cTime);
+    }else{
+      //Serial.println(sample);
+      if (callback != nullptr) callback(sample, regNumber);
+      //callback(sample, regNumber);
+      //delay(500);
+      memset(&sample[0], 0, sizeof(sample));
+      j++;
+
+      
+      //Serial.print("durchlauf = ");Serial.println(j);
+      //Serial.print("StampSize = ");Serial.println(strlen(sample));
+      //Serial.println(sample);
+      //Serial.println("clear Sample");
+      //Serial.println(sample);
+      //Serial.print("StampSize = ");Serial.println(strlen(sample));
+     
+      //Serial.println("published");
+    }
   } 
+  if (strlen(sample) > 0){
+    if (callback != nullptr) callback(sample, regNumber);
+      //Serial.println("durchlauf = ");Serial.println(j+1);
+      //Serial.print("StampSize = ");Serial.println(strlen(sample));
+      //Serial.println(sample);
+
+    //Serial.println("REST published");
+  }
 
   
 //ENDLESS with 320Hz  

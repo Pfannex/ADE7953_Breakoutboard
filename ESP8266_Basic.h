@@ -98,6 +98,7 @@ public:
   //Peripherals
   void setup_Peripherals();
   void handle_Peripherals();
+  void switchRelay(int state);
  
   //AktSen
   void handle_Measurement();

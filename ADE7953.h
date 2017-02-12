@@ -22,6 +22,8 @@
 //Tools
   #include <Wire.h>                 //I²C
   #include <brzo_i2c.h>
+//MQTT Client
+  #include <PubSubClient.h>
 //ADE7953  
   #include "ADE7953_REG.h"          //ADE7953 Registers
 //callBack
@@ -91,6 +93,7 @@ public:
   
   //unsigned long t[500];
   uint32_t values[500];
+  char sample[MQTT_MAX_PACKET_SIZE];
 
   void pREG(uint16_t reg);
   long int StrToInt(String str); 
