@@ -268,8 +268,8 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
     
 //40 Relais/set|on:off
     if (dissectResult.itemPath == "4/0"){ 
-      if (attr[0] == "on") switchRelay(1);
-      if (attr[0] == "off") switchRelay(0);      
+      if ((attr[0] == "set_on") | (attr[0] == "on")) switchRelay(1);
+      if (attr[0] == "set_off" | (attr[0] == "off")) switchRelay(0);      
     }
 
 //xx
