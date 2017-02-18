@@ -18,7 +18,7 @@ letzte Änderung: Pf@nne
   - NTP wird viel zu häufig abgefragt - beim Start und jede Stunde einmal genügt
   - ~~Topic getWave hinzufügen alle drei Waves werden gestaffelt published~~ - 02.02.2017
   - ~~Sinnvolle Default-Werte für Samples und Periods mit setDefault setzen~~ wird im SoftRegister gesetzt
-  - ESP8266/Control/Relay publish/subscribe
+  - ~~ESP8266/Control/Relay publish/subscribe~~ - 15.02.17 Rückmeldestruktur in FHEM geht auch!
   - SoftClock
    
 
@@ -26,7 +26,7 @@ letzte Änderung: Pf@nne
   - ~~Skalierung Plott in V/A nicht mV/mA~~ 30.01.2017 - FW fehler
   - Hübsch machen... :-)  z.B. ReadingsGroups
   - ToggleButton für die Umschaltung der MQTT-UpdateTime. "Normal" 60 Sekunden oder mehr. "Betrachten" 1 Sekunde
-  - ermöglichen, auch Samples im Format t1,x1;t2,x2;... im logProxyFile2xyPlot zu verarbeiten
+  - ~~ermöglichen, auch Samples im Format t1,x1;t2,x2;... im logProxyFile2xyPlot zu verarbeiten~~ 11.02.2017
   
 ***
 ##Themen:
