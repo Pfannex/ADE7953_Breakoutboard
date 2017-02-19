@@ -14,6 +14,7 @@ letzte Änderung: Pf@nne
   - Energy /resetEnergy mit Vorgabewert
   - SoftRegister PERIODGAIN hinzugefügt (223.75 + (read(PERIODGAIN)/1000)) obwohl die Korrektur Datasheet 223kHz -> 223.75kHz (3.58 MHz/16= 223.750 kHz clock) schon reichen würde
   - Ansteuerung des Relais über MQTT
+  - MQTT LastWill, QoS und retain hinzugefügt
 
 - **FHEM**
   - dummys für INST-Werte ergänzt
@@ -21,4 +22,5 @@ letzte Änderung: Pf@nne
   - INST funktionalitäten erweitert
   - INST-Samples in Frames möglich [tt,vv;tt,vv;-tt,-vv]
   - Ansteuerung des Relais mit Rückmeldestruktur
+  - ESP8266 StatusWatcher hinzugefügt
   
