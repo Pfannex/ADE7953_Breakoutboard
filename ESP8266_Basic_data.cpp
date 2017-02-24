@@ -75,6 +75,7 @@ Topics::Topics(){
 
   sub.E1.item[4] = "Relay";
   sub.E2.item[4][0] = "set";
+  sub.E2.item[4][1] = "getStatus";
   
 
 //publish
