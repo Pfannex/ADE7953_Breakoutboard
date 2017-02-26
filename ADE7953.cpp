@@ -703,8 +703,8 @@ String ADE7953::getWave(uint16_t regNumber){
   if (samples > 300) samples = 300;
 
 
-  Serial.print("MQTT_MAX_PACKET_SIZE = ");Serial.println(MQTT_MAX_PACKET_SIZE);
-  Serial.print("Samples = ");Serial.println(samples);
+  //Serial.print("MQTT_MAX_PACKET_SIZE = ");Serial.println(MQTT_MAX_PACKET_SIZE);
+  //Serial.print("Samples = ");Serial.println(samples);
    
   //unsigned long avarage = 0;
   //unsigned long t0 = micros();
@@ -730,8 +730,8 @@ String ADE7953::getWave(uint16_t regNumber){
     strcat(cTime, ",");
     strcat(cTime, cValue);
 
-    Serial.print("PacketSize = ");Serial.println(MQTT_MAX_PACKET_SIZE);
-    Serial.print("StampSize  = ");Serial.println(strlen(sample));
+    //Serial.print("PacketSize = ");Serial.println(MQTT_MAX_PACKET_SIZE);
+    //Serial.print("StampSize  = ");Serial.println(strlen(sample));
 
     if ((strlen(sample) + strlen(cTime)) < MQTT_MAX_PACKET_SIZE-80){
       if (strlen(sample) > 0) strcat(sample, ";");
@@ -745,14 +745,14 @@ String ADE7953::getWave(uint16_t regNumber){
       j++;
 
       
-      Serial.print("durchlauf = ");Serial.println(j);
-      Serial.print("StampSize = ");Serial.println(strlen(sample));
-      Serial.println(sample);
-      Serial.println("clear Sample");
-      Serial.println(sample);
-      Serial.print("StampSize = ");Serial.println(strlen(sample));
+      //Serial.print("durchlauf = ");Serial.println(j);
+      //Serial.print("StampSize = ");Serial.println(strlen(sample));
+      //Serial.println(sample);
+      //Serial.println("clear Sample");
+      //Serial.println(sample);
+      //Serial.print("StampSize = ");Serial.println(strlen(sample));
      
-      Serial.println("published");
+      //Serial.println("published");
     }
   } 
   if (strlen(sample) > 0){

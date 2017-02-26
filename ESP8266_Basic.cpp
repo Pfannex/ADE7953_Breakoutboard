@@ -739,10 +739,11 @@ bool MQTTOK = false;
   mqtt_client.setServer(charToIP(cfg.mqttServer), atoi(cfg.mqttPort)); 
 
   //boolean connect (clientID, willTopic, willQoS, willRetain, willMessage) 
-  //if (mqtt_client.connect(cfg.mqttDeviceName)) {
-  String lastWillTopic = "ESP8266/Devices/";
-  lastWillTopic += cfg.mqttDeviceName;
-  if (mqtt_client.connect(cfg.mqttDeviceName,lastWillTopic.c_str() , 0, false, "Dead")) {
+  mqtt_client.disconnect();
+  if (mqtt_client.connect(cfg.mqttDeviceName)) {
+  //String lastWillTopic = "ESP8266/Devices/";
+  //lastWillTopic += cfg.mqttDeviceName;
+  //if (mqtt_client.connect(cfg.mqttDeviceName,lastWillTopic.c_str() , 0, false, "Dead")) {
     Serial.println("MQTT connected");
 	  strcpy(cfg.mqttStatus, "connected");
 	  MQTTOK = true;	        
@@ -756,7 +757,7 @@ bool MQTTOK = false;
     pub(1,0,1, "off");
 	
     //testament
-    mqtt_client.publish(lastWillTopic.c_str(), "Alive");
+    //mqtt_client.publish(lastWillTopic.c_str(), "Alive");
     //broker_subcribe();
 	  String sub = cfg.mqttDeviceName;
 	  sub += "/#";

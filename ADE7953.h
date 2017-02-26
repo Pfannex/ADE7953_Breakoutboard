@@ -92,8 +92,8 @@ public:
   double energy[5];
   
   //unsigned long t[500];
-  uint32_t values[300];
-  char sample[MQTT_MAX_PACKET_SIZE-100];
+  uint32_t values[500];
+  char sample[MQTT_MAX_PACKET_SIZE];
 
   void pREG(uint16_t reg);
   long int StrToInt(String str); 
