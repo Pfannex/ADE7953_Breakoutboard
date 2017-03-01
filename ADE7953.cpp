@@ -130,7 +130,7 @@ Treg reg[] ={
   {24, "WsB",              WsB,              0x000000, true,  true,  false},
   {24, "updateTimeEnergy", updateTimeEnergy, 0x0003E8, false, true,  false},
   {24, "updateTimeMQTT",   updateTimeMQTT,   0x0003E8, false, true,  false},
-  {24, "SampleRate",       SampleRate,       0x000001, false, true,  false},
+  {24, "SampleRate",       SampleRate,       0x001000, false, true,  false},
   {24, "Periods",          Periods,          0x000003, false, true,  false},
   {24, "PERIODGAIN",       PERIODGAIN,       0x000000, false, true,  false}
   };
@@ -698,13 +698,15 @@ String ADE7953::getWave(uint16_t regNumber){
 
   int sampleRate = read(SampleRate);  //in Hz
   if (sampleRate > 4000) sampleRate = 4000;
+  //Serial.print("SampleRate = ");Serial.println(sampleRate);
+
+  
   unsigned int tsample = 1000000.0 / (sampleRate); //in µs
   int samples = read(Periods) * 20000 / tsample;
-  if (samples > 300) samples = 300;
+  if (samples > 299) samples = 299;
 
 
   //Serial.print("MQTT_MAX_PACKET_SIZE = ");Serial.println(MQTT_MAX_PACKET_SIZE);
-  //Serial.print("Samples = ");Serial.println(samples);
    
   //unsigned long avarage = 0;
   //unsigned long t0 = micros();
@@ -714,18 +716,31 @@ String ADE7953::getWave(uint16_t regNumber){
     //avarage = (avarage + (micros()-t0) ) / i+1.0;
     //Serial.println(avarage);
   }
+
+/*  for (int i=0; i<samples; i++){
+    Serial.print(values[i]);
+    Serial.print("|");
+  }
+  Serial.println("");
+  Serial.println("");*/
+
   
   //String wave = "";
   //char sample[MQTT_MAX_PACKET_SIZE] {""};
   memset(&sample[0], 0, sizeof(sample));
   int j = 0;
+
+  //Serial.println("start Loop");
+  //Serial.print("Samples = ");Serial.println(samples);
   for (int i=0; i<samples; i++){
+    //Serial.println("in Loop");
+    
     char cTime[30] {""};
     char cValue[15] {""};
     dtostrf(0.000001* tsample * i, 1, 5, cTime);
     //dtostrf(0.000001* avarage * i, 1, 5, cTime);
     double val = getFullScaleInput(read(PGA))* sqrt(2) * uint24Tolong32(values[i]) / 6500000.0 * read(k) / 100;
-    dtostrf(val, 1, 5, cValue);
+    dtostrf(val, 1, 2, cValue);
     
     strcat(cTime, ",");
     strcat(cTime, cValue);
@@ -733,37 +748,41 @@ String ADE7953::getWave(uint16_t regNumber){
     //Serial.print("PacketSize = ");Serial.println(MQTT_MAX_PACKET_SIZE);
     //Serial.print("StampSize  = ");Serial.println(strlen(sample));
 
-    if ((strlen(sample) + strlen(cTime)) < MQTT_MAX_PACKET_SIZE-80){
+    //if ((strlen(sample) + strlen(cTime)) < MQTT_MAX_PACKET_SIZE-80){
+    if ((strlen(sample) + strlen(cTime)) < 100){
       if (strlen(sample) > 0) strcat(sample, ";");
       strcat(sample, cTime);
     }else{
       //Serial.println(sample);
-      if (callback != nullptr) callback(sample, regNumber);
+    if (callback != nullptr) callback(sample, regNumber);
+    
       //callback(sample, regNumber);
       //delay(500);
-      memset(&sample[0], 0, sizeof(sample));
-      j++;
 
       
-      //Serial.print("durchlauf = ");Serial.println(j);
-      //Serial.print("StampSize = ");Serial.println(strlen(sample));
-      //Serial.println(sample);
+      Serial.print("durchlauf = ");Serial.println(j);
+      Serial.print("StampSize = ");Serial.println(strlen(sample));
+      Serial.println(sample);
       //Serial.println("clear Sample");
       //Serial.println(sample);
       //Serial.print("StampSize = ");Serial.println(strlen(sample));
      
-      //Serial.println("published");
+      Serial.println("published");
+      
+      memset(&sample[0], 0, sizeof(sample));
+      j++;
     }
   } 
   if (strlen(sample) > 0){
     if (callback != nullptr) callback(sample, regNumber);
-      //Serial.println("durchlauf = ");Serial.println(j+1);
-      //Serial.print("StampSize = ");Serial.println(strlen(sample));
-      //Serial.println(sample);
-
-    //Serial.println("REST published");
+    
+      Serial.println("durchlauf = ");Serial.println(j+1);
+      Serial.print("StampSize = ");Serial.println(strlen(sample));
+      Serial.println(sample);
+      Serial.println("REST published");
   }
-
+  return "";
+}
   
 //ENDLESS with 320Hz  
 /*  
@@ -787,8 +806,7 @@ String ADE7953::getWave(uint16_t regNumber){
 */  
   
 
-  return "";
-}
+
 
 //===============================================================================
 //  helpers 

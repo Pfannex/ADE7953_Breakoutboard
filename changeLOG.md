@@ -1,5 +1,5 @@
 #changeLOG
-Stand: 23.02.2017 / 20:30h  
+Stand: 05.02.2017 / 11:53h  
 letzte Änderung: Pf@nne
 
 - **Hardware**
@@ -13,16 +13,9 @@ letzte Änderung: Pf@nne
   - INST nach dem publish der INST-Values erfolgt ein INSTready publish zum Refresh des SVG-Plots
   - Energy /resetEnergy mit Vorgabewert
   - SoftRegister PERIODGAIN hinzugefügt (223.75 + (read(PERIODGAIN)/1000)) obwohl die Korrektur Datasheet 223kHz -> 223.75kHz (3.58 MHz/16= 223.750 kHz clock) schon reichen würde
-  - Ansteuerung des Relais über MQTT
-  - MQTT LastWill, QoS und retain hinzugefügt
-  - getState liefert den aktuellen Status des RelaisOutputs
 
 - **FHEM**
   - dummys für INST-Werte ergänzt
   - Pfanne_fhem.cfg abgelegt
   - INST funktionalitäten erweitert
-  - INST-Samples in Frames möglich [tt,vv;tt,vv;-tt,-vv]
-  - Ansteuerung des Relais mit Rückmeldestruktur
-  - ESP8266 StatusWatcher hinzugefügt
-  - Nach dem FHEM-Start wir der aktuelle RelaisState automatisch geholt
   

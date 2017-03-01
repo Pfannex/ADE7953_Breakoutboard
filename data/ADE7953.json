@@ -63,7 +63,7 @@
 "WbB"              : "0",
 "updateTimeEnergy" : "1000",
 "updateTimeMQTT"   : "1000",
-"SampleRate"       : "1",
+"SampleRate"       : "1000",
 "Periods"          : "3",
 "PERIODGAIN"       : "0"
 }

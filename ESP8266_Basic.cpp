@@ -260,6 +260,10 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
     
 //213 getWaves
     if (dissectResult.itemPath == "2/1/3"){ 
+      Serial.println("getWaves");
+      Serial.print("Periods:    ");Serial.println(ADE.read(Periods));
+      Serial.print("SampleRate: ");Serial.println(ADE.read(SampleRate));
+      
       ADE.getWave(V);  
       ADE.getWave(IA);  
       ADE.getWave(IB);  
@@ -268,24 +272,8 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
     
 //40 Relais/set|on:off
     if (dissectResult.itemPath == "4/0"){ 
-      if (attr[0] == "set_on" | attr[0] == "on"){
-        //delay(500);
-        switchRelay(1);
-      }
-      if (attr[0] == "set_off" | attr[0] == "off"){
-        //delay(500);
-        switchRelay(0);      
-      }
-    }
-//41 Relais/getStatus
-    if (dissectResult.itemPath == "4/1"){ 
-      if (digitalRead(RELAY_PIN)){
-        delay(2000);
-        pub(3,0, "on");
-      }else{
-        delay(2000);
-        pub(3,0, "off");
-      }
+      if ((attr[0] == "set_on") | (attr[0] == "on")) switchRelay(1);
+      if (attr[0] == "set_off" | (attr[0] == "off")) switchRelay(0);      
     }
 
 //xx
@@ -737,27 +725,27 @@ bool MQTTOK = false;
   Serial.print(cfg.mqttServer);Serial.print(":");Serial.println(cfg.mqttPort);
   
   mqtt_client.setServer(charToIP(cfg.mqttServer), atoi(cfg.mqttPort)); 
-
+ 
   //boolean connect (clientID, willTopic, willQoS, willRetain, willMessage) 
   mqtt_client.disconnect();
-  if (mqtt_client.connect(cfg.mqttDeviceName)) {
-  //String lastWillTopic = "ESP8266/Devices/";
-  //lastWillTopic += cfg.mqttDeviceName;
-  //if (mqtt_client.connect(cfg.mqttDeviceName,lastWillTopic.c_str() , 0, false, "Dead")) {
+  //if (mqtt_client.connect(cfg.mqttDeviceName)) {
+  String lastWillTopic = "ESP8266/Devices/";
+  lastWillTopic += cfg.mqttDeviceName;
+  if (mqtt_client.connect(cfg.mqttDeviceName,lastWillTopic.c_str() , 0, false, "Dead")) {
     Serial.println("MQTT connected");
 	  strcpy(cfg.mqttStatus, "connected");
 	  MQTTOK = true;	        
 	  
     if (WIFI_reconnect == true){
       WIFI_reconnect = false;
-	  pub(1,0,0, "on");
-	  pub(1,0,0, "off");
+	    pub(1,0,0, "on");
+	    pub(1,0,0, "off");
     }
     pub(1,0,1, "on");
     pub(1,0,1, "off");
 	
     //testament
-    //mqtt_client.publish(lastWillTopic.c_str(), "Alive");
+    mqtt_client.publish(lastWillTopic.c_str(), "Alive");
     //broker_subcribe();
 	  String sub = cfg.mqttDeviceName;
 	  sub += "/#";
@@ -770,8 +758,8 @@ bool MQTTOK = false;
     mqtt_client.loop();
   }
 
-    //run_oneWire();
-    run_I2C();
+  //run_oneWire();
+  run_I2C();
   
   return MQTTOK;
 }
