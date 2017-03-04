@@ -260,9 +260,9 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
     
 //213 getWaves
     if (dissectResult.itemPath == "2/1/3"){ 
-      Serial.println("getWaves");
-      Serial.print("Periods:    ");Serial.println(ADE.read(Periods));
-      Serial.print("SampleRate: ");Serial.println(ADE.read(SampleRate));
+      //Serial.println("getWaves");
+      //Serial.print("Periods:    ");Serial.println(ADE.read(Periods));
+      //Serial.print("SampleRate: ");Serial.println(ADE.read(SampleRate));
       
       ADE.getWave(V);  
       ADE.getWave(IA);  
