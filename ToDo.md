@@ -21,11 +21,13 @@ letzte Ã„nderung: Pf@nne
   - ~~ESP8266/Control/Relay publish/subscribe~~ - 15.02.17 RÃ¼ckmeldestruktur in FHEM geht auch!
   - SoftClock
   - ~~getState implementieren~~ 23.02.17 
+  - Button über Interrupt realisieren
+  
    
 
 - **FHEM**
   - ~~Skalierung Plott in V/A nicht mV/mA~~ 30.01.2017 - FW fehler
-  - HÃ¼bsch machen... :-)  z.B. ReadingsGroups
+  - Hüsch machen... :-)  z.B. ReadingsGroups
   - ToggleButton fÃ¼r die Umschaltung der MQTT-UpdateTime. "Normal" 60 Sekunden oder mehr. "Betrachten" 1 Sekunde
   - ~~ermÃ¶glichen, auch Samples im Format t1,x1;t2,x2;... im logProxyFile2xyPlot zu verarbeiten~~ 11.02.2017
   - ~~getState des Relais nach einem FHEM-Start abfragen~~ 23.02.17
