@@ -691,10 +691,6 @@ String ADE7953::getWave(uint16_t regNumber){
     PGA = PGA_IB;
   }
 
-  read(RSTIRQSTATA); //Clear IROs
-  while (!readBit(RSTIRQSTATA,15)) {   //wait for IRQ V zeroCross
-  }  
-  delayMicroseconds(5300);  
 
   int sampleRate = read(SampleRate);  //in Hz
   if (sampleRate > 4000) sampleRate = 4000;
@@ -707,7 +703,12 @@ String ADE7953::getWave(uint16_t regNumber){
 
 
   //Serial.print("MQTT_MAX_PACKET_SIZE = ");Serial.println(MQTT_MAX_PACKET_SIZE);
-   
+
+  read(RSTIRQSTATA); //Clear IROs
+  while (!readBit(RSTIRQSTATA,15)) {   //wait for IRQ V zeroCross
+  }  
+  delayMicroseconds(5300);  
+  
   //unsigned long avarage = 0;
   //unsigned long t0 = micros();
   for (int i=0; i<samples; i++){
