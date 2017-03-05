@@ -1,10 +1,10 @@
 #ToDo
-Stand: 23.02.2017 / 20:30h  
-letzte Ã„nderung: Pf@nne
+Stand: 05.03.2017 / 16:43h  
+letzte Änderung: Pf@nne
 
 - **Hardware**
   - ~~CT-Test~~ - 20.01.2017
-  - Ankopplung 230VAC
+  - ~~Ankopplung 230VAC~~ - 05.03.2017
   
 - **Firmware**
   - ~~MQTT max.150 Samples? jsonBuffer?~~ - 03.02.2017 - 1000 Samples @7kHz
