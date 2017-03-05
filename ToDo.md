@@ -9,7 +9,7 @@ letzte Änderung: Pf@nne
 - **Firmware**
   - ~~MQTT max.150 Samples? jsonBuffer?~~ - 03.02.2017 - 1000 Samples @7kHz
   - ~~Begrenzung der SampleRate und der maximalen Samples~~ - 05.02.2017
-  - mehrere Samples in einem 256Byte Frame pushen
+  - mehrere Samples in einem 256Byte Frame pushen  --> das tut er doch schon?
   - ~~Topic resetEnergy REG, Value~~ 05.02.2017
   - ~~Topic /getValues/IA_INST Samples, kHz~~ - 05.02.2017 in SoftRegister implementiert
   - ~~Frequenz SoftRegister für GAIN~~ - 05.02.2017 SoftRegister PERIODGAIN hinzugefügt (223.75 + (read(PERIODGAIN)/1000)) obwohl die Korrektur Datasheet 223kHz -> 223.75kHz (3.58 MHz/16= 223.750 kHz clock) schon reichen würde
@@ -19,10 +19,13 @@ letzte Änderung: Pf@nne
   - ~~Topic getWave hinzufügen alle drei Waves werden gestaffelt published~~ - 02.02.2017
   - ~~Sinnvolle Default-Werte für Samples und Periods mit setDefault setzen~~ wird im SoftRegister gesetzt
   - ~~ESP8266/Control/Relay publish/subscribe~~ - 15.02.17 Rückmeldestruktur in FHEM geht auch!
-  - SoftClock
+  - SoftClock, die vom NTP Client nur alle Stunde aktualisiert wird; NTP Server konfigurierbar machen
   - ~~getState implementieren~~ 23.02.17 
-  - Button über Interrupt realisieren
-  
+  - Button über Interrupt realisieren // ggf. nicht nötig
+  - Webfrontend: verstecken der Kennwörter
+  - Webfrontend: optisch aufpeppen
+  - Webfrontend: javascript-Konsole
+  - eine sinnvolle Verwendung für den GodMode finden
    
 
 - **FHEM**
