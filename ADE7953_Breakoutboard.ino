@@ -17,6 +17,8 @@
 #include "ESP8266_Basic.h"
 ESP8266_Basic espClient;
 
+  //int dcount= 0;
+
 void tick(void *pArg) {
   espClient.timerCallback();
 }
@@ -32,12 +34,26 @@ void setup() {
   espClient.run_I2C();
   espClient.ADE.init();
   //espClient.ADE.Test();
-}  
+
+
+} 
+
+//void d(char *p) {
+  //Serial.print(p);
+  //if(!(dcount++ % 50)) Serial.println(); }
+ 
 
 void loop() {
-  espClient.handle_connections(); 
+  //d("C");
+  espClient.handle_connections();
+  //d("M");
   espClient.handle_Measurement();
+  //d("P");
   espClient.handle_Peripherals();
+
+/*  espClient.handle_connections(); 
+  espClient.handle_Measurement();
+  espClient.handle_Peripherals();*/
 }
 
 /*ToDo

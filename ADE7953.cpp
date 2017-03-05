@@ -708,6 +708,7 @@ String ADE7953::getWave(uint16_t regNumber){
   while (!readBit(RSTIRQSTATA,15)) {   //wait for IRQ V zeroCross
   }  
   delayMicroseconds(5300);  
+
   
   //unsigned long avarage = 0;
   //unsigned long t0 = micros();

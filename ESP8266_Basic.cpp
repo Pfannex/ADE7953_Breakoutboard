@@ -73,13 +73,15 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
   TdissectResult dissectResult;    
   dissectResult = dissectPayload(topic, value);
   
-/*  Serial.print("incoming subscribe - LEN: ");
-  Serial.print(length);
-  Serial.print(" | ");
-  Serial.print(topic);
-  Serial.print(" | ");
+  Serial.println("##incoming subscribe##########");
+  //Serial.print("incoming subscribe - LEN: ");
+  //Serial.print(length);
+  //Serial.print(" | ");
+  Serial.println(topic);
+  //Serial.print(" | ");
   Serial.println(value);
-  Serial.print("path: ");Serial.println(dissectResult.itemPath);*/
+  Serial.println("");
+  //Serial.print("path: ");Serial.println(dissectResult.itemPath);*/
 
   if (dissectResult.found){
     
@@ -244,30 +246,34 @@ void ESP8266_Basic::mqttBroker_Callback(char* topic, byte* payload, unsigned int
 
 //210 ADE7953.get_VINST
     if (dissectResult.itemPath == "2/1/0"){  
+      if (ADE.getVRMSrel() > 1){
         ADE.getWave(V);
-        pub(2,1,34, "triggered");  
+        pub(2,1,34, "triggered"); 
+      } 
     }
 //211 ADE7953.get_IAINST
     if (dissectResult.itemPath == "2/1/1"){   
+      if (ADE.getVRMSrel() > 1){
         ADE.getWave(IA);
         pub(2,1,34, "triggered");  
+      }
     }
 //212 ADE7953.get_IBINST
     if (dissectResult.itemPath == "2/1/2"){   
+      if (ADE.getVRMSrel() > 1){
         ADE.getWave(IB);
-        pub(2,1,34, "triggered");  
+        pub(2,1,34, "triggered"); 
+      } 
     }
     
 //213 getWaves
     if (dissectResult.itemPath == "2/1/3"){ 
-      //Serial.println("getWaves");
-      //Serial.print("Periods:    ");Serial.println(ADE.read(Periods));
-      //Serial.print("SampleRate: ");Serial.println(ADE.read(SampleRate));
-      
-      ADE.getWave(V);  
-      ADE.getWave(IA);  
-      ADE.getWave(IB);  
-      pub(2,1,34, "triggered");
+      if (ADE.getVRMSrel() > 1){
+        ADE.getWave(V);  
+        ADE.getWave(IA);  
+        ADE.getWave(IB);  
+        pub(2,1,34, "triggered");
+      }
     }
     
 //40 Relais/set|on:off
@@ -302,7 +308,7 @@ void ESP8266_Basic::ade_Callback(char* sample, uint16_t instREG) {
 //===> updateMeasurement <-----------------------------------------------------
 void ESP8266_Basic::handle_Measurement(){
 
-  timeClient.update();
+  //timeClient.update();
   ADE.updateEnergy();
 
   if (mqtt_client.connected()){
@@ -756,15 +762,26 @@ bool MQTTOK = false;
 	
     //testament
     mqtt_client.publish(lastWillTopic.c_str(), "Alive");
+
     //broker_subcribe();
 	  String sub = cfg.mqttDeviceName;
-	  sub += "/#";
+	  sub += "/ADE7953/Control/#";
 	  mqtt_client.subscribe(sub.c_str());
     mqtt_client.loop();
-	  sub = "/";
-	  sub += cfg.mqttDeviceName;
-	  sub += "/#";
-	  mqtt_client.subscribe(sub.c_str());
+ 
+    sub = cfg.mqttDeviceName;
+    sub += "/ADE7953/getValues/#";
+    mqtt_client.subscribe(sub.c_str());
+    mqtt_client.loop();
+
+    sub = cfg.mqttDeviceName;
+    sub += "/Relay/set";
+    mqtt_client.subscribe(sub.c_str());
+    mqtt_client.loop();
+
+    sub = cfg.mqttDeviceName;
+    sub += "/Relay/getStatus";
+    mqtt_client.subscribe(sub.c_str());
     mqtt_client.loop();
   }
 
