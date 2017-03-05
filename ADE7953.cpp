@@ -750,8 +750,8 @@ String ADE7953::getWave(uint16_t regNumber){
     //Serial.print("PacketSize = ");Serial.println(MQTT_MAX_PACKET_SIZE);
     //Serial.print("StampSize  = ");Serial.println(strlen(sample));
 
-    //if ((strlen(sample) + strlen(cTime)) < MQTT_MAX_PACKET_SIZE-80){
-    if ((strlen(sample) + strlen(cTime)) < 100){
+    if ((strlen(sample) + strlen(cTime)) < MQTT_MAX_PACKET_SIZE-80){
+    //if ((strlen(sample) + strlen(cTime)) < 100){
       if (strlen(sample) > 0) strcat(sample, ";");
       strcat(sample, cTime);
     }else{

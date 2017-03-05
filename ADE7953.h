@@ -93,8 +93,8 @@ public:
   
   //unsigned long t[500];
   uint32_t values[500];  //500
-  //char sample[MQTT_MAX_PACKET_SIZE];
-  char sample[100];
+  char sample[MQTT_MAX_PACKET_SIZE];
+  //char sample[100];
 
   void pREG(uint16_t reg);
   long int StrToInt(String str); 
