@@ -1,0 +1,222 @@
+#####################################################
+#
+# FHEM Sample Configuration for ADE7953 breakout 
+# board
+# 
+# mqtt device name %mqtt%
+# device names %name%_ade, %name%_relay, %name%_log,
+#	%name%_plotrms, %name%_%name%_SampleRate,
+#	%name%_%name%_Periods
+# aliases based on %alias%
+# all devices are in room %room% or %room_hidden%
+# all devices are in group %group%
+#
+#####################################################
+
+# ---------------------------------------------------
+# ESP8266+ADE7953
+# MQTT name: %node%
+# FHEM name: %name%_ade
+# ---------------------------------------------------
+
+#
+# define
+#
+define %name%_ade MQTT_DEVICE
+attr %name%_ade IODev %mqtt%
+attr %name%_ade alias %alias%
+attr %name%_ade room %room_hidden%
+attr %name%_ade group %group%
+attr %name%_ade stateFormat transmission-state
+
+# subscribe all values
+attr %name%_ade autoSubscribeReadings %node%/ADE7953/values/+
+
+# Example: set %name%_ade V_INST 50
+attr %name%_ade publishSet_V_INST %node%/ADE7953/getValues/V_INST
+attr %name%_ade publishSet_IA_INST %node%/ADE7953/getValues/IA_INST
+attr %name%_ade publishSet_IB_INST %node%/ADE7953/getValues/IB_INST
+attr %name%_ade publishSet_getWaves %node%/ADE7953/getValues/getWaves
+attr %name%_ade publishSet_resetEnergy %node%/ADE7953/Control/resetEnergy
+attr %name%_ade publishSet_write %node%/ADE7953/Control/write
+
+# ---------------------------------------------------
+# Readings Group
+# FHEM name: %name%_ade_readings
+# ---------------------------------------------------
+
+define %name%_ade_readings readingsGroup %name%_ade:V_RMS %name%_ade:P_A %name%_ade:ANGLE_A %name%_ade:FREQUENZ %name%_ade:W_A
+attr %name%_ade_readings alias %alias%
+attr %name%_ade_readings room %room%
+attr %name%_ade_readings group %group%
+attr %name%_ade_readings sortby 10
+attr %name%_ade_readings noheading 1
+attr %name%_ade_readings mapping { V_RMS => "Voltage", P_A => "Power", ANGLE_A => "Angle", FREQUENZ => "Frequency", W_A => "Energy" }
+attr %name%_ade_readings valueFormat { V_RMS => "%.1f V", P_A => "%.1f W", ANGLE_A => "%.0f°", FREQUENZ => "%.2f Hz", W_A => "%.3f kWh" }
+
+
+
+# ---------------------------------------------------
+# Log file
+# FHEM name: %name%_ade_log
+# ---------------------------------------------------
+
+# define, log everything except the transmission-state
+# http://stackoverflow.com/questions/406230/regular-expression-to-match-a-line-that-doesnt-contain-a-word
+define %name%_ade_log FileLog %L/%name%_ade.log %name%_ade:(?!transmission-state).*
+
+# alternative: log only V_RMS, IA_RMS, IB_RMS
+#define %name%_ade_log FileLog %L/%name%_ade.log %name%_ade:(V|IA|IB)_RMS:.*
+
+attr %name%_ade_log room %room_hidden%
+attr %name%_ade_log group %group%
+attr %name%_ade_log alias Log (%alias%)
+
+# ---------------------------------------------------
+# Plot V_RMS, IA_RMS, IB_RMS with plotrms.gplot
+# FHEM name: %name%_plotrms
+# ---------------------------------------------------
+
+# define
+define %name%_plotrms SVG %name%_ade_log:plotrms:CURRENT
+attr %name%_plotrms room %room%
+attr %name%_plotrms group %group%
+attr %name%_plotrms sortby 20
+attr %name%_plotrms alias Plot (%alias%)
+attr %name%_plotrms plotReplace title="" name=%name%
+
+
+# ---------------------------------------------------
+# ESP8266+Relay
+# MQTT name: %node%
+# FHEM name: %name%_relay
+# ---------------------------------------------------
+
+# define
+define %name%_relay MQTT_DEVICE
+attr %name%_relay IODev %mqtt%
+attr %name%_relay room %room%
+attr %name%_relay group %group%
+attr %name%_relay sortby 30
+attr %name%_relay alias Relay (%alias%)
+attr %name%_relay devStateIcon off:taster_ch_aus_rot:on on:taster_ch_an_gruen:off set_.*:taster_ch:on
+attr %name%_relay eventMap { dev=>{"is_on" => "on", "is_off" => "off"}, usr=>{"on"=>"set_on", "off"=>"set_off"} }
+attr %name%_relay publishSet set_on set_off %node%/Relay/set
+attr %name%_relay publishSet_getStatus %node%/Relay/getStatus
+# the last device state will be remembered
+attr %name%_relay retain 1     
+attr %name%_relay room %room%
+attr %name%_relay stateFormat state
+attr %name%_relay subscribeReading_state %node%/Relay/state
+attr %name%_relay webCmd on:off
+
+# state
+attr %name%_relay subscribeReading_state %node%/%name%_relay/state
+
+# get initial state
+define %name%_onInitialized_notify notify global:INITIALIZED set %name%_relay getStatus Relay
+attr %name%_onInitialized_%notify% room %room_hidden%
+
+# ---------------------------------------------------
+#
+# Handling wave forms
+# 
+# ---------------------------------------------------
+
+#
+# log file and proxy
+#
+
+#
+# a publish to %node%/ADE7953/getValues/V_INST makes the device sending line with
+# pairs of values t,V separated by semicolons:
+# 0.00000,0.45;0.00050,0.35;0.00100,0.27
+# 0.00200,0.07;0.00250,-0.03;0.00300,-0.09
+# etc.
+#
+define %name%_waves_log FileLog %L/%name%_waves.log %name%_ade:(V|IA|IB)_INST:.*
+attr %name%_waves_log room %room_hidden%
+attr %name%_waves_log group %group%
+
+# 
+# the proxy is used to prepare the t,V pairs for visualization
+#
+define %name%_waves_proxy logProxy
+attr %name%_waves_proxy room %room_hidden%
+attr %name%_waves_proxy group %group%
+
+
+#
+# the trigger log is updated when the last t,V pair has been sent
+# the gplot file refers to the trigger log and initiates an auto-update of the SVG plot
+#
+define %name%_waves_trigger FileLog %L/%name%_waves_trigger.log %name%_ade:INSTready:.triggered
+attr %name%_waves_trigger room %room_hidden%
+attr %name%_waves_trigger group %group%
+
+
+#
+# the actual plot
+#
+define %name%_waves SVG %name%_waves_proxy:waveform:CURRENT
+attr %name%_waves room %room%
+attr %name%_waves group %group%
+attr %name%_waves sortby 97
+attr %name%_waves alias Wave Forms (%alias%)
+attr %name%_waves plotReplace title="" name=%name%
+
+#
+# sample rate
+# the sample rate is stored in a dummy, a notify publishes the sample rate to the device
+#
+define %name%_SampleRate dummy
+attr %name%_SampleRate room %room%
+attr %name%_SampleRate group %group%
+attr %name%_SampleRate sortby 91
+attr %name%_SampleRate alias Sample Rate (%alias%)
+attr %name%_SampleRate setList state:1kHz,2kHz,3kHz,4kHz
+attr %name%_SampleRate webCmd state
+
+define %name%_SampleRate_notify notify %name%_SampleRate { \
+  $EVTPART0 =~ s/kHz//;; \
+  fhem("set %name%_ade write SampleRate," .$EVTPART0*1000) \
+}
+attr %name%_SampleRate_notify room %room_hidden%
+attr %name%_SampleRate_notify group %group%
+
+#
+# number of periods
+# the number of periods is stored in a dummy, a notify publishes the number to the device
+#
+define %name%_Periods dummy
+attr %name%_Periods alias Periods (%alias%)
+attr %name%_Periods room %room%
+attr %name%_Periods group %group%
+attr %name%_Periods sortby 92
+attr %name%_Periods setList state:slider,1,0.5,25
+attr %name%_Periods webCmd state
+
+define %name%_Periods_notify notify %name%_Periods { \
+  fhem("set %name%_ade write Periods, $EVTPART0") \
+}
+attr %name%_Periods_notify room %room_hidden%
+
+#
+# get wave plot
+#
+define %name%_getWavesPlot dummy
+attr %name%_getWavesPlot room %room%
+attr %name%_getWavesPlot group %group%
+attr %name%_getWavesPlot sortby 93
+attr %name%_getWavesPlot alias Get Waves (%alias%)
+attr %name%_getWavesPlot devStateIcon .*:refresh .*:time_graph
+attr %name%_getWavesPlot setList on off
+
+define %name%_getWavesPlot_notify notify %name%_getWavesPlot {\
+    if($EVENT eq "on") {\
+      fhem ("set %name%_waves_log clear");;\
+      fhem ("set %name%_ade getWaves 0");;\
+      fhem ("set %name%_getWavesPlot off");;\
+    }\
+}
+attr %name%_getWavesPlot_notify room %room_hidden%
