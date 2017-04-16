@@ -30,6 +30,7 @@
   #include <WiFiUdp.h>
   
 //MQTT Client
+  #define MQTT_MAX_PACKET_SIZE 1280
   #include <PubSubClient.h>
   
 //ESP8266_Basic
@@ -42,6 +43,7 @@
   //I2C
   #include <Wire.h>              
   #include <brzo_i2c.h>
+  #include <Adafruit_NeoPixel.h>
 
 //MySQL
   //#include <MySQL_Connection.h>
@@ -124,6 +126,10 @@ private:
   //Peripherals------------------------
   // see https://github.com/esp8266/Arduino/blob/master/doc/reference.md
 
+  //#define LED2_PIN 1  //Tx
+  //#define LED3_PIN 3  //Rx
+  
+
   #define DEBOUNCETIME 50
   int buttonPinState[17];                 // the last pin state
   unsigned long lastDebounceTime[17];     // when the pin state changed last
@@ -137,6 +143,9 @@ private:
   void onSetButtonMode(buttonMode_t oldMode, buttonMode_t newMode);
   
   #define LED_PIN 15 // Arduino Pin 15 = IO15 = Physical Pin 16 = NodeMCU/WeMos Pin D8
+
+  Adafruit_NeoPixel WS_LED = Adafruit_NeoPixel(1, LED_PIN, NEO_GRB + NEO_KHZ800);
+  
   ledMode_t currentLedMode;
   void Led(int on);
   #define BLINK_T 5  // in multiples of TIMER_T

@@ -855,8 +855,17 @@ void ESP8266_Basic::timerCallback() {
 
 void ESP8266_Basic::setup_Peripherals() {
 
+  //pinMode(LED2_PIN, OUTPUT);
+  //pinMode(LED3_PIN, OUTPUT);
+  
+
   pinMode(BUTTON_PIN, INPUT_PULLUP);
-  pinMode(LED_PIN, OUTPUT);
+  //pinMode(LED_PIN, OUTPUT);
+
+  WS_LED.setBrightness(100);
+  WS_LED.begin();
+  WS_LED.show(); // Initialize all pixels to 'off'
+
   for(int i= 0; i< 17; i++) {
       buttonPinState[i]= 0;
       lastDebounceTime[i]= 0;
@@ -933,8 +942,16 @@ void ESP8266_Basic::handle_Peripherals() {
 }
 
 void ESP8266_Basic::Led(int on) {
+
+  if (on){
+    WS_LED.setPixelColor(0, WS_LED.Color(255,0,0));
+    WS_LED.show();    
+  }else{
+    WS_LED.setPixelColor(0, WS_LED.Color(0,255,0));
+    WS_LED.show();    
+  }
   
-  digitalWrite(LED_PIN, on);
+  //digitalWrite(LED_PIN, on);
 }
 
 void ESP8266_Basic::Relay(int on) {
