@@ -23,6 +23,7 @@ letzte Änderung: Pf@nne
   - ~~getState implementieren~~ 23.02.17 
   - Button über Interrupt realisieren // ggf. nicht nötig
   - Webfrontend: verstecken der Kennwörter
+  - Webfrontend: HTTPS, damit das WLAN-Kennwort nicht im Klartext übertragen wird (AP Mode und Client Mode)
   - Webfrontend: optisch aufpeppen
   - Webfrontend: javascript-Konsole
   - eine sinnvolle Verwendung für den GodMode finden
