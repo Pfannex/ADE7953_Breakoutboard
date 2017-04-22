@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.7.0">
+<eagle version="8.0.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -14794,6 +14794,7 @@ based on WS2812 from https://github.com/adafruit/Adafruit-Eagle-Library</descrip
 <part name="JP1" library="pinhead" deviceset="PINHD-1X8" device=""/>
 <part name="R19" library="resistor" deviceset="R-US_" device="R0805" value="330R"/>
 <part name="C14" library="resistor" deviceset="C-EU" device="C0805K" value=".1uF"/>
+<part name="LED2" library="WS2812B" deviceset="WS2812B" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -14840,13 +14841,13 @@ based on WS2812 from https://github.com/adafruit/Adafruit-Eagle-Library</descrip
 <attribute name="VALUE" x="24.384" y="38.481" size="1.778" layer="96"/>
 </instance>
 <instance part="SUPPLY11" gate="G$1" x="10.16" y="40.64"/>
-<instance part="R2" gate="G$1" x="114.3" y="48.26" smashed="yes">
-<attribute name="NAME" x="117.602" y="48.7426" size="1.778" layer="95"/>
-<attribute name="VALUE" x="111.506" y="49.53" size="1.778" layer="96"/>
+<instance part="R2" gate="G$1" x="116.84" y="48.26" smashed="yes">
+<attribute name="NAME" x="120.142" y="48.7426" size="1.778" layer="95"/>
+<attribute name="VALUE" x="114.046" y="49.53" size="1.778" layer="96"/>
 </instance>
-<instance part="R3" gate="G$1" x="114.3" y="45.72" smashed="yes">
-<attribute name="NAME" x="117.602" y="45.9486" size="1.778" layer="95"/>
-<attribute name="VALUE" x="111.506" y="42.672" size="1.778" layer="96"/>
+<instance part="R3" gate="G$1" x="116.84" y="45.72" smashed="yes">
+<attribute name="NAME" x="120.142" y="45.9486" size="1.778" layer="95"/>
+<attribute name="VALUE" x="114.046" y="42.672" size="1.778" layer="96"/>
 </instance>
 <instance part="C2" gate="G$1" x="48.26" y="78.74"/>
 <instance part="C1" gate="G$1" x="38.1" y="78.74"/>
@@ -14873,21 +14874,22 @@ based on WS2812 from https://github.com/adafruit/Adafruit-Eagle-Library</descrip
 <instance part="X1" gate="G$1" x="106.68" y="154.94"/>
 <instance part="S2" gate="G$1" x="233.68" y="63.5" rot="R90"/>
 <instance part="S3" gate="G$1" x="213.36" y="63.5" rot="R90"/>
-<instance part="S1" gate="G$1" x="165.1" y="139.7" rot="R90"/>
-<instance part="LED1" gate="G$1" x="208.28" y="149.86"/>
+<instance part="S1" gate="G$1" x="162.56" y="149.86" rot="R90"/>
+<instance part="LED1" gate="G$1" x="190.5" y="132.08"/>
 <instance part="R12" gate="G$1" x="233.68" y="78.74" rot="R90"/>
 <instance part="R15" gate="G$1" x="213.36" y="78.74" rot="MR270"/>
 <instance part="R16" gate="G$1" x="175.26" y="91.44" rot="MR0"/>
 <instance part="R17" gate="G$1" x="175.26" y="83.82" rot="MR0"/>
 <instance part="R18" gate="G$1" x="175.26" y="76.2" rot="MR0"/>
 <instance part="R13" gate="G$1" x="175.26" y="58.42" rot="MR0"/>
-<instance part="R14" gate="G$1" x="165.1" y="154.94" rot="MR270"/>
+<instance part="R14" gate="G$1" x="162.56" y="165.1" rot="MR270"/>
 <instance part="C19" gate="G$1" x="106.68" y="132.08" rot="R90"/>
 <instance part="C20" gate="G$1" x="106.68" y="121.92" rot="R90"/>
 <instance part="JP2" gate="A" x="256.54" y="160.02"/>
 <instance part="JP1" gate="A" x="256.54" y="134.62"/>
-<instance part="R19" gate="G$1" x="208.28" y="116.84" rot="MR0"/>
+<instance part="R19" gate="G$1" x="210.82" y="170.18" rot="MR0"/>
 <instance part="C14" gate="G$1" x="243.84" y="66.04"/>
+<instance part="LED2" gate="G$1" x="220.98" y="132.08"/>
 </instances>
 <busses>
 </busses>
@@ -15092,9 +15094,9 @@ based on WS2812 from https://github.com/adafruit/Adafruit-Eagle-Library</descrip
 <wire x1="167.64" y1="58.42" x2="170.18" y2="58.42" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<label x="165.1" y="129.54" size="1.778" layer="95" rot="R270" xref="yes"/>
+<label x="162.56" y="139.7" size="1.778" layer="95" rot="R270" xref="yes"/>
 <pinref part="S1" gate="G$1" pin="1"/>
-<wire x1="165.1" y1="129.54" x2="165.1" y2="134.62" width="0.1524" layer="91"/>
+<wire x1="162.56" y1="139.7" x2="162.56" y2="144.78" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="JP2" gate="A" pin="3"/>
@@ -15113,8 +15115,11 @@ based on WS2812 from https://github.com/adafruit/Adafruit-Eagle-Library</descrip
 </segment>
 <segment>
 <pinref part="LED1" gate="G$1" pin="GND"/>
-<wire x1="208.28" y1="139.7" x2="208.28" y2="137.16" width="0.1524" layer="91"/>
-<label x="208.28" y="137.16" size="1.778" layer="95" rot="R270" xref="yes"/>
+<wire x1="190.5" y1="121.92" x2="190.5" y2="119.38" width="0.1524" layer="91"/>
+<label x="190.5" y="119.38" size="1.778" layer="95" rot="R270" xref="yes"/>
+<pinref part="LED2" gate="G$1" pin="GND"/>
+<wire x1="190.5" y1="121.92" x2="220.98" y2="121.92" width="0.1524" layer="91"/>
+<junction x="190.5" y="121.92"/>
 </segment>
 </net>
 <net name="V3.3" class="0">
@@ -15165,9 +15170,9 @@ based on WS2812 from https://github.com/adafruit/Adafruit-Eagle-Library</descrip
 <junction x="167.64" y="76.2"/>
 </segment>
 <segment>
-<wire x1="165.1" y1="162.56" x2="165.1" y2="160.02" width="0.1524" layer="91"/>
-<wire x1="165.1" y1="162.56" x2="162.56" y2="162.56" width="0.1524" layer="91"/>
-<label x="162.56" y="162.56" size="1.778" layer="95" rot="R180" xref="yes"/>
+<wire x1="162.56" y1="172.72" x2="162.56" y2="170.18" width="0.1524" layer="91"/>
+<wire x1="162.56" y1="172.72" x2="160.02" y2="172.72" width="0.1524" layer="91"/>
+<label x="160.02" y="172.72" size="1.778" layer="95" rot="R180" xref="yes"/>
 <pinref part="R14" gate="G$1" pin="1"/>
 </segment>
 <segment>
@@ -15177,15 +15182,18 @@ based on WS2812 from https://github.com/adafruit/Adafruit-Eagle-Library</descrip
 </segment>
 <segment>
 <pinref part="LED1" gate="G$1" pin="VDD"/>
-<wire x1="208.28" y1="165.1" x2="208.28" y2="167.64" width="0.1524" layer="91"/>
-<label x="208.28" y="167.64" size="1.778" layer="95" rot="R90" xref="yes"/>
+<wire x1="190.5" y1="147.32" x2="190.5" y2="149.86" width="0.1524" layer="91"/>
+<label x="190.5" y="149.86" size="1.778" layer="95" rot="R90" xref="yes"/>
+<pinref part="LED2" gate="G$1" pin="VDD"/>
+<wire x1="190.5" y1="147.32" x2="220.98" y2="147.32" width="0.1524" layer="91"/>
+<junction x="190.5" y="147.32"/>
 </segment>
 </net>
 <net name="SDA" class="0">
 <segment>
 <pinref part="R2" gate="G$1" pin="2"/>
-<wire x1="119.38" y1="48.26" x2="121.92" y2="48.26" width="0.1524" layer="91"/>
-<label x="121.92" y="48.26" size="1.27" layer="95" xref="yes"/>
+<wire x1="121.92" y1="48.26" x2="124.46" y2="48.26" width="0.1524" layer="91"/>
+<label x="124.46" y="48.26" size="1.27" layer="95" xref="yes"/>
 </segment>
 <segment>
 <pinref part="R17" gate="G$1" pin="1"/>
@@ -15201,8 +15209,8 @@ based on WS2812 from https://github.com/adafruit/Adafruit-Eagle-Library</descrip
 <net name="SCL" class="0">
 <segment>
 <pinref part="R3" gate="G$1" pin="2"/>
-<wire x1="119.38" y1="45.72" x2="121.92" y2="45.72" width="0.1524" layer="91"/>
-<label x="121.92" y="45.72" size="1.27" layer="95" xref="yes"/>
+<wire x1="121.92" y1="45.72" x2="124.46" y2="45.72" width="0.1524" layer="91"/>
+<label x="124.46" y="45.72" size="1.27" layer="95" xref="yes"/>
 </segment>
 <segment>
 <pinref part="R18" gate="G$1" pin="1"/>
@@ -15309,16 +15317,18 @@ based on WS2812 from https://github.com/adafruit/Adafruit-Eagle-Library</descrip
 <label x="22.86" y="86.36" size="1.778" layer="95" rot="R180"/>
 </segment>
 </net>
-<net name="PIN26_MISO_SDA_TX" class="2">
+<net name="SDA_" class="2">
 <segment>
 <pinref part="R2" gate="G$1" pin="1"/>
 <pinref part="IC1" gate="A" pin="MISO/SDA/TX"/>
+<wire x1="111.76" y1="48.26" x2="109.22" y2="48.26" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="PIN27_MOSI_SCL_RX" class="2">
+<net name="SCL_" class="2">
 <segment>
 <pinref part="R3" gate="G$1" pin="1"/>
 <pinref part="IC1" gate="A" pin="MOSI/SCL/RX"/>
+<wire x1="111.76" y1="45.72" x2="109.22" y2="45.72" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="AV3.3" class="2">
@@ -15463,9 +15473,9 @@ based on WS2812 from https://github.com/adafruit/Adafruit-Eagle-Library</descrip
 <label x="127" y="160.02" size="1.27" layer="95" xref="yes"/>
 </segment>
 <segment>
-<pinref part="JP2" gate="A" pin="1"/>
-<wire x1="254" y1="162.56" x2="248.92" y2="162.56" width="0.1524" layer="91"/>
-<label x="248.92" y="162.56" size="1.27" layer="95" rot="R180" xref="yes"/>
+<pinref part="JP2" gate="A" pin="2"/>
+<wire x1="254" y1="160.02" x2="248.92" y2="160.02" width="0.1524" layer="91"/>
+<label x="248.92" y="160.02" size="1.27" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="RXD" class="0">
@@ -15475,9 +15485,9 @@ based on WS2812 from https://github.com/adafruit/Adafruit-Eagle-Library</descrip
 <label x="127" y="157.48" size="1.27" layer="95" xref="yes"/>
 </segment>
 <segment>
-<pinref part="JP2" gate="A" pin="2"/>
-<wire x1="254" y1="160.02" x2="248.92" y2="160.02" width="0.1524" layer="91"/>
-<label x="248.92" y="160.02" size="1.27" layer="95" rot="R180" xref="yes"/>
+<pinref part="JP2" gate="A" pin="1"/>
+<wire x1="254" y1="162.56" x2="248.92" y2="162.56" width="0.1524" layer="91"/>
+<label x="248.92" y="162.56" size="1.27" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="LED" class="0">
@@ -15488,8 +15498,8 @@ based on WS2812 from https://github.com/adafruit/Adafruit-Eagle-Library</descrip
 </segment>
 <segment>
 <pinref part="LED1" gate="G$1" pin="DI"/>
-<wire x1="195.58" y1="147.32" x2="193.04" y2="147.32" width="0.1524" layer="91"/>
-<label x="193.04" y="147.32" size="1.778" layer="95" rot="R180" xref="yes"/>
+<wire x1="177.8" y1="129.54" x2="175.26" y2="129.54" width="0.1524" layer="91"/>
+<label x="175.26" y="129.54" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
 <pinref part="R13" gate="G$1" pin="1"/>
@@ -15517,8 +15527,8 @@ based on WS2812 from https://github.com/adafruit/Adafruit-Eagle-Library</descrip
 </segment>
 <segment>
 <pinref part="R19" gate="G$1" pin="2"/>
-<wire x1="203.2" y1="116.84" x2="200.66" y2="116.84" width="0.1524" layer="91"/>
-<label x="200.66" y="116.84" size="1.778" layer="95" rot="R180" xref="yes"/>
+<wire x1="205.74" y1="170.18" x2="203.2" y2="170.18" width="0.1524" layer="91"/>
+<label x="203.2" y="170.18" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="ADE_IRQ" class="0">
@@ -15569,11 +15579,11 @@ based on WS2812 from https://github.com/adafruit/Adafruit-Eagle-Library</descrip
 <segment>
 <pinref part="R14" gate="G$1" pin="2"/>
 <pinref part="S1" gate="G$1" pin="2"/>
-<wire x1="165.1" y1="149.86" x2="165.1" y2="147.32" width="0.1524" layer="91"/>
-<wire x1="165.1" y1="147.32" x2="165.1" y2="144.78" width="0.1524" layer="91"/>
-<wire x1="165.1" y1="147.32" x2="167.64" y2="147.32" width="0.1524" layer="91"/>
-<junction x="165.1" y="147.32"/>
-<label x="167.64" y="147.32" size="1.778" layer="95" xref="yes"/>
+<wire x1="162.56" y1="160.02" x2="162.56" y2="157.48" width="0.1524" layer="91"/>
+<wire x1="162.56" y1="157.48" x2="162.56" y2="154.94" width="0.1524" layer="91"/>
+<wire x1="162.56" y1="157.48" x2="165.1" y2="157.48" width="0.1524" layer="91"/>
+<junction x="162.56" y="157.48"/>
+<label x="165.1" y="157.48" size="1.778" layer="95" xref="yes"/>
 </segment>
 <segment>
 <pinref part="X1" gate="G$1" pin="GPIO12"/>
@@ -15605,8 +15615,15 @@ based on WS2812 from https://github.com/adafruit/Adafruit-Eagle-Library</descrip
 </segment>
 <segment>
 <pinref part="R19" gate="G$1" pin="1"/>
-<wire x1="213.36" y1="116.84" x2="215.9" y2="116.84" width="0.1524" layer="91"/>
-<label x="215.9" y="116.84" size="1.778" layer="95" xref="yes"/>
+<wire x1="215.9" y1="170.18" x2="218.44" y2="170.18" width="0.1524" layer="91"/>
+<label x="218.44" y="170.18" size="1.778" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="N$4" class="0">
+<segment>
+<pinref part="LED1" gate="G$1" pin="DO"/>
+<pinref part="LED2" gate="G$1" pin="DI"/>
+<wire x1="203.2" y1="129.54" x2="208.28" y2="129.54" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
