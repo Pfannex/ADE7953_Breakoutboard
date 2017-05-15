@@ -167,6 +167,7 @@ bool ADE7953::init(){
   }
   Serial.println("");
   Serial.println("ADE7953.init OK");
+  
   //Check I2C-Communication
   if (read(0x203) == 0xE419){
     Serial.println("I2C-Communication OK");
@@ -315,7 +316,7 @@ uint32_t ADE7953::read(uint16_t Reg){
     uint8_t buffer[10];
     buffer[0] = Reg >> 8;
     buffer[1] = Reg;
-    brzo_i2c_start_transaction(I2Caddr, 700);
+    brzo_i2c_start_transaction(I2Caddr, 700); //700
     brzo_i2c_write(buffer, 2, true); 
     brzo_i2c_read(buffer, count, true);
     brzo_i2c_end_transaction(); 

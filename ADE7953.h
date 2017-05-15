@@ -93,7 +93,7 @@ public:
   
   //uint32_t values[100];  
   //char sample[100];
-  uint32_t values[500];  //500
+  uint32_t values[700];  //500
   char sample[MQTT_MAX_PACKET_SIZE];
 
   void pREG(uint16_t reg);

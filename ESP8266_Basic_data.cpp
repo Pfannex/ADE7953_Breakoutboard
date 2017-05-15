@@ -106,6 +106,8 @@ Topics::Topics(){
   pub.E3.item[1][0][0] = "WiFi";
   pub.E3.item[1][0][1] = "MQTT";
   pub.E3.item[1][0][2] = "updateFirmware";
+  pub.E3.item[1][0][3] = "temperature";
+  pub.E3.item[1][0][4] = "pressure";
 
   pub.E1.item[2] = "ADE7953";
   pub.E2.item[2][0] = "Last_RW";

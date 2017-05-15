@@ -435,9 +435,13 @@ void ESP8266_Basic::handle_Measurement(){
       strcpy(chr, strVal.c_str());
       pub(2,1,33, chr);
 
-
-      //ADE.read(RSTIRQSTATA);
-      //ADE.read(RSTIRQSTATB);
+      //temperature & pressure from BMP180
+      strVal = bmp.readTemperature();
+      strcpy(chr, strVal.c_str());
+      pub(1,0,3, chr);
+      strVal = bmp.readPressure();
+      strcpy(chr, strVal.c_str());
+      pub(1,0,4, chr);
 
     }
   }
@@ -448,11 +452,14 @@ void ESP8266_Basic::run_I2C(){
   int mDevices = 0;
   String str; char chr[15];
  
-  //Wire.begin(I2C_SDA, I2C_SCL);
-  brzo_i2c_setup(I2C_SDA, I2C_SCL, 2000);     
+  brzo_i2c_setup(I2C_SDA, I2C_SCL, 2000);
+       
+  pinMode(3, OUTPUT); //RxD
+  pinMode(1, OUTPUT); //TxD
+  Wire.begin(3, 1);   //RxD,TxD
+  bmp.begin();
+
 }
-
-
 
 //===============================================================================
 //  MQTT Control 
@@ -943,11 +950,15 @@ void ESP8266_Basic::handle_Peripherals() {
 
 void ESP8266_Basic::Led(int on) {
 
-  if (on){
+  if (on){ 
     WS_LED.setPixelColor(0, WS_LED.Color(255,0,0));
+    WS_LED.show();    
+    WS_LED.setPixelColor(1, WS_LED.Color(255,0,0));
     WS_LED.show();    
   }else{
     WS_LED.setPixelColor(0, WS_LED.Color(0,255,0));
+    WS_LED.show();    
+    WS_LED.setPixelColor(1, WS_LED.Color(0,255,0));
     WS_LED.show();    
   }
   

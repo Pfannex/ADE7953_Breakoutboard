@@ -44,6 +44,8 @@
   #include <Wire.h>              
   #include <brzo_i2c.h>
   #include <Adafruit_NeoPixel.h>
+//Sensoren
+  #include <Adafruit_BMP085.h>
 
 //MySQL
   //#include <MySQL_Connection.h>
@@ -107,6 +109,8 @@ public:
   void run_I2C();
 
   ADE7953 ADE;
+//BMP180 Luftdruck
+  Adafruit_BMP085 bmp;
   
   WiFiUDP ntpUDP;
   NTPClient timeClient;
@@ -144,7 +148,7 @@ private:
   
   #define LED_PIN 15 // Arduino Pin 15 = IO15 = Physical Pin 16 = NodeMCU/WeMos Pin D8
 
-  Adafruit_NeoPixel WS_LED = Adafruit_NeoPixel(1, LED_PIN, NEO_GRB + NEO_KHZ800);
+  Adafruit_NeoPixel WS_LED = Adafruit_NeoPixel(2, LED_PIN, NEO_GRB + NEO_KHZ800);
   
   ledMode_t currentLedMode;
   void Led(int on);
