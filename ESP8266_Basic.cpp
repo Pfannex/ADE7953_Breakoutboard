@@ -438,10 +438,10 @@ void ESP8266_Basic::handle_Measurement(){
       //temperature & pressure from BMP180
       strVal = bmp.readTemperature();
       strcpy(chr, strVal.c_str());
-      pub(1,0,3, chr);
+      pub(2,1,35, chr);
       strVal = bmp.readPressure();
       strcpy(chr, strVal.c_str());
-      pub(1,0,4, chr);
+      pub(2,1,36, chr);
 
     }
   }
@@ -454,9 +454,9 @@ void ESP8266_Basic::run_I2C(){
  
   brzo_i2c_setup(I2C_SDA, I2C_SCL, 2000);
        
-  pinMode(3, OUTPUT); //RxD
-  pinMode(1, OUTPUT); //TxD
-  Wire.begin(3, 1);   //RxD,TxD
+  //pinMode(3, OUTPUT); //RxD
+  //pinMode(1, OUTPUT); //TxD
+  //Wire.begin(3, 1);   //RxD,TxD
   bmp.begin();
 
 }

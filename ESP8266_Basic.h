@@ -45,7 +45,7 @@
   #include <brzo_i2c.h>
   #include <Adafruit_NeoPixel.h>
 //Sensoren
-  #include <Adafruit_BMP085.h>
+  #include <Adafruit_BMP085_BrzoI2C.h>
 
 //MySQL
   //#include <MySQL_Connection.h>
